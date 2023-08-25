@@ -1,0 +1,33 @@
+.create-burger {
+    max-width: 600px;
+    width: 100%;
+    height: calc(100vh - 270px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.ingredients {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 24px;
+    row-gap: 32px;
+}
+
+.ingredients:last-child {
+    margin-bottom: 0;
+}
+
+.ingredient {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    row-gap: 8px;
+    position: relative;
+    width: 272px;
+    height: 208px;
+    white-space: pre-wrap;
+    cursor: pointer;
+}
+
