@@ -1,0 +1,47 @@
+.section {
+    position: relative;
+    width: 600px;
+}
+
+.outer-list {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+    align-items: flex-start;
+}
+
+.inner-list {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+    max-height: calc(100vh - 524px);
+    margin-right: -8px;
+    padding-right: 8px;
+    overflow-y: auto;
+    margin-left: 16px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+}
+
+.checkout {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.checkout svg {
+    width: 36px;
+    height: 36px;
+}
+
+.total {
+    display: flex;
+    column-gap: 8px;
+}

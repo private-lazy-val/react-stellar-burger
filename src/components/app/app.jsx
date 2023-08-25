@@ -10,11 +10,7 @@ function App() {
     const [ingredients, setIngredients] = useState([]);
 
     const addIngredientToCart = (ingredient) => {
-        if (ingredient.type === "bun") {
-            setBun(ingredient);
-        } else {
-            setIngredients([...ingredients, ingredient]);
-        }
+        ingredient.type === 'bun' ? setBun(ingredient) : setIngredients(prev => [...prev, ingredient]);
     }
 
     return (

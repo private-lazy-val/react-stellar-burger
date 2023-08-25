@@ -1,3 +1,7 @@
+.section {
+    width: 600px;
+}
+
 .create-burger {
     max-width: 600px;
     width: 100%;
@@ -14,10 +18,6 @@
     row-gap: 32px;
 }
 
-.ingredients:last-child {
-    margin-bottom: 0;
-}
-
 .ingredient {
     display: flex;
     flex-direction: column;
@@ -27,7 +27,11 @@
     position: relative;
     width: 272px;
     height: 208px;
-    white-space: pre-wrap;
     cursor: pointer;
 }
 
+.price {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
