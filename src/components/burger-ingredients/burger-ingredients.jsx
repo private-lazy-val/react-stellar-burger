@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import styles from "./burger-ingredients.module.css";
 import {Tab, CurrencyIcon, Counter} from '@ya.praktikum/react-developer-burger-ui-components';
 import PropTypes from 'prop-types';
 
 const BurgerIngredients = ({data, addIngredientToCart}) => {
 
-    const [current, setCurrent] = React.useState('Булки');
+    const [current, setCurrent] = useState('Булки');
 
     const categorizedItems = {
         'Булки': data.filter(item => item.type === 'bun'),
@@ -13,12 +13,23 @@ const BurgerIngredients = ({data, addIngredientToCart}) => {
         'Начинки': data.filter(item => item.type === 'main'),
     };
 
+    const refs = {
+        'Булки': useRef(null),
+        'Соусы': useRef(null),
+        'Начинки': useRef(null),
+    };
+
+    const handleTabClick = (tab) => {
+        setCurrent(tab);
+        refs[tab].current.scrollIntoView({ behavior: 'smooth' });
+    };
+
     return (
         <section className={styles.section}>
             <h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
             <div style={{display: 'flex'}}>
                 {Object.keys(categorizedItems).map(category => (
-                    <Tab key={category} value={category} active={current === category} onClick={setCurrent}>
+                    <Tab key={category} value={category} active={current === category} onClick={() => handleTabClick(category)}>
                         {category}
                     </Tab>
                 ))}
@@ -26,7 +37,7 @@ const BurgerIngredients = ({data, addIngredientToCart}) => {
 
             <ul className={`${styles['create-burger']} pt-10 custom-scroll`}>
                 {Object.entries(categorizedItems).map(([category, ingredients]) => (
-                    <li key={category}>
+                    <li key={category} ref={refs[category]}>
                         <h2 className="text text_type_main-medium">{category}</h2>
                         <ul className={`${styles.ingredients} mb-10 mt-6 ml-4`}>
                             {ingredients.map(({_id, type, name, price, image}) => (
