@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import styles from "./burger-ingredients.module.css";
 import {Tab, CurrencyIcon, Counter} from '@ya.praktikum/react-developer-burger-ui-components';
 import PropTypes from 'prop-types';
-import ingredientType from '../../utils/types';
+import ingredientPropType from '../../utils/prop-types';
 
 const BurgerIngredients = ({data, addIngredientToCart}) => {
 
@@ -65,7 +65,7 @@ const BurgerIngredients = ({data, addIngredientToCart}) => {
 };
 
 BurgerIngredients.propTypes = {
-    data: PropTypes.arrayOf(ingredientType).isRequired,
+    data: PropTypes.arrayOf(ingredientPropType).isRequired,
     addIngredientToCart: PropTypes.func.isRequired,
 };
 
