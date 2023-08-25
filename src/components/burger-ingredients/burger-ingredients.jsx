@@ -35,11 +35,11 @@ const BurgerIngredients = ({data, addIngredientToCart}) => {
                 ))}
             </div>
 
-            <ul className={`${styles['create-burger']} pt-10 custom-scroll`}>
+            <ul className={`${styles['create-burger']} custom-scroll`}>
                 {Object.entries(categorizedItems).map(([category, ingredients]) => (
                     <li key={category} ref={refs[category]}>
-                        <h2 className="text text_type_main-medium">{category}</h2>
-                        <ul className={`${styles.ingredients} mb-10 mt-6 ml-4`}>
+                        <h2 className="text text_type_main-medium mt-10">{category}</h2>
+                        <ul className={`${styles.ingredients} mt-6 ml-4`}>
                             {ingredients.map(({_id, type, name, price, image}) => (
                                 <li
                                     key={_id}
