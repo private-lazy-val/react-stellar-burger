@@ -26,6 +26,10 @@
     column-gap: 8px;
 }
 
+.bun {
+    margin-left: 48px;
+}
+
 .checkout {
     display: flex;
     align-items: center;
@@ -44,3 +48,7 @@
     display: flex;
     column-gap: 8px;
 }
+
+/*.constructor-element__text::after {*/
+/*    content*/
+/*}*/

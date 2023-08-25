@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import styles from "./burger-ingredients.module.css";
 import {Tab, CurrencyIcon, Counter} from '@ya.praktikum/react-developer-burger-ui-components';
 import PropTypes from 'prop-types';
+import ingredientType from '../../utils/types';
 
 const BurgerIngredients = ({data, addIngredientToCart}) => {
 
@@ -27,7 +28,7 @@ const BurgerIngredients = ({data, addIngredientToCart}) => {
     return (
         <section className={styles.section}>
             <h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
-            <div style={{display: 'flex'}}>
+            <div className={styles.tabs}>
                 {Object.keys(categorizedItems).map(category => (
                     <Tab key={category} value={category} active={current === category} onClick={() => handleTabClick(category)}>
                         {category}
@@ -64,20 +65,7 @@ const BurgerIngredients = ({data, addIngredientToCart}) => {
 };
 
 BurgerIngredients.propTypes = {
-    data: PropTypes.arrayOf(PropTypes.exact({
-        _id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        type: PropTypes.string.isRequired,
-        proteins: PropTypes.number,
-        fat: PropTypes.number,
-        carbohydrates: PropTypes.number,
-        calories: PropTypes.number,
-        price: PropTypes.number.isRequired,
-        image: PropTypes.string,
-        image_mobile: PropTypes.string,
-        image_large: PropTypes.string,
-        __v: PropTypes.number,
-    })).isRequired,
+    data: PropTypes.arrayOf(ingredientType).isRequired,
     addIngredientToCart: PropTypes.func.isRequired,
 };
 

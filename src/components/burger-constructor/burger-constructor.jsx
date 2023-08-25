@@ -2,6 +2,7 @@ import React from 'react';
 import {ConstructorElement, CurrencyIcon, DragIcon, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from "./burger-constructor.module.css";
 import PropTypes from 'prop-types';
+import ingredientType from '../../utils/types';
 
 const BurgerConstructor = ({bun, ingredients}) => {
 
@@ -11,7 +12,7 @@ const BurgerConstructor = ({bun, ingredients}) => {
     return (
         <section className={`${styles.section} mt-15`}>
             <ul className={styles['outer-list']}>
-                {bun && <li style={{marginLeft: '48px'}}><ConstructorElement type="top" isLocked={true} text={bun.name}
+                {bun && <li className={styles.bun}><ConstructorElement type="top" isLocked={true} text={`${bun.name} (верх)`}
                                                                              price={bun.price}
                                                                              thumbnail={bun.image}/></li>}
                 <li>
@@ -26,7 +27,7 @@ const BurgerConstructor = ({bun, ingredients}) => {
                 </li>
 
                 {bun &&
-                    <li style={{marginLeft: '48px'}}><ConstructorElement type="bottom" isLocked={true} text={bun.name}
+                    <li className={styles.bun}><ConstructorElement type="bottom" isLocked={true} text={`${bun.name} (низ)`}
                                                                          price={bun.price}
                                                                          thumbnail={bun.image}/></li>}
             </ul>
@@ -45,34 +46,8 @@ const BurgerConstructor = ({bun, ingredients}) => {
 };
 
 BurgerConstructor.propTypes = {
-    bun: PropTypes.exact({
-        _id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        type: PropTypes.string.isRequired,
-        proteins: PropTypes.number,
-        fat: PropTypes.number,
-        carbohydrates: PropTypes.number,
-        calories: PropTypes.number,
-        price: PropTypes.number.isRequired,
-        image: PropTypes.string,
-        image_mobile: PropTypes.string,
-        image_large: PropTypes.string,
-        __v: PropTypes.number,
-    }),
-    ingredients: PropTypes.arrayOf(PropTypes.exact({
-        _id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        type: PropTypes.string.isRequired,
-        proteins: PropTypes.number,
-        fat: PropTypes.number,
-        carbohydrates: PropTypes.number,
-        calories: PropTypes.number,
-        price: PropTypes.number.isRequired,
-        image: PropTypes.string,
-        image_mobile: PropTypes.string,
-        image_large: PropTypes.string,
-        __v: PropTypes.number,
-    })).isRequired,
+    bun: ingredientType,
+    ingredients: PropTypes.arrayOf(ingredientType).isRequired,
 };
 
 export default BurgerConstructor;

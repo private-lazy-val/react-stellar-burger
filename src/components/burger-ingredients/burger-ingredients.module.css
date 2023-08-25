@@ -11,6 +11,10 @@
     flex-direction: column;
 }
 
+.tabs {
+    display: flex;
+}
+
 .ingredients {
     display: grid;
     grid-template-columns: 1fr 1fr;
