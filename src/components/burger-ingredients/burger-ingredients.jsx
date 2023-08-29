@@ -1,17 +1,17 @@
-import React, { useState, useRef } from 'react';
+import React, {useState, useRef} from 'react';
 import styles from "./burger-ingredients.module.css";
 import {Tab, CurrencyIcon, Counter} from '@ya.praktikum/react-developer-burger-ui-components';
 import PropTypes from 'prop-types';
 import ingredientPropType from '../../utils/prop-types';
 
-const BurgerIngredients = ({data, addIngredientToCart}) => {
+const BurgerIngredients = ({items, isLoading, error}) => {
 
     const [current, setCurrent] = useState('Булки');
 
     const categorizedItems = {
-        'Булки': data.filter(item => item.type === 'bun'),
-        'Соусы': data.filter(item => item.type === 'sauce'),
-        'Начинки': data.filter(item => item.type === 'main'),
+        'Булки': items.filter(item => item.type === 'bun'),
+        'Соусы': items.filter(item => item.type === 'sauce'),
+        'Начинки': items.filter(item => item.type === 'main'),
     };
 
     const refs = {
@@ -22,15 +22,24 @@ const BurgerIngredients = ({data, addIngredientToCart}) => {
 
     const handleTabClick = (tab) => {
         setCurrent(tab);
-        refs[tab].current.scrollIntoView({ behavior: 'smooth' });
+        refs[tab].current.scrollIntoView({behavior: 'smooth'});
     };
+
+    if (isLoading) {
+        return <p>Загрузка...</p>;
+    }
+
+    if (error) {
+        return <p>Произошла ошибка. Пожалуйста, перезагрузите страницу.</p>;
+    }
 
     return (
         <section className={styles.section}>
             <h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
             <div className={styles.tabs}>
                 {Object.keys(categorizedItems).map(category => (
-                    <Tab key={category} value={category} active={current === category} onClick={() => handleTabClick(category)}>
+                    <Tab key={category} value={category} active={current === category}
+                         onClick={() => handleTabClick(category)}>
                         {category}
                     </Tab>
                 ))}
@@ -45,9 +54,8 @@ const BurgerIngredients = ({data, addIngredientToCart}) => {
                                 <li
                                     key={_id}
                                     className={styles.ingredient}
-                                    onClick={() => addIngredientToCart({_id, type, name, price, image})}
                                 >
-                                    <Counter count={1} size="default" extraClass="m-1" />
+                                    <Counter count={1} size="default" extraClass="m-1"/>
                                     <img src={image} alt={name} width="240" height="120"/>
                                     <div className={styles.price}>
                                         <span className="text text_type_digits-default">{price}</span>
@@ -65,8 +73,7 @@ const BurgerIngredients = ({data, addIngredientToCart}) => {
 };
 
 BurgerIngredients.propTypes = {
-    data: PropTypes.arrayOf(ingredientPropType).isRequired,
-    addIngredientToCart: PropTypes.func.isRequired,
+    items: PropTypes.arrayOf(ingredientPropType).isRequired,
 };
 
 export default BurgerIngredients;

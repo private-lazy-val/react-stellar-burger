@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {ConstructorElement, CurrencyIcon, DragIcon, Button} from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from "./burger-constructor.module.css";
 import PropTypes from 'prop-types';
@@ -8,6 +8,11 @@ const BurgerConstructor = ({bun, ingredients}) => {
 
     // Calculate total price
     const totalPrice = ingredients.reduce((acc, ingredient) => acc + ingredient.price, 0) + (bun ? bun.price * 2 : 0);
+
+
+    useEffect(() => {
+        createOrder
+    })
 
     return (
         <section className={`${styles.section} mt-15`}>
@@ -37,7 +42,7 @@ const BurgerConstructor = ({bun, ingredients}) => {
                     <span className="text text_type_digits-medium">{totalPrice}</span>
                     <CurrencyIcon type="primary"/>
                 </div>
-                <Button htmlType="button" type="primary" size="large">
+                <Button htmlType="button" type="primary" size="large" onClick={createOrder}>
                     Оформить заказ
                 </Button>
             </div>
