@@ -4,15 +4,15 @@ import {Tab, CurrencyIcon, Counter} from '@ya.praktikum/react-developer-burger-u
 import PropTypes from 'prop-types';
 import ingredientPropType from '../../utils/prop-types';
 
-const BurgerIngredients = ({items, isLoading, error}) => {
+const BurgerIngredients = React.memo(({items, addIngredientToCart, isLoading, error, openPopup}) => {
 
     const [current, setCurrent] = useState('Булки');
 
-    const categorizedItems = {
+    const categorizedItems = React.useMemo(() => ({
         'Булки': items.filter(item => item.type === 'bun'),
         'Соусы': items.filter(item => item.type === 'sauce'),
         'Начинки': items.filter(item => item.type === 'main'),
-    };
+    }), [items]);
 
     const refs = {
         'Булки': useRef(null),
@@ -50,18 +50,22 @@ const BurgerIngredients = ({items, isLoading, error}) => {
                     <li key={category} ref={refs[category]}>
                         <h2 className="text text_type_main-medium mt-10">{category}</h2>
                         <ul className={`${styles.ingredients} mt-6 ml-4`}>
-                            {ingredients.map(({_id, type, name, price, image}) => (
+                            {ingredients.map((ingredient) => (
                                 <li
-                                    key={_id}
+                                    key={ingredient._id}
                                     className={styles.ingredient}
+                                    onClick={() => {
+                                        openPopup(ingredient);
+                                        addIngredientToCart(ingredient);
+                                    }}
                                 >
                                     <Counter count={1} size="default" extraClass="m-1"/>
-                                    <img src={image} alt={name} width="240" height="120"/>
+                                    <img src={ingredient.image} alt={ingredient.name} width="240" height="120"/>
                                     <div className={styles.price}>
-                                        <span className="text text_type_digits-default">{price}</span>
+                                        <span className="text text_type_digits-default">{ingredient.price}</span>
                                         <CurrencyIcon type="primary"/>
                                     </div>
-                                    <span className="text text_type_main-default">{name}</span>
+                                    <span className="text text_type_main-default">{ingredient.name}</span>
                                 </li>
                             ))}
                         </ul>
@@ -70,10 +74,14 @@ const BurgerIngredients = ({items, isLoading, error}) => {
             </ul>
         </section>
     );
-};
+});
 
 BurgerIngredients.propTypes = {
     items: PropTypes.arrayOf(ingredientPropType).isRequired,
+    addIngredientToCart: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    error: PropTypes.bool.isRequired,
+    openPopup:  PropTypes.func.isRequired,
 };
 
 export default BurgerIngredients;

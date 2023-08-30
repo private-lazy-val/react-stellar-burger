@@ -14,6 +14,7 @@ const ingredientPropType =
         image_mobile: PropTypes.string,
         image_large: PropTypes.string,
         __v: PropTypes.number,
+        uuid: PropTypes.string,
     });
 
 export default ingredientPropType;
