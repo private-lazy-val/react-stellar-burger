@@ -1,10 +1,10 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef} from "react";
 import styles from "./burger-ingredients.module.css";
-import {Tab, CurrencyIcon, Counter} from '@ya.praktikum/react-developer-burger-ui-components';
-import PropTypes from 'prop-types';
-import ingredientPropType from '../../utils/prop-types';
+import {Tab, CurrencyIcon, Counter} from "@ya.praktikum/react-developer-burger-ui-components";
+import PropTypes from "prop-types";
+import ingredientPropType from "../../utils/prop-types";
 
-const BurgerIngredients = React.memo(({items, addIngredientToCart, isLoading, error, openPopup}) => {
+const BurgerIngredients = React.memo(({items, addIngredientToCart, isLoading, error, openModal}) => {
 
     const [current, setCurrent] = useState('Булки');
 
@@ -55,7 +55,7 @@ const BurgerIngredients = React.memo(({items, addIngredientToCart, isLoading, er
                                     key={ingredient._id}
                                     className={styles.ingredient}
                                     onClick={() => {
-                                        openPopup(ingredient);
+                                        openModal(ingredient);
                                         addIngredientToCart(ingredient);
                                     }}
                                 >
@@ -81,7 +81,7 @@ BurgerIngredients.propTypes = {
     addIngredientToCart: PropTypes.func.isRequired,
     isLoading: PropTypes.bool.isRequired,
     error: PropTypes.bool.isRequired,
-    openPopup:  PropTypes.func.isRequired,
+    openModal:  PropTypes.func.isRequired,
 };
 
 export default BurgerIngredients;

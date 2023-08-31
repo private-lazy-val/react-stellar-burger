@@ -1,0 +1,35 @@
+import { useState, useCallback } from "react";
+
+// кастомные хуки всегда должны начинаться с глагола `use`, чтобы реакт понял, что это хук. Он следит за их вызовами
+const useModal = () => {
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [modalType, setModalType] = useState(null);
+    const [selectedIngredient, setSelectedIngredient] = useState(null);
+
+    const closeModal = () => {
+        setModalOpen(false);
+        setModalType(null)
+    }
+
+    const openIngredientModal = useCallback((ingredient) => {
+        setModalOpen(true);
+        setModalType('ingredient');
+        setSelectedIngredient(ingredient);
+    }, [])
+
+    const openOrderModal = useCallback(() => {
+        setModalOpen(true);
+        setModalType('order');
+    }, [])
+
+    return {
+        isModalOpen,
+        modalType,
+        selectedIngredient,
+        openIngredientModal,
+        openOrderModal,
+        closeModal,
+    };
+};
+
+export default useModal;

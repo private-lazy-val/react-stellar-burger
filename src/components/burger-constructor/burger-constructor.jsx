@@ -1,10 +1,10 @@
-import React from 'react';
-import {ConstructorElement, CurrencyIcon, DragIcon, Button} from '@ya.praktikum/react-developer-burger-ui-components';
+import React from "react";
+import {ConstructorElement, CurrencyIcon, DragIcon, Button} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./burger-constructor.module.css";
-import PropTypes from 'prop-types';
-import ingredientPropType from '../../utils/prop-types';
+import PropTypes from "prop-types";
+import ingredientPropType from "../../utils/prop-types";
 
-const BurgerConstructor =  React.memo(({bun, ingredients, openPopup}) => {
+const BurgerConstructor =  React.memo(({bun, ingredients, openModal}) => {
 
     // Calculate total price
     const totalPrice = ingredients.reduce((acc, ingredient) => acc + ingredient.price, 0) + (bun ? bun.price * 2 : 0);
@@ -37,7 +37,7 @@ const BurgerConstructor =  React.memo(({bun, ingredients, openPopup}) => {
                     <span className="text text_type_digits-medium">{totalPrice}</span>
                     <CurrencyIcon type="primary"/>
                 </div>
-                <Button htmlType="button" type="primary" size="large" onClick={openPopup}>
+                <Button htmlType="button" type="primary" size="large" onClick={openModal}>
                     Оформить заказ
                 </Button>
             </div>
@@ -48,7 +48,7 @@ const BurgerConstructor =  React.memo(({bun, ingredients, openPopup}) => {
 BurgerConstructor.propTypes = {
     bun: ingredientPropType,
     ingredients: PropTypes.arrayOf(ingredientPropType).isRequired,
-    openPopup: PropTypes.func.isRequired,
+    openModal: PropTypes.func.isRequired,
 };
 
 export default BurgerConstructor;

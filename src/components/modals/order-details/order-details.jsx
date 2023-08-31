@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 import styles from "./order-details.module.css";
-import submittedOrderImg from '../../../images/submitted-order.svg';
+import submittedOrderImg from "../../../images/submitted-order.svg";
 
 const OrderDetails = ({orderId = '034536'}) => {
     return (

@@ -6,22 +6,20 @@ import OrderDetails from "../modals/order-details/order-details";
 import IngredientDetails from "../modals/ingredient-details/ingredient-details";
 import Modal from "../modals/modal/modal"
 import React, {useEffect, useState} from "react";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
+import useModal from "../../hooks/useModal";
 
 const BASE_URL = "https://norma.nomoreparties.space/api/ingredients";
 
 function App() {
+    const { isModalOpen, modalType, selectedIngredient, openIngredientModal, openOrderModal, closeModal } = useModal();
+
     const [bun, setBun] = useState(null);
     const [ingredients, setIngredients] = useState([]);
     const [items, setItems] = useState([]);
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(false);
-
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [modalType, setModalType] = useState(null);
-
-    const [selectedIngredient, setSelectedIngredient] = useState(null);
 
     useEffect(() => {
         const fetchIngredients = async () => {
@@ -54,22 +52,6 @@ function App() {
         ingredient.type === 'bun' ? setBun(ingredientWithUUID) : setIngredients(prev => [...prev, ingredientWithUUID]);
     }, [])
 
-    const closePopup = () => {
-        setModalOpen(false);
-        setModalType(null)
-    }
-
-    const openIngredientPopup = React.useCallback((ingredient) => {
-        setModalOpen(true);
-        setModalType('ingredient');
-        setSelectedIngredient(ingredient);
-    }, [])
-
-    const openOrderPopup = React.useCallback(() => {
-        setModalOpen(true);
-        setModalType('order');
-    }, [])
-
     return (
         <div className={styles.app}>
             <AppHeader/>
@@ -77,19 +59,19 @@ function App() {
                 <BurgerIngredients items={items}
                                    isLoading={isLoading}
                                    error={error}
-                                   openPopup={openIngredientPopup}
+                                   openModal={openIngredientModal}
                                    addIngredientToCart={addIngredientToCart}/>
                 <BurgerConstructor bun={bun}
                                    ingredients={ingredients}
-                                   openPopup={openOrderPopup}/>
+                                   openModal={openOrderModal}/>
             </main>
             {isModalOpen && modalType === 'ingredient' && (
-                <Modal closePopup={closePopup} title="Детали ингредиента">
+                <Modal closeModal={closeModal} title='Детали ингредиента'>
                     <IngredientDetails ingredient={selectedIngredient}/>
                 </Modal>
             )}
             {isModalOpen && modalType === 'order' && (
-                <Modal closePopup={closePopup}>
+                <Modal closeModal={closeModal}>
                     <OrderDetails/>
                 </Modal>
             )}
