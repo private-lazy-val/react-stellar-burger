@@ -54,10 +54,10 @@ function App() {
         ingredient.type === 'bun' ? setBun(ingredientWithUUID) : setIngredients(prev => [...prev, ingredientWithUUID]);
     }, [])
 
-    const closePopup = React.useCallback(() => {
+    const closePopup = () => {
         setModalOpen(false);
         setModalType(null)
-    }, [])
+    }
 
     const openIngredientPopup = React.useCallback((ingredient) => {
         setModalOpen(true);
