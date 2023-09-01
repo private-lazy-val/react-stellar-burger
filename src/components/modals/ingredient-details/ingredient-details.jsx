@@ -30,7 +30,7 @@ const IngredientDetails = ({ingredient}) => {
 };
 
 IngredientDetails.propTypes = {
-    ingredient: ingredientPropType.isRequired,
+    ingredient: ingredientPropType,
 };
 
 

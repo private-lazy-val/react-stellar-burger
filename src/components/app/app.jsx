@@ -1,18 +1,20 @@
 import styles from "./app.module.css";
+import transitions from "../modals/modal/modal-transitions.module.css";
 import AppHeader from "../app-header/app-header";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
 import OrderDetails from "../modals/order-details/order-details";
 import IngredientDetails from "../modals/ingredient-details/ingredient-details";
 import Modal from "../modals/modal/modal"
-import React, {useEffect, useState} from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, {useEffect, useState, useRef} from "react";
+import {v4 as uuidv4} from "uuid";
 import useModal from "../../hooks/useModal";
+import {CSSTransition} from "react-transition-group";
 
 const BASE_URL = "https://norma.nomoreparties.space/api/ingredients";
 
 function App() {
-    const { isModalOpen, modalType, selectedIngredient, openIngredientModal, openOrderModal, closeModal } = useModal();
+    const {isModalOpen, modalType, selectedIngredient, openIngredientModal, openOrderModal, closeModal} = useModal();
 
     const [bun, setBun] = useState(null);
     const [ingredients, setIngredients] = useState([]);
@@ -20,6 +22,9 @@ function App() {
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(false);
+
+    // Used in CSSTransition
+    const nodeRef = useRef(null);
 
     useEffect(() => {
         const fetchIngredients = async () => {
@@ -65,16 +70,30 @@ function App() {
                                    ingredients={ingredients}
                                    openModal={openOrderModal}/>
             </main>
-            {isModalOpen && modalType === 'ingredient' && (
-                <Modal closeModal={closeModal} title='Детали ингредиента'>
+
+            <CSSTransition
+                in={isModalOpen && modalType === 'ingredient'}
+                nodeRef={nodeRef}
+                timeout={600}
+                classNames={{...transitions}}
+                unmountOnExit
+            >
+                <Modal ref={nodeRef} closeModal={closeModal} title='Детали ингредиента'>
                     <IngredientDetails ingredient={selectedIngredient}/>
                 </Modal>
-            )}
-            {isModalOpen && modalType === 'order' && (
-                <Modal closeModal={closeModal}>
+            </CSSTransition>
+
+            <CSSTransition
+                in={isModalOpen && modalType === 'order'}
+                nodeRef={nodeRef}
+                timeout={600}
+                classNames={{...transitions}}
+                unmountOnExit
+            >
+                <Modal ref={nodeRef} closeModal={closeModal}>
                     <OrderDetails/>
                 </Modal>
-            )}
+            </CSSTransition>
         </div>
     );
 }

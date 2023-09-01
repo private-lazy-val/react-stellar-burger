@@ -5,13 +5,4 @@
     align-items: center;
     justify-content: center;
     display: flex;
-    /*opacity: 0;*/
-    /*visibility: hidden;*/
-    /*transition: visibility 0s .6s, opacity .6s;*/
 }
-
-/*.overlay.show {*/
-/*    opacity: 1;*/
-/*    visibility: visible;*/
-/*    transition: visibility 0s, opacity .6s;*/
-/*}*/
