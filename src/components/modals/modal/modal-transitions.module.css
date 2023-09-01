@@ -1,0 +1,17 @@
+.enter {
+    opacity: 0;
+    visibility: hidden;
+}
+.enterActive {
+    opacity: 1;
+    visibility: visible;
+    transition: visibility 0s, opacity .6s;
+}
+.exit {
+    opacity: 1;
+}
+.exitActive {
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility 0s .6s, opacity .6s;
+}

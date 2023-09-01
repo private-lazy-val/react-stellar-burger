@@ -1,0 +1,25 @@
+.list {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    white-space: nowrap;
+}
+
+.link {
+    text-decoration: none;
+    display: flex;
+    gap: 8px;
+    color: inherit;
+}
+
+.list-item:last-child {
+    margin-left: auto;
+}
+
+.logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
