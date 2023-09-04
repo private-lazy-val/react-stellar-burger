@@ -20,7 +20,7 @@ function App() {
     const [ingredients, setIngredients] = useState([]);
     const [items, setItems] = useState([]);
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(false);
 
     // Used in CSSTransition
@@ -28,7 +28,6 @@ function App() {
 
     useEffect(() => {
         const fetchIngredients = async () => {
-            setIsLoading(true);
             try {
                 const response = await fetch(BASE_URL);
                 if (!response.ok) {
