@@ -7,7 +7,7 @@ import BurgerConstructor from "../burger-constructor/burger-constructor";
 import OrderDetails from "../modals/order-details/order-details";
 import IngredientDetails from "../modals/ingredient-details/ingredient-details";
 import Modal from "../modals/modal/modal"
-import React, {useEffect, useState, useRef, useCallback, useReducer} from "react";
+import React, {useEffect, useState, useRef, useCallback, useReducer, useMemo} from "react";
 import {v4 as uuidv4} from "uuid";
 import useModal from "../../hooks/useModal";
 import {CSSTransition} from "react-transition-group";
@@ -42,7 +42,7 @@ function App() {
                 // No need to await response.json() as with the Fetch API.
                 const jsonResponse = response.data;
                 // No need to check for `.ok` with Axios, unsuccessful requests will throw an error directly
-                if (jsonResponse.success && Array.isArray(jsonResponse.data) && jsonResponse.data.length > 0) {
+                if (jsonResponse.success && jsonResponse?.data?.length > 0) {
                     setItems(jsonResponse.data);
                 } else {
                     throw new Error('Data format is incorrect or array is empty'); // Will be caught by catch block
@@ -71,14 +71,30 @@ function App() {
         }
     }, [bun])
 
+    const ingredientsContextValue = useMemo(() => ({
+        items, isLoading, error, addIngredientToCart
+    }), [items, isLoading, error, addIngredientToCart]);
+
+    const constructorContextValue = useMemo(() => ({
+        bun, ingredients, state
+    }), [bun, ingredients, state]);
+
+    const setOrderDetailsContextValue = useMemo(() => ({
+        setOrderId, setIdIsLoading, setIdError
+    }), [setOrderId, setIdIsLoading, setIdError]);
+
+    const getOrderDetailsContextValue = useMemo(() => ({
+        orderId, idIsLoading, idError
+    }), [orderId, idIsLoading, idError]);
+
     return (
         <div className={styles.app}>
             <AppHeader/>
             <main className={styles.main}>
-                <IngredientsContext.Provider value={{items, isLoading, error, addIngredientToCart}}>
-                    <ConstructorContext.Provider value={{bun, ingredients, state}}>
+                <IngredientsContext.Provider value={ingredientsContextValue}>
+                    <ConstructorContext.Provider value={constructorContextValue}>
                         <BurgerIngredients openModal={openIngredientModal}/>
-                        <OrderDetailsContext.Provider value={{setOrderId, setIdIsLoading, setIdError}}>
+                        <OrderDetailsContext.Provider value={setOrderDetailsContextValue}>
                             <BurgerConstructor openModal={openOrderModal}/>
                         </OrderDetailsContext.Provider>
                     </ConstructorContext.Provider>
@@ -105,7 +121,7 @@ function App() {
                 unmountOnExit
             >
                 <Modal ref={nodeRef} closeModal={closeModal}>
-                    <OrderDetailsContext.Provider value={{orderId, idIsLoading, idError}}>
+                    <OrderDetailsContext.Provider value={getOrderDetailsContextValue}>
                         <OrderDetails/>
                     </OrderDetailsContext.Provider>
                 </Modal>

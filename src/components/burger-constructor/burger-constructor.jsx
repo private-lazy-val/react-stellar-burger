@@ -21,7 +21,7 @@ const BurgerConstructor = React.memo(({openModal}) => {
             const response = await api.post('/orders', newOrder);
             const jsonResponse = response.data;
 
-            if (jsonResponse.success && jsonResponse.order.number !== undefined && jsonResponse.order.number !== null && jsonResponse.order.number !== '' && jsonResponse.order.number !== 0) {
+            if (jsonResponse.success && jsonResponse.order.number) {
                 setOrderId(jsonResponse.order.number);
             } else {
                 throw new Error('The \'number\' field is missing or empty.'); // Will be caught by catch block
