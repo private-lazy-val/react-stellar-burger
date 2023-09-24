@@ -1,14 +1,16 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useMemo, useContext} from "react";
 import styles from "./burger-ingredients.module.css";
 import {Tab, CurrencyIcon, Counter} from "@ya.praktikum/react-developer-burger-ui-components";
 import PropTypes from "prop-types";
-import ingredientPropType from "../../utils/prop-types";
+import {IngredientsContext} from "../../services/contexts/ingredientsContext";
 
-const BurgerIngredients = React.memo(({items, addIngredientToCart, isLoading, error, openModal}) => {
+const BurgerIngredients = React.memo(({openModal}) => {
+
+    const { items, isLoading, error, addIngredientToCart } = useContext(IngredientsContext);
 
     const [current, setCurrent] = useState('Булки');
 
-    const categorizedItems = React.useMemo(() => ({
+    const categorizedItems = useMemo(() => ({
         'Булки': items.filter(item => item.type === 'bun'),
         'Соусы': items.filter(item => item.type === 'sauce'),
         'Начинки': items.filter(item => item.type === 'main'),
@@ -26,11 +28,11 @@ const BurgerIngredients = React.memo(({items, addIngredientToCart, isLoading, er
     };
 
     if (isLoading) {
-        return <p>Загрузка...</p>;
+        return <p className="text text_type_main-medium text_color_inactive mt-10 ml-10">Загрузка...</p>;
     }
 
     if (error) {
-        return <p>Произошла ошибка. Пожалуйста, перезагрузите страницу.</p>;
+        return <p className="text text_type_main-medium text_color_inactive mt-10 ml-10">Произошла ошибка. Пожалуйста, перезагрузите страницу.</p>;
     }
 
     return (
@@ -77,10 +79,6 @@ const BurgerIngredients = React.memo(({items, addIngredientToCart, isLoading, er
 });
 
 BurgerIngredients.propTypes = {
-    items: PropTypes.arrayOf(ingredientPropType).isRequired,
-    addIngredientToCart: PropTypes.func.isRequired,
-    isLoading: PropTypes.bool.isRequired,
-    error: PropTypes.bool.isRequired,
     openModal:  PropTypes.func.isRequired,
 };
 

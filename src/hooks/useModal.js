@@ -5,10 +5,10 @@ const useModal = () => {
     const [modalType, setModalType] = useState(null);
     const [selectedIngredient, setSelectedIngredient] = useState(null);
 
-    const closeModal = () => {
+    const closeModal = useCallback(() => {
         setModalOpen(false);
         setModalType(null)
-    }
+    }, [])
 
     const openIngredientModal = useCallback((ingredient) => {
         setModalOpen(true);
