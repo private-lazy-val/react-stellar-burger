@@ -29,14 +29,10 @@ export const orderDetailsSlice = createSlice({
     name: "orderDetails",
     initialState: {
         number: null,
-        isLoading: false,
+        isLoading: true,
         hasError: false,
     },
-    reducers: {
-        resetNumber: (state) => {
-            state.number = null;
-        }
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchOrderId.pending, (state) => {
@@ -56,7 +52,6 @@ export const orderDetailsSlice = createSlice({
 });
 
 export default orderDetailsSlice.reducer;
-export const {resetNumber} = orderDetailsSlice.actions;
 export const selectOrderId = (state) => state.orderDetails.number;
 export const isLoadingOrderId = (state) => state.orderDetails.isLoading;
 export const hasErrorOrderId = (state) => state.orderDetails.hasError;

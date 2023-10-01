@@ -24,7 +24,7 @@ const Modal = forwardRef(({title, children, closeModal}, ref) => {
     return ReactDOM.createPortal(
         <div ref={ref}>
             <div className={`${styles.modal} pl-10 pt-10 pr-10`}>
-                <h2 className={`text text_type_main-large mt-3`}>{title}</h2>
+                <h2 className={`text text_type_main-large mt-3`} aria-label={'Заказ оформлен'}>{title}</h2>
                 <button type="button" className={styles['exit-button']} onClick={closeModal}><CloseIcon
                     type="primary"/></button>
                 {children}

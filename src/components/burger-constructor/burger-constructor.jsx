@@ -5,10 +5,18 @@ import PropTypes from "prop-types";
 import {useDispatch, useSelector} from "react-redux";
 import {getBun, getIngredients} from "../../services/burgerConstructorSlice";
 import {fetchOrderId} from "../../services/orderDetailsSlice";
+import {
+    isLoadingIngredients,
+    hasErrorIngredients
+} from "../../services/burgerIngredientsSlice";
 
 const BurgerConstructor = React.memo(({openModal}) => {
     const bun = useSelector(getBun);
     const ingredients = useSelector(getIngredients);
+
+    const isLoading = useSelector(isLoadingIngredients);
+    const hasError = useSelector(hasErrorIngredients);
+
     const dispatch = useDispatch();
     const totalPrice = useMemo(() => {
         return ingredients.reduce((accumulator, ingredient) => accumulator + ingredient.price, 0) + (bun ? bun.price * 2 : 0);
@@ -25,6 +33,10 @@ const BurgerConstructor = React.memo(({openModal}) => {
             openModal(newOrder);
         }
     };
+
+    if (isLoading || hasError) {
+        return <></>;
+    }
 
     return (
         <section className={`${styles.section} mt-15`}>

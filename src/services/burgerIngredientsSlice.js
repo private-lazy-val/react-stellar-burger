@@ -28,7 +28,7 @@ export const burgerIngredientsSlice = createSlice({
     name: "burgerIngredients",
     initialState: {
         ingredients: [],
-        isLoading: false,
+        isLoading: true,
         hasError: false,
     },
     reducers: {},
