@@ -3,12 +3,12 @@ import {ConstructorElement, CurrencyIcon, DragIcon, Button} from "@ya.praktikum/
 import styles from "./burger-constructor.module.css";
 import PropTypes from "prop-types";
 import {useDispatch, useSelector} from "react-redux";
-import {getBun, getIngredients} from "../../services/burgerConstructorSlice";
-import {fetchOrderId} from "../../services/orderDetailsSlice";
+import {getBun, getIngredients} from "../../features/burgerConstructor/burgerConstructorSlice";
+import {fetchOrderId} from "../../features/orderDetails/orderDetailsSlice";
 import {
     isLoadingIngredients,
     hasErrorIngredients
-} from "../../services/burgerIngredientsSlice";
+} from "../../features/burgerIngredients/burgerIngredientsSlice";
 
 const BurgerConstructor = React.memo(({openModal}) => {
     const bun = useSelector(getBun);

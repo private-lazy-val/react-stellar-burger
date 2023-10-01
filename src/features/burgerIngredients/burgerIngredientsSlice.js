@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import api from "../api/api";
+import api from "../../api/api";
 
 export const loadAllIngredients = createAsyncThunk(
     "burgerIngredients/loadIngredients",
@@ -23,7 +23,6 @@ export const loadAllIngredients = createAsyncThunk(
     }
 );
 
-/* Slice object */
 export const burgerIngredientsSlice = createSlice({
     name: "burgerIngredients",
     initialState: {
@@ -51,6 +50,6 @@ export const burgerIngredientsSlice = createSlice({
 });
 
 export default burgerIngredientsSlice.reducer;
-export const selectIngredients = (state) => state.burgerIngredients.ingredients;
+export const getAllIngredients = (state) => state.burgerIngredients.ingredients;
 export const isLoadingIngredients = (state) => state.burgerIngredients.isLoading;
 export const hasErrorIngredients = (state) => state.burgerIngredients.hasError;

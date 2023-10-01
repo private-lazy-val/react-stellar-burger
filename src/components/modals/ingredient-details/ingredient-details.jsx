@@ -1,10 +1,10 @@
 import React from "react";
 import styles from "./ingredient-details.module.css";
 import {useSelector} from 'react-redux';
-import {getIngredient} from "../../../services/ingredientDetailsSlice";
+import {getIngredientDetails} from "../../../features/ingredientDetails/ingredientDetailsSlice";
 
 const IngredientDetails = () => {
-    const ingredient = useSelector(getIngredient);
+    const ingredient = useSelector(getIngredientDetails);
     return (
         <div className={styles.container}>
             {ingredient && (

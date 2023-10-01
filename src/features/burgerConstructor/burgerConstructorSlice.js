@@ -1,6 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
 
-/* Slice object */
 export const burgerConstructorSlice = createSlice({
     name: "burgerConstructor",
     initialState: {

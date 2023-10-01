@@ -1,11 +1,11 @@
 import {useCallback} from "react";
-import {showDetails} from "../services/ingredientDetailsSlice";
+import {showDetails} from "../features/ingredientDetails/ingredientDetailsSlice";
 import {useDispatch, useSelector} from 'react-redux';
 import {
     openModal,
     closeModal,
     setModalType
-} from '../services/modal/modalSlice';
+} from '../features/modal/modalSlice';
 
 const useModal = () => {
     const dispatch = useDispatch();

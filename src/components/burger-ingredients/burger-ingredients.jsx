@@ -4,16 +4,16 @@ import {Tab, CurrencyIcon, Counter} from "@ya.praktikum/react-developer-burger-u
 import PropTypes from "prop-types";
 import {useSelector, useDispatch} from 'react-redux';
 import {
-    selectIngredients,
+    getAllIngredients,
     loadAllIngredients,
     isLoadingIngredients,
     hasErrorIngredients
-} from "../../services/burgerIngredientsSlice";
-import {addBun, addIngredient} from "../../services/burgerConstructorSlice";
+} from "../../features/burgerIngredients/burgerIngredientsSlice";
+import {addBun, addIngredient} from "../../features/burgerConstructor/burgerConstructorSlice";
 import {v4 as uuidv4} from "uuid";
 
 const BurgerIngredients = React.memo(({openModal}) => {
-    const allIngredients = useSelector(selectIngredients);
+    const allIngredients = useSelector(getAllIngredients);
     const dispatch = useDispatch();
     const isLoading = useSelector(isLoadingIngredients);
     const hasError = useSelector(hasErrorIngredients);

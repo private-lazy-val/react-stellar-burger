@@ -1,13 +1,13 @@
 import styles from "./app.module.css";
-import transitions from "../modals/modal/modal-transitions.module.css";
-import AppHeader from "../app-header/app-header";
-import BurgerIngredients from "../burger-ingredients/burger-ingredients";
-import BurgerConstructor from "../burger-constructor/burger-constructor";
-import OrderDetails from "../modals/order-details/order-details";
-import IngredientDetails from "../modals/ingredient-details/ingredient-details";
-import Modal from "../modals/modal/modal"
+import transitions from "../components/modals/modal/modal-transitions.module.css";
+import AppHeader from "../components/app-header/app-header";
+import BurgerIngredients from "../components/burger-ingredients/burger-ingredients";
+import BurgerConstructor from "../components/burger-constructor/burger-constructor";
+import OrderDetails from "../components/modals/order-details/order-details";
+import IngredientDetails from "../components/modals/ingredient-details/ingredient-details";
+import Modal from "../components/modals/modal/modal"
 import React, {useRef} from "react";
-import useModal from "../../hooks/useModal";
+import useModal from "../hooks/useModal";
 import {CSSTransition} from "react-transition-group";
 
 function App() {

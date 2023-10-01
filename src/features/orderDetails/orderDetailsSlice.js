@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import api from "../api/api";
+import api from "../../api/api";
 
 export const fetchOrderId = createAsyncThunk(
     "orderDetails/getOrderId",
@@ -24,7 +24,6 @@ export const fetchOrderId = createAsyncThunk(
     }
 );
 
-/* Slice object */
 export const orderDetailsSlice = createSlice({
     name: "orderDetails",
     initialState: {
