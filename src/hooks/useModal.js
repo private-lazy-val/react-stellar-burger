@@ -1,36 +1,44 @@
-import {useState, useCallback} from "react";
+import {useCallback} from "react";
 import {showDetails, hideDetails} from "../services/ingredientDetailsSlice";
 import {resetNumber} from "../services/orderDetailsSlice";
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+    openModal,
+    closeModal,
+    setModalType,
+    resetModalType,
+    getIsOpen,
+    getModalType
+} from '../services/modal/modalSlice';
 
 const useModal = () => {
     const dispatch = useDispatch();
 
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [modalType, setModalType] = useState(null);
+    const isModalOpen = useSelector(getIsOpen);
+    const modalType = useSelector(getModalType);
 
     const closeIngredientModal = useCallback(() => {
-        setModalOpen(false);
-        setModalType(null);
+        dispatch(closeModal());
+        dispatch(resetModalType());
         dispatch(hideDetails());
     }, [dispatch]);
 
     const closeOrderModal = useCallback(() => {
-        setModalOpen(false);
-        setModalType(null);
+        dispatch(closeModal());
+        dispatch(resetModalType());
         dispatch(resetNumber());
     }, [dispatch]);
 
     const openIngredientModal = useCallback((ingredient) => {
-        setModalOpen(true);
-        setModalType('ingredient');
+        dispatch(openModal());
+        dispatch(setModalType('ingredient'));
         dispatch(showDetails(ingredient));
     }, [dispatch]);
 
     const openOrderModal = useCallback(() => {
-        setModalOpen(true);
-        setModalType('order');
-    }, []);
+        dispatch(openModal());
+        dispatch(setModalType('order'));
+    }, [dispatch]);
 
     return {
         isModalOpen,

@@ -3,14 +3,13 @@ import {ConstructorElement, CurrencyIcon, DragIcon, Button} from "@ya.praktikum/
 import styles from "./burger-constructor.module.css";
 import PropTypes from "prop-types";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchOrderId} from "../../services/orderDetailsSlice";
 import {getBun, getIngredients} from "../../services/burgerConstructorSlice";
+import {fetchOrderId} from "../../services/orderDetailsSlice";
 
 const BurgerConstructor = React.memo(({openModal}) => {
-    const dispatch = useDispatch();
     const bun = useSelector(getBun);
     const ingredients = useSelector(getIngredients);
-
+    const dispatch = useDispatch();
     const totalPrice = useMemo(() => {
         return ingredients.reduce((accumulator, ingredient) => accumulator + ingredient.price, 0) + (bun ? bun.price * 2 : 0);
     }, [bun, ingredients]);
@@ -23,7 +22,7 @@ const BurgerConstructor = React.memo(({openModal}) => {
                 ingredients: [bun._id, ...ingredients.map(ingredient => ingredient._id), bun._id]
             }
             dispatch(fetchOrderId(newOrder));
-            openModal();
+            openModal(newOrder);
         }
     };
 

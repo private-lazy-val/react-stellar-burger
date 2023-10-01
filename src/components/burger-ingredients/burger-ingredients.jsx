@@ -24,10 +24,6 @@ const BurgerIngredients = React.memo(({openModal}) => {
         dispatch(loadAllIngredients());
     }, [dispatch]);
 
-    const handleIngredientClick = (ingredient) => {
-        openModal(ingredient);
-    }
-
     const categorizedItems = useMemo(() => ({
         'Булки': allIngredients.filter(item => item.type === 'bun'),
         'Соусы': allIngredients.filter(item => item.type === 'sauce'),
@@ -53,6 +49,10 @@ const BurgerIngredients = React.memo(({openModal}) => {
         setCurrent(tab);
         refs[tab].current.scrollIntoView({behavior: 'smooth'});
     };
+
+    const handleIngredientClick = (ingredient) => {
+        openModal(ingredient);
+    }
 
     if (isLoading) {
         return <p className="text text_type_main-medium text_color_inactive mt-10 ml-10">Загрузка...</p>;
