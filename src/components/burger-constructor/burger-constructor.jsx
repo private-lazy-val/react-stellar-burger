@@ -1,43 +1,29 @@
-import React, {useContext} from "react";
+import React, {useMemo} from "react";
 import {ConstructorElement, CurrencyIcon, DragIcon, Button} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./burger-constructor.module.css";
 import PropTypes from "prop-types";
-import {ConstructorContext} from "../../services/contexts/constructorContext";
-import {OrderDetailsContext} from "../../services/contexts/orderDetailsContext";
-import api from "../../api/api";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchOrderId} from "../../services/orderDetailsSlice";
+import {getBun, getIngredients} from "../../services/burgerConstructorSlice";
 
 const BurgerConstructor = React.memo(({openModal}) => {
-    const {bun, ingredients, state} = useContext(ConstructorContext);
-    const totalPrice = state.total;
+    const dispatch = useDispatch();
+    const bun = useSelector(getBun);
+    const ingredients = useSelector(getIngredients);
 
-    const {setOrderId, setIdIsLoading, setIdError} = useContext(OrderDetailsContext);
+    const totalPrice = useMemo(() => {
+        return ingredients.reduce((accumulator, ingredient) => accumulator + ingredient.price, 0) + (bun ? bun.price * 2 : 0);
+    }, [bun, ingredients]);
 
-    const submitOrder = async (e) => {
+
+    const submitOrder = (e) => {
         e.preventDefault();
-        const newOrder = {
-            ingredients: [bun._id, ...ingredients.map(ingredient => ingredient._id), bun._id]
-        }
-        try {
-            const response = await api.post('/orders', newOrder);
-            const jsonResponse = response.data;
-
-            if (jsonResponse.success && jsonResponse.order.number) {
-                setOrderId(jsonResponse.order.number);
-            } else {
-                throw new Error('The \'number\' field is missing or empty.'); // Will be caught by catch block
-            }
-        } catch (err) {
-            setIdError(true);
-            console.log('Error occurred:', err); // Log the entire error object for more details
-        } finally {
-            setIdIsLoading(false);
-        }
-    };
-
-    const handleOrder = (e) => {
         if (bun && ingredients.length !== 0) {
+            const newOrder = {
+                ingredients: [bun._id, ...ingredients.map(ingredient => ingredient._id), bun._id]
+            }
+            dispatch(fetchOrderId(newOrder));
             openModal();
-            submitOrder(e);
         }
     };
 
@@ -72,7 +58,7 @@ const BurgerConstructor = React.memo(({openModal}) => {
                     <span className="text text_type_digits-medium">{totalPrice}</span>
                     <CurrencyIcon type="primary"/>
                 </div>
-                <Button htmlType="button" type="primary" size="large" onClick={handleOrder}>
+                <Button htmlType="button" type="primary" size="large" onClick={submitOrder}>
                     Оформить заказ
                 </Button>
             </div>

@@ -2,21 +2,21 @@
 
 ## Table of Contents
 
-1. [Overview](#overview)
-    - [Figma](#figma)
-    - [Hosting](#hosting)
-2. [Technologies](#technologies)
+- [About the Project](#about-the-project)
+- [Figma](#figma)
+- [Hosting](#hosting)
+- [Technologies](#technologies)
 
-## Overview
+## About the Project
 
-Stellar Burger is a web application offering a streamlined food ordering experience. Users can browse, customize, and track their burger orders with ease.
+Stellar Burger is a web application for ordering burgers. Users can browse, customize, and track their burger orders.
 
-### Figma
+## Figma
 
-- [Prototypes](<https://www.figma.com/file/Cw6N4OO8K4ewQ6I4xfzU3X/React_Stellar_Burger?node-id=724%3A432&mode=dev>)
+- [Stellar Burgers](<https://www.figma.com/file/Cw6N4OO8K4ewQ6I4xfzU3X/React_Stellar_Burger?node-id=724%3A432&mode=dev>)
 
 
-### Hosting
+## Hosting
 
 Stellar Burger will be hosted on GitHub Pages.
 
@@ -25,6 +25,7 @@ Stellar Burger will be hosted on GitHub Pages.
 The following technologies were used to develop this project:
 
 - React
+- Redux
 - HTML5 / CSS / JS
 - Webpack
 
