@@ -32,12 +32,8 @@ const BurgerConstructor = React.memo(({openModal}) => {
     }, [bun, ingredients]);
 
     const addIngredientToCart = useCallback((ingredient) => {
-        console.log("Ingredient: ", ingredient)
         const ingredientWithUUID = {...ingredient.ingredient, uuid: uuidv4()};
-        console.log("ingredientWithUUID: ", ingredientWithUUID)
-        console.log("Ingredient TYPE: ", ingredient.ingredient.type)
         if (ingredient.ingredient.type === 'bun') {
-            console.log("Ingredient TYPE: ", ingredient.ingredient.type)
             dispatch(addBun(ingredientWithUUID));
         } else {
             dispatch(addIngredient(ingredientWithUUID));
@@ -51,7 +47,6 @@ const BurgerConstructor = React.memo(({openModal}) => {
     const [{isHover, opacity}, dropTarget] = useDrop({
         accept: "ingredient",
         drop(ingredient) {
-            console.log("Dropped ingredient: ", ingredient);
             addIngredientToCart(ingredient);
         },
         collect: monitor => ({
