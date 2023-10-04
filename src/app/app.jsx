@@ -9,6 +9,8 @@ import Modal from "../components/modals/modal/modal"
 import React, {useRef} from "react";
 import useModal from "../hooks/useModal";
 import {CSSTransition} from "react-transition-group";
+import {DndProvider} from "react-dnd";
+import {HTML5Backend} from "react-dnd-html5-backend";
 
 function App() {
     const {
@@ -27,8 +29,10 @@ function App() {
         <div className={styles.app}>
             <AppHeader/>
             <main className={styles.main}>
-                <BurgerIngredients openModal={openIngredientModal}/>
-                <BurgerConstructor openModal={openOrderModal}/>
+                <DndProvider backend={HTML5Backend}>
+                    <BurgerIngredients openModal={openIngredientModal}/>
+                    <BurgerConstructor openModal={openOrderModal}/>
+                </DndProvider>
             </main>
 
             <CSSTransition

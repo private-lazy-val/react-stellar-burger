@@ -1,7 +1,6 @@
-import React, {useState, useRef, useMemo, useCallback, useEffect} from "react";
+import React, {useState, useRef, useMemo, useEffect} from "react";
 import styles from "./burger-ingredients.module.css";
-import {Tab, CurrencyIcon, Counter} from "@ya.praktikum/react-developer-burger-ui-components";
-import PropTypes from "prop-types";
+import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useSelector, useDispatch} from 'react-redux';
 import {
     getAllIngredients,
@@ -9,8 +8,7 @@ import {
     isLoadingIngredients,
     hasErrorIngredients
 } from "../../features/burgerIngredients/burgerIngredientsSlice";
-import {addBun, addIngredient} from "../../features/burgerConstructor/burgerConstructorSlice";
-import {v4 as uuidv4} from "uuid";
+import BurgerIngredient from "../burger-ingredient/burger-ingredient";
 
 const BurgerIngredients = React.memo(({openModal}) => {
     const allIngredients = useSelector(getAllIngredients);
@@ -36,23 +34,29 @@ const BurgerIngredients = React.memo(({openModal}) => {
         'Начинки': useRef(null),
     };
 
-    const addIngredientToCart = useCallback((ingredient) => {
-        const ingredientWithUUID = {...ingredient, uuid: uuidv4()};
-        if (ingredient.type === 'bun') {
-            dispatch(addBun(ingredientWithUUID));
-        } else {
-            dispatch(addIngredient(ingredientWithUUID));
-        }
-    }, [dispatch]);
-
     const handleTabClick = (tab) => {
         setCurrent(tab);
         refs[tab].current.scrollIntoView({behavior: 'smooth'});
     };
 
-    const handleIngredientClick = (ingredient) => {
-        openModal(ingredient);
-    }
+    const handleScroll = () => {
+        let newCurrent = current;
+
+        // Iterate through each category and check its bounding rectangle
+        for (const category of Object.keys(refs)) {
+            const rect = refs[category].current.getBoundingClientRect();
+            // If the top edge of the element is in the viewport or below the top edge of the viewport,
+            // and the top edge of the element is within the upper half of the viewport,
+            // update newCurrent and break loop since we found the first visible element
+            if (rect.top >= 0 && rect.top < window.innerHeight * 0.5) {
+                newCurrent = category;
+                break;
+            }
+        }
+        if (current !== newCurrent) {
+            setCurrent(newCurrent);
+        }
+    };
 
     if (isLoading) {
         return <p className="text text_type_main-medium text_color_inactive mt-10 ml-10">Загрузка...</p>;
@@ -75,28 +79,13 @@ const BurgerIngredients = React.memo(({openModal}) => {
                 ))}
             </div>
 
-            <ul className={`${styles['create-burger']} custom-scroll`}>
+            <ul className={`${styles['create-burger']} custom-scroll`} onScroll={handleScroll}>
                 {Object.entries(categorizedItems).map(([category, ingredients]) => (
                     <li key={category} ref={refs[category]}>
                         <h2 className="text text_type_main-medium mt-10">{category}</h2>
                         <ul className={`${styles.ingredients} mt-6 ml-4`}>
                             {ingredients.map((ingredient) => (
-                                <li
-                                    key={ingredient._id}
-                                    className={styles.ingredient}
-                                    onClick={() => {
-                                        handleIngredientClick(ingredient);
-                                        addIngredientToCart(ingredient);
-                                    }}
-                                >
-                                    <Counter count={1} size="default" extraClass="m-1"/>
-                                    <img src={ingredient.image} alt={ingredient.name} width="240" height="120"/>
-                                    <div className={styles.price}>
-                                        <span className="text text_type_digits-default">{ingredient.price}</span>
-                                        <CurrencyIcon type="primary"/>
-                                    </div>
-                                    <span className="text text_type_main-default">{ingredient.name}</span>
-                                </li>
+                                <BurgerIngredient key={ingredient._id} ingredient={ingredient} openModal={openModal}/>
                             ))}
                         </ul>
                     </li>
@@ -105,9 +94,5 @@ const BurgerIngredients = React.memo(({openModal}) => {
         </section>
     );
 });
-
-BurgerIngredients.propTypes = {
-    openModal: PropTypes.func.isRequired,
-};
 
 export default BurgerIngredients;

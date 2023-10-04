@@ -20,14 +20,47 @@
     margin-left: 16px;
 }
 
-.item {
+.draggable-ingredients {
     display: flex;
     align-items: center;
     column-gap: 8px;
 }
 
+.stub {
+    padding: 16px 24px;
+    background: var(--background-element);
+    max-width: 536px;
+    min-height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 48px;
+}
+
+.stub__bun-top {
+    border-radius: var(--top-constructor-item-border-radius);
+}
+
+.stub__ingredients {
+    border-radius: var(--common-border-radius-s);
+}
+
+.stub__bun-bottom {
+    border-radius: var(--bottom-constructor-item-border-radius);
+}
+
 .bun {
     margin-left: 48px;
+}
+
+/*Set default cursor on lock icon located in buns*/
+svg[fill="#8585AD"] {
+   cursor: default;
+}
+
+/*Set pointer cursor on 6 dots icon located on the left of an ingredient*/
+.draggable-ingredients > svg[fill="#F2F2F3"]  {
+    cursor: pointer;
 }
 
 .checkout {
