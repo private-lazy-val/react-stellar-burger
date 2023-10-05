@@ -1,12 +1,12 @@
 import React, {useCallback, useMemo} from "react";
-import {ConstructorElement, CurrencyIcon, DragIcon, Button} from "@ya.praktikum/react-developer-burger-ui-components";
+import DroppableIngredientArea from '../droppable-ingredient-area/droppable-ingredient-area';
+import {ConstructorElement, CurrencyIcon, Button} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./burger-constructor.module.css";
 import PropTypes from "prop-types";
 import {useDispatch, useSelector} from "react-redux";
 import {
     addBun,
     addIngredient,
-    removeIngredient,
     getBun,
     getIngredients
 } from "../../features/burgerConstructor/burgerConstructorSlice";
@@ -19,33 +19,21 @@ import {useDrop} from "react-dnd";
 import {v4 as uuidv4} from "uuid";
 
 const BurgerConstructor = React.memo(({openModal}) => {
+
     const bun = useSelector(getBun);
     const ingredients = useSelector(getIngredients);
 
     const isLoading = useSelector(isLoadingIngredients);
     const hasError = useSelector(hasErrorIngredients);
-
     const dispatch = useDispatch();
 
     const totalPrice = useMemo(() => {
         return ingredients.reduce((accumulator, ingredient) => accumulator + ingredient.price, 0) + (bun ? bun.price * 2 : 0);
     }, [bun, ingredients]);
 
-    const addIngredientToCart = useCallback((ingredient) => {
-        const ingredientWithUUID = {...ingredient.ingredient, uuid: uuidv4()};
-        if (ingredient.ingredient.type === 'bun') {
-            dispatch(addBun(ingredientWithUUID));
-        } else {
-            dispatch(addIngredient(ingredientWithUUID));
-        }
-    }, [dispatch]);
-
-    const removeIngredientFromCart = useCallback((ingredient) => {
-        dispatch(removeIngredient(ingredient));
-    }, [dispatch]);
-
     const [{isHover, opacity}, dropTarget] = useDrop({
         accept: "ingredient",
+        // A function that is called when a draggable item is released over a drop target.
         drop(ingredient) {
             addIngredientToCart(ingredient);
         },
@@ -57,6 +45,14 @@ const BurgerConstructor = React.memo(({openModal}) => {
 
     const border = isHover ? '3px solid rgba(76, 76, 255, 0.20)' : 'none';
 
+    const addIngredientToCart = useCallback((ingredient) => {
+        const ingredientWithUUID = {...ingredient.ingredient, uuid: uuidv4()};
+        if (ingredientWithUUID.type === 'bun') {
+            dispatch(addBun(ingredientWithUUID));
+        } else {
+            dispatch(addIngredient(ingredientWithUUID));
+        }
+    }, [dispatch]);
 
     const submitOrder = (e) => {
         e.preventDefault();
@@ -89,18 +85,7 @@ const BurgerConstructor = React.memo(({openModal}) => {
                         булки</div>}
                 {ingredients.length > 0 ?
                     <li>
-                        <ul className={`${styles['inner-list']} custom-scroll`}>
-                            {ingredients.map((ingredient) => (
-                                <li key={ingredient.uuid} className={styles['draggable-ingredients']}>
-                                    <DragIcon type="primary"/>
-                                    <ConstructorElement text={ingredient.name} price={ingredient.price}
-                                                        thumbnail={ingredient.image}
-                                                        handleClose={() => {
-                                                            removeIngredientFromCart(ingredient)
-                                                        }}/>
-                                </li>
-                            ))}
-                        </ul>
+                        <DroppableIngredientArea />
                     </li>
                     :
                     <div

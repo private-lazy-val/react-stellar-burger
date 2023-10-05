@@ -9,23 +9,6 @@
     row-gap: 16px;
 }
 
-.inner-list {
-    display: flex;
-    flex-direction: column;
-    row-gap: 16px;
-    max-height: calc(100vh - 508px);
-    margin-right: -8px;
-    padding-right: 8px;
-    overflow-y: auto;
-    margin-left: 16px;
-}
-
-.draggable-ingredients {
-    display: flex;
-    align-items: center;
-    column-gap: 8px;
-}
-
 .stub {
     padding: 16px 24px;
     background: var(--background-element);
@@ -51,16 +34,6 @@
 
 .bun {
     margin-left: 48px;
-}
-
-/*Set default cursor on lock icon located in buns*/
-svg[fill="#8585AD"] {
-   cursor: default;
-}
-
-/*Set pointer cursor on 6 dots icon located on the left of an ingredient*/
-.draggable-ingredients > svg[fill="#F2F2F3"]  {
-    cursor: pointer;
 }
 
 .checkout {

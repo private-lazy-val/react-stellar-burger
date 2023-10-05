@@ -16,6 +16,10 @@ export const burgerConstructorSlice = createSlice({
         removeIngredient: (state, action) => {
             state.ingredients = state.ingredients.filter(ingredient => ingredient.uuid !== action.payload.uuid);
         },
+        moveIngredients: (state, action) => {
+            const { fromIndex, toIndex } = action.payload;
+            state.ingredients.splice(toIndex, 0, state.ingredients.splice(fromIndex, 1)[0]);
+        }
     },
 });
 
@@ -24,6 +28,7 @@ export const {
     addBun,
     addIngredient,
     removeIngredient,
+    moveIngredients,
 } = burgerConstructorSlice.actions;
 export const getBun = (state) => state.burgerConstructor.bun;
 export const getIngredients = (state) => state.burgerConstructor.ingredients;

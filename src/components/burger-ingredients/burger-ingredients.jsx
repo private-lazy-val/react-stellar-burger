@@ -9,6 +9,7 @@ import {
     hasErrorIngredients
 } from "../../features/burgerIngredients/burgerIngredientsSlice";
 import BurgerIngredient from "../burger-ingredient/burger-ingredient";
+import PropTypes from "prop-types";
 
 const BurgerIngredients = React.memo(({openModal}) => {
     const allIngredients = useSelector(getAllIngredients);
@@ -94,5 +95,9 @@ const BurgerIngredients = React.memo(({openModal}) => {
         </section>
     );
 });
+
+BurgerIngredients.propTypes = {
+    openModal: PropTypes.func.isRequired
+};
 
 export default BurgerIngredients;

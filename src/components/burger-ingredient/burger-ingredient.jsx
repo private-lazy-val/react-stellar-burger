@@ -11,22 +11,23 @@ const BurgerIngredient = ({ingredient, openModal}) => {
     const bun = useSelector(getBun);
     const ingredients = useSelector(getIngredients);
 
-    const handleIngredientClick = (ingredient) => {
-        openModal(ingredient);
-    }
-
     const [{opacity}, dragRef] = useDrag({
         type: "ingredient",
+        // Defines the draggable item object which holds the data that describes the dragged item
         item: {ingredient},
         collect: monitor => ({
             opacity: monitor.isDragging() ? 0.5 : 1
         })
     });
 
+    const handleIngredientClick = (ingredient) => {
+        openModal(ingredient);
+    }
+
     // Calculate the count for the ingredient
     let count = ingredients.filter((ing) => ing._id === ingredient._id).length;
     if (bun?._id === ingredient._id) {
-        count += 2; // Considering that the bun is used twice (top and bottom).
+        count += 2; // Considering that the bun is used twice (top and bottom)
     }
 
     return (
@@ -51,7 +52,7 @@ const BurgerIngredient = ({ingredient, openModal}) => {
 
 BurgerIngredient.propTypes = {
     ingredient: ingredientPropType.isRequired,
-    openModal: PropTypes.func.isRequired,
+    openModal: PropTypes.func.isRequired
 };
 
 export default BurgerIngredient;
