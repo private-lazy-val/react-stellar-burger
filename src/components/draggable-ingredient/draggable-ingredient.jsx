@@ -1,5 +1,5 @@
 import {useDrag, useDrop} from 'react-dnd';
-import {useRef} from "react";
+import React, {useRef} from "react";
 import {ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./draggable-ingredient.module.css";
 import {useCallback} from "react";
@@ -8,7 +8,7 @@ import {useDispatch} from "react-redux";
 import PropTypes from "prop-types";
 import ingredientPropType from "../../utils/prop-types";
 
-const DraggableIngredient = ({ingredient, id, index, moveIngredient}) => {
+const DraggableIngredient = React.memo(({ingredient, id, index, moveIngredient}) => {
     const dispatch = useDispatch();
 
     const ref = useRef(null);
@@ -39,7 +39,7 @@ const DraggableIngredient = ({ingredient, id, index, moveIngredient}) => {
                 return;
             }
             // Determine bounding rectangle of the drop target
-            const hoverBoundingRect = ref.current?.getBoundingClientRect();
+            const hoverBoundingRect = ref.current.getBoundingClientRect();
             // Calculate the vertical middle of the target
             const hoverMiddleY =
                 (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
@@ -70,7 +70,7 @@ const DraggableIngredient = ({ingredient, id, index, moveIngredient}) => {
             return {id, index};
         },
         collect: (monitor) => ({
-            opacity: monitor.isDragging() ? 0.5 : 1,
+            opacity: monitor.isDragging() ? 0 : 1
         }),
     });
 
@@ -91,7 +91,7 @@ const DraggableIngredient = ({ingredient, id, index, moveIngredient}) => {
                                 moveIngredient={moveIngredient}/>
         </li>
     );
-};
+});
 
 DraggableIngredient.propTypes = {
     ingredient: ingredientPropType.isRequired,

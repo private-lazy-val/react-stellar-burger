@@ -1,10 +1,11 @@
 import React, {useCallback} from 'react';
 import styles from "../droppable-ingredient-area/droppable-ingredient-area.module.css";
-import {getIngredients, moveIngredients} from "../../features/burgerConstructor/burgerConstructorSlice";
+import {moveIngredients} from "../../features/burgerConstructor/burgerConstructorSlice";
+import {getIngredients} from "../../features/burgerConstructor/selector";
 import {useDispatch, useSelector} from "react-redux";
 import DraggableIngredient from '../draggable-ingredient/draggable-ingredient';
 
-const DroppableIngredientArea = () => {
+const DroppableIngredientArea = React.memo(() => {
     const ingredients = useSelector(getIngredients);
     const dispatch = useDispatch();
 
@@ -30,6 +31,6 @@ const DroppableIngredientArea = () => {
             ))}
         </ul>
     );
-};
+});
 
 export default DroppableIngredientArea;

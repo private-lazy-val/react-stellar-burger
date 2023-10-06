@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./order-details.module.css";
 import submittedOrderImg from "../../../images/submitted-order.svg";
 import {useSelector} from 'react-redux';
-import {selectOrderId, isLoadingOrderId, hasErrorOrderId} from "../../../features/orderDetails/orderDetailsSlice";
+import {selectOrderId, isLoadingOrderId, hasErrorOrderId} from "../../../features/orderDetails/selector";
 
 const OrderDetails = () => {
     const orderId = useSelector(selectOrderId);

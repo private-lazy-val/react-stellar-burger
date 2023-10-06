@@ -10,4 +10,4 @@ export const ingredientDetailsSlice = createSlice({
 
 export default ingredientDetailsSlice.reducer;
 export const {showDetails} = ingredientDetailsSlice.actions;
-export const getIngredientDetails = (state) => state.ingredientDetails;
+

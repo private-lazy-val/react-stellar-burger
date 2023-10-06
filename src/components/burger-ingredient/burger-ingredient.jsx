@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import styles from "./burger-ingredient.module.css";
 import {Counter, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import PropTypes from "prop-types";
 import {useDrag} from "react-dnd";
 import ingredientPropType from "../../utils/prop-types";
 import {useSelector} from "react-redux";
-import {getBun, getIngredients} from "../../features/burgerConstructor/burgerConstructorSlice";
+import {getBun, getIngredients} from "../../features/burgerConstructor/selector";
 
 const BurgerIngredient = ({ingredient, openModal}) => {
     const bun = useSelector(getBun);
@@ -14,21 +14,21 @@ const BurgerIngredient = ({ingredient, openModal}) => {
     const [{opacity}, dragRef] = useDrag({
         type: "ingredient",
         // Defines the draggable item object which holds the data that describes the dragged item
-        item: {ingredient},
+        item: ingredient,
         collect: monitor => ({
             opacity: monitor.isDragging() ? 0.5 : 1
         })
     });
 
-    const handleIngredientClick = (ingredient) => {
-        openModal(ingredient);
-    }
-
     // Calculate the count for the ingredient
-    let count = ingredients.filter((ing) => ing._id === ingredient._id).length;
-    if (bun?._id === ingredient._id) {
-        count += 2; // Considering that the bun is used twice (top and bottom)
-    }
+    const counter = useMemo(() => {
+        let count = ingredients.filter((ing) => ing._id === ingredient._id).length;
+        if (bun?._id === ingredient._id) {
+            count += 2; // Considering that the bun is used twice (top and bottom)
+        }
+        return count;
+    }, [ingredients, ingredient._id, bun]);
+
 
     return (
         <li
@@ -36,10 +36,10 @@ const BurgerIngredient = ({ingredient, openModal}) => {
             className={styles.ingredient}
             style={{opacity}}
             onClick={() => {
-                handleIngredientClick(ingredient)
+                openModal(ingredient)
             }}
         >
-            {count > 0 && <Counter count={count} size="default" extraClass="m-1"/>}
+            {counter > 0 && <Counter count={counter} size="default" extraClass="m-1"/>}
             <img src={ingredient.image} alt={ingredient.name} width="240" height="120"/>
             <div className={styles.price}>
                 <span className="text text_type_digits-default">{ingredient.price}</span>

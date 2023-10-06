@@ -4,7 +4,9 @@ export const burgerConstructorSlice = createSlice({
     name: "burgerConstructor",
     initialState: {
         bun: null,
-        ingredients: []
+        ingredients: [],
+        isLoading: false,
+        hasError: false,
     },
     reducers: {
         addBun: (state, action) => {
@@ -30,5 +32,3 @@ export const {
     removeIngredient,
     moveIngredients,
 } = burgerConstructorSlice.actions;
-export const getBun = (state) => state.burgerConstructor.bun;
-export const getIngredients = (state) => state.burgerConstructor.ingredients;

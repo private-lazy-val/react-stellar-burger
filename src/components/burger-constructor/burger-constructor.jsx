@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo} from "react";
+import React, {useMemo} from "react";
 import DroppableIngredientArea from '../droppable-ingredient-area/droppable-ingredient-area';
 import {ConstructorElement, CurrencyIcon, Button} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./burger-constructor.module.css";
@@ -6,15 +6,15 @@ import PropTypes from "prop-types";
 import {useDispatch, useSelector} from "react-redux";
 import {
     addBun,
-    addIngredient,
-    getBun,
-    getIngredients
+    addIngredient
 } from "../../features/burgerConstructor/burgerConstructorSlice";
 import {fetchOrderId} from "../../features/orderDetails/orderDetailsSlice";
 import {
     isLoadingIngredients,
-    hasErrorIngredients
-} from "../../features/burgerIngredients/burgerIngredientsSlice";
+    hasErrorIngredients,
+    getBun,
+    getIngredients
+} from "../../features/burgerConstructor/selector";
 import {useDrop} from "react-dnd";
 import {v4 as uuidv4} from "uuid";
 
@@ -22,41 +22,40 @@ const BurgerConstructor = React.memo(({openModal}) => {
 
     const bun = useSelector(getBun);
     const ingredients = useSelector(getIngredients);
-
     const isLoading = useSelector(isLoadingIngredients);
     const hasError = useSelector(hasErrorIngredients);
+
     const dispatch = useDispatch();
 
     const totalPrice = useMemo(() => {
         return ingredients.reduce((accumulator, ingredient) => accumulator + ingredient.price, 0) + (bun ? bun.price * 2 : 0);
     }, [bun, ingredients]);
 
-    const [{isHover, opacity}, dropTarget] = useDrop({
+    const [{opacity, isOver}, dropTarget] = useDrop({
         accept: "ingredient",
-        // A function that is called when a draggable item is released over a drop target.
+        // A function that is called when a draggable item is released over a drop target
         drop(ingredient) {
             addIngredientToCart(ingredient);
         },
         collect: monitor => ({
-            isHover: monitor.isOver(),
+            isOver: monitor.isOver(),
             opacity: monitor.isOver() ? 0.5 : 1
         })
     });
 
-    const border = isHover ? '3px solid rgba(76, 76, 255, 0.20)' : 'none';
-
-    const addIngredientToCart = useCallback((ingredient) => {
-        const ingredientWithUUID = {...ingredient.ingredient, uuid: uuidv4()};
-        if (ingredientWithUUID.type === 'bun') {
+    const addIngredientToCart = (ingredient) => {
+        const ingredientWithUUID = {...ingredient, uuid: uuidv4()};
+        if (ingredient.type === 'bun') {
             dispatch(addBun(ingredientWithUUID));
         } else {
             dispatch(addIngredient(ingredientWithUUID));
         }
-    }, [dispatch]);
+    };
 
     const submitOrder = (e) => {
         e.preventDefault();
         if (bun && ingredients.length !== 0) {
+
             const newOrder = {
                 ingredients: [bun._id, ...ingredients.map(ingredient => ingredient._id), bun._id]
             }
@@ -70,8 +69,8 @@ const BurgerConstructor = React.memo(({openModal}) => {
     }
 
     return (
-        <section className={`${styles.section} mt-15`} ref={dropTarget}>
-            <ul className={styles['outer-list']} style={{border, opacity}}>
+        <section className={`${styles.section} mt-10`} ref={dropTarget}>
+            <ul className={`pt-5 pb-5 ${styles['outer-list']} ${isOver ? styles['hover-over'] : ''}`} style={{opacity}}>
                 {bun ?
                     <li className={styles.bun}><ConstructorElement type="top" isLocked={true}
                                                                    text={`${bun.name} (верх)`}
@@ -85,7 +84,7 @@ const BurgerConstructor = React.memo(({openModal}) => {
                         булки</div>}
                 {ingredients.length > 0 ?
                     <li>
-                        <DroppableIngredientArea />
+                        <DroppableIngredientArea/>
                     </li>
                     :
                     <div
@@ -110,7 +109,7 @@ const BurgerConstructor = React.memo(({openModal}) => {
                     <span className="text text_type_digits-medium">{totalPrice}</span>
                     <CurrencyIcon type="primary"/>
                 </div>
-                <Button htmlType="button" type="primary" size="large" onClick={submitOrder}>
+                <Button htmlType="button" type="primary" size="large" onClick={submitOrder} disabled={!bun || ingredients.length < 1}>
                     Оформить заказ
                 </Button>
             </div>

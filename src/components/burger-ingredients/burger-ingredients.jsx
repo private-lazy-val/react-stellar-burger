@@ -3,11 +3,10 @@ import styles from "./burger-ingredients.module.css";
 import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useSelector, useDispatch} from 'react-redux';
 import {
-    getAllIngredients,
-    loadAllIngredients,
-    isLoadingIngredients,
-    hasErrorIngredients
+    loadAllIngredients
 } from "../../features/burgerIngredients/burgerIngredientsSlice";
+import {getAllIngredients, isLoadingIngredients,
+    hasErrorIngredients} from "../../features/burgerIngredients/selector";
 import BurgerIngredient from "../burger-ingredient/burger-ingredient";
 import PropTypes from "prop-types";
 
@@ -42,7 +41,6 @@ const BurgerIngredients = React.memo(({openModal}) => {
 
     const handleScroll = () => {
         let newCurrent = current;
-
         // Iterate through each category and check its bounding rectangle
         for (const category of Object.keys(refs)) {
             const rect = refs[category].current.getBoundingClientRect();
