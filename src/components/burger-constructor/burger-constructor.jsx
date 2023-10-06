@@ -16,7 +16,6 @@ import {
     getIngredients
 } from "../../features/burgerConstructor/selector";
 import {useDrop} from "react-dnd";
-import {v4 as uuidv4} from "uuid";
 
 const BurgerConstructor = React.memo(({openModal}) => {
 
@@ -44,11 +43,10 @@ const BurgerConstructor = React.memo(({openModal}) => {
     });
 
     const addIngredientToCart = (ingredient) => {
-        const ingredientWithUUID = {...ingredient, uuid: uuidv4()};
         if (ingredient.type === 'bun') {
-            dispatch(addBun(ingredientWithUUID));
+            dispatch(addBun(ingredient));
         } else {
-            dispatch(addIngredient(ingredientWithUUID));
+            dispatch(addIngredient(ingredient));
         }
     };
 
