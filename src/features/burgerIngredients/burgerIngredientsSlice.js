@@ -1,5 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import api from "../../api/api";
+import {ingredientDetailsSlice} from "../ingredientDetails/ingredientDetailsSlice";
 
 export const loadAllIngredients = createAsyncThunk(
     "burgerIngredients/loadIngredients",
@@ -27,10 +28,15 @@ export const burgerIngredientsSlice = createSlice({
     name: "burgerIngredients",
     initialState: {
         ingredients: [],
+        currentTab: 'Булки',
         isLoading: true,
         hasError: false,
     },
-    reducers: {},
+    reducers: {
+        switchTab: (state, action) => {
+            state.currentTab = action.payload
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(loadAllIngredients.pending, (state) => {
@@ -49,4 +55,5 @@ export const burgerIngredientsSlice = createSlice({
     }
 });
 
+export const {switchTab} = burgerIngredientsSlice.actions;
 export default burgerIngredientsSlice.reducer;

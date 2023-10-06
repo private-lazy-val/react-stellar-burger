@@ -24,7 +24,7 @@ const BurgerIngredient = ({ingredient, openModal}) => {
     const counter = useMemo(() => {
         let count = ingredients.filter((ing) => ing._id === ingredient._id).length;
         if (bun?._id === ingredient._id) {
-            count += 2; // Considering that the bun is used twice (top and bottom)
+            count += 2;
         }
         return count;
     }, [ingredients, ingredient._id, bun]);

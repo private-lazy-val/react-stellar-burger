@@ -1,22 +1,22 @@
-import React, {useState, useRef, useMemo, useEffect} from "react";
+import React, {useRef, useMemo, useEffect} from "react";
 import styles from "./burger-ingredients.module.css";
 import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useSelector, useDispatch} from 'react-redux';
 import {
-    loadAllIngredients
+    loadAllIngredients, switchTab
 } from "../../features/burgerIngredients/burgerIngredientsSlice";
-import {getAllIngredients, isLoadingIngredients,
+import {getAllIngredients, getCurrentTab, isLoadingIngredients,
     hasErrorIngredients} from "../../features/burgerIngredients/selector";
 import BurgerIngredient from "../burger-ingredient/burger-ingredient";
 import PropTypes from "prop-types";
 
 const BurgerIngredients = React.memo(({openModal}) => {
     const allIngredients = useSelector(getAllIngredients);
-    const dispatch = useDispatch();
+    const currentTab = useSelector(getCurrentTab);
     const isLoading = useSelector(isLoadingIngredients);
     const hasError = useSelector(hasErrorIngredients);
 
-    const [current, setCurrent] = useState('Булки');
+    const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(loadAllIngredients());
@@ -35,12 +35,12 @@ const BurgerIngredients = React.memo(({openModal}) => {
     };
 
     const handleTabClick = (tab) => {
-        setCurrent(tab);
+        dispatch(switchTab(tab));
         refs[tab].current.scrollIntoView({behavior: 'smooth'});
     };
 
     const handleScroll = () => {
-        let newCurrent = current;
+        let newCurrent = currentTab;
         // Iterate through each category and check its bounding rectangle
         for (const category of Object.keys(refs)) {
             const rect = refs[category].current.getBoundingClientRect();
@@ -52,8 +52,8 @@ const BurgerIngredients = React.memo(({openModal}) => {
                 break;
             }
         }
-        if (current !== newCurrent) {
-            setCurrent(newCurrent);
+        if (currentTab !== newCurrent) {
+            dispatch(switchTab(newCurrent));
         }
     };
 
@@ -71,7 +71,7 @@ const BurgerIngredients = React.memo(({openModal}) => {
             <h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
             <div className={styles.tabs}>
                 {Object.keys(categorizedItems).map(category => (
-                    <Tab key={category} value={category} active={current === category}
+                    <Tab key={category} value={category} active={currentTab === category}
                          onClick={() => handleTabClick(category)}>
                         {category}
                     </Tab>
