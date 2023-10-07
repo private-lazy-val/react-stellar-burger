@@ -4,7 +4,7 @@ import api from "../../api/api";
 export const loadAllIngredients = createAsyncThunk(
     "burgerIngredients/loadIngredients",
     async () => {
-        const response = await api.get('/inredients');
+        const response = await api.get('/ingredients');
         // Response object is `response` and its body is `response.data`
         // Axios provides the body of the HTTP response in the `data` property of the response object
         // No need to check for `response.ok` with Axios, unsuccessful non-2xx status code requests will throw an error, and that error will be caught in the catch block
