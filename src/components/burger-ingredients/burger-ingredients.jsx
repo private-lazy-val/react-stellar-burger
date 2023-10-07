@@ -4,9 +4,9 @@ import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useSelector, useDispatch} from 'react-redux';
 import {
     loadAllIngredients, switchTab
-} from "../../features/burgerIngredients/burgerIngredientsSlice";
+} from "../../services/burgerIngredients/burgerIngredientsSlice";
 import {getAllIngredients, getCurrentTab, isLoadingIngredients,
-    hasErrorIngredients} from "../../features/burgerIngredients/selector";
+    hasErrorIngredients} from "../../services/burgerIngredients/selector";
 import BurgerIngredient from "../burger-ingredient/burger-ingredient";
 import PropTypes from "prop-types";
 

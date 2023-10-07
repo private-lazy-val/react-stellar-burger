@@ -5,7 +5,6 @@ export const fetchOrderId = createAsyncThunk(
     "orderDetails/getOrderId",
     async (newOrder) => {
         // Axios will stringify newOrder automatically
-        try {
             const response = await api.post('/orders', newOrder);
             // Response object is `response` and its body is `response.data`
             // Axios provides the body of the HTTP response in the `data` property of the response object
@@ -17,10 +16,7 @@ export const fetchOrderId = createAsyncThunk(
             } else {
                 throw new Error('The \'number\' field is missing or empty.'); // Will be caught by catch block
             }
-        } catch (err) {
-            console.error('Error occurred:', err);
-            throw err; // Re-throwing the error to ensure it gets captured by Redux Toolkit
-        }
+            // Doing return rejectWithValue(errorPayload) will cause the rejected action to use that value as action.payload.
     }
 );
 

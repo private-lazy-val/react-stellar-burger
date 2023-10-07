@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react';
 import styles from "../droppable-ingredient-area/droppable-ingredient-area.module.css";
-import {moveIngredients} from "../../features/burgerConstructor/burgerConstructorSlice";
-import {getIngredients} from "../../features/burgerConstructor/selector";
+import {moveIngredients} from "../../services/burgerConstructor/burgerConstructorSlice";
+import {getIngredients} from "../../services/burgerConstructor/selector";
 import {useDispatch, useSelector} from "react-redux";
 import DraggableIngredient from '../draggable-ingredient/draggable-ingredient';
 

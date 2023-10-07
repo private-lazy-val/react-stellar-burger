@@ -3,7 +3,7 @@ import React, {useRef} from "react";
 import {ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./draggable-ingredient.module.css";
 import {useCallback} from "react";
-import {removeIngredient} from "../../features/burgerConstructor/burgerConstructorSlice";
+import {removeIngredient} from "../../services/burgerConstructor/burgerConstructorSlice";
 import {useDispatch} from "react-redux";
 import PropTypes from "prop-types";
 import ingredientPropType from "../../utils/prop-types";

@@ -7,14 +7,14 @@ import {useDispatch, useSelector} from "react-redux";
 import {
     addBun,
     addIngredient
-} from "../../features/burgerConstructor/burgerConstructorSlice";
-import {fetchOrderId} from "../../features/orderDetails/orderDetailsSlice";
+} from "../../services/burgerConstructor/burgerConstructorSlice";
+import {fetchOrderId} from "../../services/orderDetails/orderDetailsSlice";
 import {
-    isLoadingIngredients,
-    hasErrorIngredients,
     getBun,
     getIngredients
-} from "../../features/burgerConstructor/selector";
+} from "../../services/burgerConstructor/selector";
+import {isLoadingIngredients,
+    hasErrorIngredients} from "../../services/burgerIngredients/selector";
 import {useDrop} from "react-dnd";
 
 const BurgerConstructor = React.memo(({openModal}) => {

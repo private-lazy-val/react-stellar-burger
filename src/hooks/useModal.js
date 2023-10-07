@@ -1,11 +1,12 @@
 import {useCallback} from "react";
-import {showDetails} from "../features/ingredientDetails/ingredientDetailsSlice";
+import {showDetails} from "../services/ingredientDetails/ingredientDetailsSlice";
 import {useDispatch, useSelector} from 'react-redux';
 import {
     openModal,
     closeModal,
     setModalType
-} from '../features/modal/modalSlice';
+} from '../services/modal/modalSlice';
+import {resetConstructor} from "../services/burgerConstructor/burgerConstructorSlice";
 
 const useModal = () => {
     const dispatch = useDispatch();
@@ -18,6 +19,7 @@ const useModal = () => {
     }, [dispatch]);
 
     const closeOrderModal = useCallback(() => {
+        dispatch(resetConstructor());
         dispatch(closeModal());
     }, [dispatch]);
 

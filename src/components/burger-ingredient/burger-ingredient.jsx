@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import {useDrag} from "react-dnd";
 import ingredientPropType from "../../utils/prop-types";
 import {useSelector} from "react-redux";
-import {getBun, getIngredients} from "../../features/burgerConstructor/selector";
+import {getBun, getIngredients} from "../../services/burgerConstructor/selector";
 
 const BurgerIngredient = ({ingredient, openModal}) => {
     const bun = useSelector(getBun);
