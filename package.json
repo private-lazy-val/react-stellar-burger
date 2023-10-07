@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@reduxjs/toolkit": "^1.7.2",
+    "@reduxjs/toolkit": "^1.9.6",
     "@types/uuid": "^9.0.2",
     "@ya.praktikum/react-developer-burger-ui-components": "^1.14.0",
     "axios": "^1.5.0",

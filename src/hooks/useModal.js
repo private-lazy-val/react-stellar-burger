@@ -1,33 +1,46 @@
-import { useState, useCallback } from "react";
+import {useCallback} from "react";
+import {showDetails} from "../services/ingredientDetails/ingredientDetailsSlice";
+import {useDispatch, useSelector} from 'react-redux';
+import {
+    openModal,
+    closeModal,
+    setModalType
+} from '../services/modal/modalSlice';
+import {resetConstructor} from "../services/burgerConstructor/burgerConstructorSlice";
 
 const useModal = () => {
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [modalType, setModalType] = useState(null);
-    const [selectedIngredient, setSelectedIngredient] = useState(null);
+    const dispatch = useDispatch();
 
-    const closeModal = useCallback(() => {
-        setModalOpen(false);
-        setModalType(null)
-    }, [])
+    const isModalOpen = useSelector(state => state.modal.isOpen);
+    const modalType = useSelector(state => state.modal.modalType);
+
+    const closeIngredientModal = useCallback(() => {
+        dispatch(closeModal());
+    }, [dispatch]);
+
+    const closeOrderModal = useCallback(() => {
+        dispatch(resetConstructor());
+        dispatch(closeModal());
+    }, [dispatch]);
 
     const openIngredientModal = useCallback((ingredient) => {
-        setModalOpen(true);
-        setModalType('ingredient');
-        setSelectedIngredient(ingredient);
-    }, [])
+        dispatch(openModal());
+        dispatch(setModalType('ingredient'));
+        dispatch(showDetails(ingredient));
+    }, [dispatch]);
 
     const openOrderModal = useCallback(() => {
-        setModalOpen(true);
-        setModalType('order');
-    }, [])
+        dispatch(openModal());
+        dispatch(setModalType('order'));
+    }, [dispatch]);
 
     return {
         isModalOpen,
         modalType,
-        selectedIngredient,
         openIngredientModal,
         openOrderModal,
-        closeModal,
+        closeIngredientModal,
+        closeOrderModal,
     };
 };
 

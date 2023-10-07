@@ -1,0 +1,10 @@
+.inner-list {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+    max-height: calc(100vh - 508px);
+    margin-right: -8px;
+    padding-right: 8px;
+    overflow-y: auto;
+    margin-left: 16px;
+}

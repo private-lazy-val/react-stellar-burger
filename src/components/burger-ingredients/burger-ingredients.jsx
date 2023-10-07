@@ -1,20 +1,32 @@
-import React, {useState, useRef, useMemo, useContext} from "react";
+import React, {useRef, useMemo, useEffect} from "react";
 import styles from "./burger-ingredients.module.css";
-import {Tab, CurrencyIcon, Counter} from "@ya.praktikum/react-developer-burger-ui-components";
+import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
+import {useSelector, useDispatch} from 'react-redux';
+import {
+    loadAllIngredients, switchTab
+} from "../../services/burgerIngredients/burgerIngredientsSlice";
+import {getAllIngredients, getCurrentTab, isLoadingIngredients,
+    hasErrorIngredients} from "../../services/burgerIngredients/selector";
+import BurgerIngredient from "../burger-ingredient/burger-ingredient";
 import PropTypes from "prop-types";
-import {IngredientsContext} from "../../services/contexts/ingredientsContext";
 
 const BurgerIngredients = React.memo(({openModal}) => {
+    const allIngredients = useSelector(getAllIngredients);
+    const currentTab = useSelector(getCurrentTab);
+    const isLoading = useSelector(isLoadingIngredients);
+    const hasError = useSelector(hasErrorIngredients);
 
-    const { items, isLoading, error, addIngredientToCart } = useContext(IngredientsContext);
+    const dispatch = useDispatch();
 
-    const [current, setCurrent] = useState('Булки');
+    useEffect(() => {
+        dispatch(loadAllIngredients());
+    }, [dispatch]);
 
     const categorizedItems = useMemo(() => ({
-        'Булки': items.filter(item => item.type === 'bun'),
-        'Соусы': items.filter(item => item.type === 'sauce'),
-        'Начинки': items.filter(item => item.type === 'main'),
-    }), [items]);
+        'Булки': allIngredients.filter(item => item.type === 'bun'),
+        'Соусы': allIngredients.filter(item => item.type === 'sauce'),
+        'Начинки': allIngredients.filter(item => item.type === 'main'),
+    }), [allIngredients]);
 
     const refs = {
         'Булки': useRef(null),
@@ -23,16 +35,35 @@ const BurgerIngredients = React.memo(({openModal}) => {
     };
 
     const handleTabClick = (tab) => {
-        setCurrent(tab);
+        dispatch(switchTab(tab));
         refs[tab].current.scrollIntoView({behavior: 'smooth'});
+    };
+
+    const handleScroll = () => {
+        let newCurrent = currentTab;
+        // Iterate through each category and check its bounding rectangle
+        for (const category of Object.keys(refs)) {
+            const rect = refs[category].current.getBoundingClientRect();
+            // If the top edge of the element is in the viewport or below the top edge of the viewport,
+            // and the top edge of the element is within the upper half of the viewport,
+            // update newCurrent and break loop since we found the first visible element
+            if (rect.top >= 0 && rect.top < window.innerHeight * 0.5) {
+                newCurrent = category;
+                break;
+            }
+        }
+        if (currentTab !== newCurrent) {
+            dispatch(switchTab(newCurrent));
+        }
     };
 
     if (isLoading) {
         return <p className="text text_type_main-medium text_color_inactive mt-10 ml-10">Загрузка...</p>;
     }
 
-    if (error) {
-        return <p className="text text_type_main-medium text_color_inactive mt-10 ml-10">Произошла ошибка. Пожалуйста, перезагрузите страницу.</p>;
+    if (hasError) {
+        return <p className="text text_type_main-medium text_color_inactive mt-10 ml-10">Произошла ошибка. Пожалуйста,
+            перезагрузите страницу.</p>;
     }
 
     return (
@@ -40,35 +71,20 @@ const BurgerIngredients = React.memo(({openModal}) => {
             <h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
             <div className={styles.tabs}>
                 {Object.keys(categorizedItems).map(category => (
-                    <Tab key={category} value={category} active={current === category}
+                    <Tab key={category} value={category} active={currentTab === category}
                          onClick={() => handleTabClick(category)}>
                         {category}
                     </Tab>
                 ))}
             </div>
 
-            <ul className={`${styles['create-burger']} custom-scroll`}>
+            <ul className={`${styles['create-burger']} custom-scroll`} onScroll={handleScroll}>
                 {Object.entries(categorizedItems).map(([category, ingredients]) => (
                     <li key={category} ref={refs[category]}>
                         <h2 className="text text_type_main-medium mt-10">{category}</h2>
                         <ul className={`${styles.ingredients} mt-6 ml-4`}>
                             {ingredients.map((ingredient) => (
-                                <li
-                                    key={ingredient._id}
-                                    className={styles.ingredient}
-                                    onClick={() => {
-                                        openModal(ingredient);
-                                        addIngredientToCart(ingredient);
-                                    }}
-                                >
-                                    <Counter count={1} size="default" extraClass="m-1"/>
-                                    <img src={ingredient.image} alt={ingredient.name} width="240" height="120"/>
-                                    <div className={styles.price}>
-                                        <span className="text text_type_digits-default">{ingredient.price}</span>
-                                        <CurrencyIcon type="primary"/>
-                                    </div>
-                                    <span className="text text_type_main-default">{ingredient.name}</span>
-                                </li>
+                                <BurgerIngredient key={ingredient._id} ingredient={ingredient} openModal={openModal}/>
                             ))}
                         </ul>
                     </li>
@@ -79,7 +95,7 @@ const BurgerIngredients = React.memo(({openModal}) => {
 });
 
 BurgerIngredients.propTypes = {
-    openModal:  PropTypes.func.isRequired,
+    openModal: PropTypes.func.isRequired
 };
 
 export default BurgerIngredients;

@@ -6,11 +6,16 @@
 }
 
 .img {
-    margin-top: 66px;
+    margin-top: 68px;
     margin-bottom: 66px;
 }
 
 .api-msg {
     padding: 0 20%;
     text-align: center;
+    margin-top: 68px;
+}
+
+.order-id {
+    margin-top: 68px;
 }
