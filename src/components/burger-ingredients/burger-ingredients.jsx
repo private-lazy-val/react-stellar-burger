@@ -5,16 +5,22 @@ import {useSelector, useDispatch} from 'react-redux';
 import {
     loadAllIngredients, switchTab
 } from "../../services/burgerIngredients/burgerIngredientsSlice";
-import {getAllIngredients, getCurrentTab, isLoadingIngredients,
-    hasErrorIngredients} from "../../services/burgerIngredients/selector";
+import {
+    getAllIngredients, getCurrentTab, isLoadingIngredients,
+    hasErrorIngredients
+} from "../../services/burgerIngredients/selector";
 import BurgerIngredient from "../burger-ingredient/burger-ingredient";
 import PropTypes from "prop-types";
+import useLoadingAndErrorHandling from "../../hooks/useLoadingAndErrorHandling";
+import ErrorComponent from "../../utils/error-component";
+import LoadingComponent from "../../utils/loading-component";
+
 
 const BurgerIngredients = React.memo(({openModal}) => {
+    const { isLoading, hasError } = useLoadingAndErrorHandling(isLoadingIngredients, hasErrorIngredients);
+
     const allIngredients = useSelector(getAllIngredients);
     const currentTab = useSelector(getCurrentTab);
-    const isLoading = useSelector(isLoadingIngredients);
-    const hasError = useSelector(hasErrorIngredients);
 
     const dispatch = useDispatch();
 
@@ -57,13 +63,12 @@ const BurgerIngredients = React.memo(({openModal}) => {
         }
     };
 
-    if (isLoading) {
-        return <p className="text text_type_main-medium text_color_inactive mt-10 ml-10">Загрузка...</p>;
+    if(isLoading) {
+        return <div className={styles.backdrop}><LoadingComponent isLoading={isLoading} /></div>;
     }
 
-    if (hasError) {
-        return <p className="text text_type_main-medium text_color_inactive mt-10 ml-10">Произошла ошибка. Пожалуйста,
-            перезагрузите страницу.</p>;
+    if(!isLoading && hasError) {
+        return <div className={styles.error}><ErrorComponent /></div>;
     }
 
     return (
