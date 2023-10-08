@@ -3,19 +3,19 @@ import styles from "./order-details.module.css";
 import submittedOrderImg from "../../../images/submitted-order.svg";
 import {useSelector} from 'react-redux';
 import {selectOrderId, isLoadingOrderId, hasErrorOrderId} from "../../../services/orderDetails/selector";
+import useLoadingAndErrorHandling from "../../../hooks/useLoadingAndErrorHandling";
+import LoadingComponent from "../../../utils/loading-component";
+import ErrorComponent from "../../../utils/error-component";
 
 const OrderDetails = () => {
+    const {isLoading, hasError} = useLoadingAndErrorHandling(isLoadingOrderId, hasErrorOrderId);
     const orderId = useSelector(selectOrderId);
-    const isLoading = useSelector(isLoadingOrderId);
-    const hasError = useSelector(hasErrorOrderId);
 
     return (
         <div className={styles.container}>
-            {isLoading &&
-                <p className={`${styles['api-msg']} text text_type_main-medium text_color_inactive mb-8`}>Загрузка...</p>}
+            {isLoading && <div className={styles.backdrop}><LoadingComponent isLoading={isLoading}/></div>}
             {!isLoading && hasError &&
-                <p className={`${styles['api-msg']} text text_type_main-medium text_color_inactive mb-8`}>Произошла
-                    ошибка. Пожалуйста, перезагрузите страницу.</p>}
+                <div className={styles.error}><ErrorComponent/></div>}
             {!isLoading && !hasError &&
                 <>
                     <h3 className={`${styles['order-id']} text text_type_digits-large mb-8`}>{orderId}</h3>

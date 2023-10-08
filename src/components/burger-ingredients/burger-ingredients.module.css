@@ -15,6 +15,10 @@
     display: flex;
 }
 
+.backdrop, .error {
+    margin: 0 auto;
+}
+
 .ingredients {
     display: grid;
     grid-template-columns: 1fr 1fr;

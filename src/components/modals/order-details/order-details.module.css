@@ -10,7 +10,7 @@
     margin-bottom: 66px;
 }
 
-.api-msg {
+.backdrop, .error {
     padding: 0 20%;
     text-align: center;
     margin-top: 68px;
