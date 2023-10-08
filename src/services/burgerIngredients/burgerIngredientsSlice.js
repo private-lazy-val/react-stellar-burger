@@ -4,7 +4,7 @@ import request from "../../api/api";
 export const loadAllIngredients = createAsyncThunk(
     "burgerIngredients/loadIngredients",
     async () => {
-        const data = await request('ingredients');
+        const data = await request('ingredients'); // GET is used by default
         if (data.data && data.data.length > 0) {
             return data;
         } else {
