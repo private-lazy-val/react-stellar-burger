@@ -25,7 +25,9 @@ Stellar Burger will be hosted on GitHub Pages.
 The following technologies were used to develop this project:
 
 - React
-- Redux
+- Redux Toolkit
+- Custom hooks
+- Drag and Drop
 - HTML5 / CSS / JS
 - Webpack
 

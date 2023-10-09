@@ -5,11 +5,12 @@ import PropTypes from "prop-types";
 import {useDrag} from "react-dnd";
 import ingredientPropType from "../../utils/prop-types";
 import {useSelector} from "react-redux";
-import {selectBun, selectIngredients} from "../../services/burgerConstructor/selector";
+import {makeSelectIngredientCount} from "../../services/burgerConstructor/selector";
 
-const BurgerIngredient = ({ingredient, openModal}) => {
-    const bun = useSelector(selectBun);
-    const ingredients = useSelector(selectIngredients);
+const BurgerIngredient = React.memo(({ingredient, openModal}) => {
+    // Calculate the count for the ingredient
+    const selectIngredientCount = useMemo(makeSelectIngredientCount, []);
+    const count = useSelector(state => selectIngredientCount(state, ingredient._id));
 
     const [{opacity}, dragRef] = useDrag({
         type: "ingredient",
@@ -20,16 +21,6 @@ const BurgerIngredient = ({ingredient, openModal}) => {
         })
     });
 
-    // Calculate the count for the ingredient
-    const counter = useMemo(() => {
-        let count = ingredients.filter((ing) => ing._id === ingredient._id).length;
-        if (bun?._id === ingredient._id) {
-            count += 2;
-        }
-        return count;
-    }, [ingredients, ingredient._id, bun]);
-
-
     return (
         <li
             ref={dragRef}
@@ -39,7 +30,7 @@ const BurgerIngredient = ({ingredient, openModal}) => {
                 openModal(ingredient)
             }}
         >
-            {counter > 0 && <Counter count={counter} size="default" extraClass="m-1"/>}
+            {count > 0 && <Counter count={count} size="default" extraClass="m-1"/>}
             <img src={ingredient.image} alt={ingredient.name} width="240" height="120"/>
             <div className={styles.price}>
                 <span className="text text_type_digits-default">{ingredient.price}</span>
@@ -48,7 +39,7 @@ const BurgerIngredient = ({ingredient, openModal}) => {
             <span className="text text_type_main-default">{ingredient.name}</span>
         </li>
     );
-};
+});
 
 BurgerIngredient.propTypes = {
     ingredient: ingredientPropType.isRequired,
