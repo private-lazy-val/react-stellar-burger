@@ -64,13 +64,14 @@ const DraggableIngredient = React.memo(({ingredient, id, index, moveIngredient})
         },
     });
 
-    const [{opacity}, drag] = useDrag({
+    const [{opacity, cursor}, drag] = useDrag({
         type: 'draggable-ingredient',
         item: () => {
             return {id, index};
         },
         collect: (monitor) => ({
-            opacity: monitor.isDragging() ? 0 : undefined
+            opacity: monitor.isDragging() ? 0 : undefined,
+            cursor: monitor.isDragging() ? 'grabbing' : 'grab'
         }),
     });
 
@@ -81,7 +82,7 @@ const DraggableIngredient = React.memo(({ingredient, id, index, moveIngredient})
     }, [dispatch]);
 
     return (
-        <li ref={ref} style={{opacity}} className={styles['draggable-ingredients']} data-handler-id={handlerId}>
+        <li ref={ref} style={{opacity, cursor}} className={styles['draggable-ingredients']} data-handler-id={handlerId}>
             <DragIcon type="primary"/>
             <ConstructorElement text={ingredient.name} price={ingredient.price}
                                 thumbnail={ingredient.image}
