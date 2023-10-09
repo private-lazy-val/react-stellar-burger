@@ -1,8 +1,12 @@
+import React from "react";
 const ErrorComponent = () => {
     return (
-        <p className={`text text_type_main-medium text_color_inactive`}>
-            Произошла ошибка. Пожалуйста, перезагрузите страницу.
-        </p>
+        <>
+            <h2 className={`text text_type_main-medium`}>Что-то пошло не так.</h2>
+            <p className={`text text_type_main-medium`}>
+                Пожалуйста, перезагрузите страницу.
+            </p>
+        </>
     );
 };
 

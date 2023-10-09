@@ -6,8 +6,8 @@ import {
     loadAllIngredients, switchTab
 } from "../../services/burgerIngredients/burgerIngredientsSlice";
 import {
-    getAllIngredients, getCurrentTab, isLoadingIngredients,
-    hasErrorIngredients
+    selectAllIngredients, selectCurrentTab, selectIsLoadingIngredients,
+    selectHasErrorIngredients
 } from "../../services/burgerIngredients/selector";
 import BurgerIngredient from "../burger-ingredient/burger-ingredient";
 import PropTypes from "prop-types";
@@ -17,10 +17,10 @@ import LoadingComponent from "../../utils/loading-component";
 
 
 const BurgerIngredients = React.memo(({openModal}) => {
-    const { isLoading, hasError } = useLoadingAndErrorHandling(isLoadingIngredients, hasErrorIngredients);
+    const { isLoading, hasError } = useLoadingAndErrorHandling(selectIsLoadingIngredients, selectHasErrorIngredients);
 
-    const allIngredients = useSelector(getAllIngredients);
-    const currentTab = useSelector(getCurrentTab);
+    const allIngredients = useSelector(selectAllIngredients);
+    const currentTab = useSelector(selectCurrentTab);
 
     const dispatch = useDispatch();
 
@@ -64,7 +64,7 @@ const BurgerIngredients = React.memo(({openModal}) => {
     };
 
     if(isLoading) {
-        return <div className={styles.backdrop}><LoadingComponent isLoading={isLoading} /></div>;
+        return <div className={styles.backdrop}><LoadingComponent /></div>;
     }
 
     if(!isLoading && hasError) {
