@@ -7,7 +7,7 @@
     position: relative;
     width: 272px;
     height: 208px;
-    cursor: grab;
+    cursor: pointer;
 }
 
 .price {

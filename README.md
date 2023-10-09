@@ -18,7 +18,7 @@ Stellar Burger is a web application for ordering burgers. Users can browse, cust
 
 ## Hosting
 
-Stellar Burger will be hosted on GitHub Pages.
+- [Vercel](<https://react-stellar-burger.vercel.app/>)
 
 ## Technologies
 

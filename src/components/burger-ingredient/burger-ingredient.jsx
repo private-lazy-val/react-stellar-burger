@@ -8,8 +8,10 @@ import {useSelector} from "react-redux";
 import {makeSelectIngredientCount} from "../../services/burgerConstructor/selector";
 
 const BurgerIngredient = React.memo(({ingredient, openModal}) => {
-    // Calculate the count for the ingredient
+    // This selection function is utilized to keep a stable reference to the created selector
     const selectIngredientCount = useMemo(makeSelectIngredientCount, []);
+    // If the parts of the state that this selector depends upon (bun and ingredients) are updated in the Redux store,
+    // useSelector will trigger a re-run of the selection function and, if the selected value (count) changes, the component will re-render.
     const count = useSelector(state => selectIngredientCount(state, ingredient._id));
 
     const [{opacity}, dragRef] = useDrag({
