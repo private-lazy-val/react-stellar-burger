@@ -2,7 +2,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 444px;
+    width: 640px;
+}
+
+.heading {
+    align-self: flex-start;
 }
 
 .list {

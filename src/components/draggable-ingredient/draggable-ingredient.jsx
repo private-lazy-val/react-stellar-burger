@@ -70,7 +70,7 @@ const DraggableIngredient = React.memo(({ingredient, id, index, moveIngredient})
             return {id, index};
         },
         collect: (monitor) => ({
-            opacity: monitor.isDragging() ? 0 : 1
+            opacity: monitor.isDragging() ? 0 : undefined
         }),
     });
 

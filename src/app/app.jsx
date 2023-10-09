@@ -42,8 +42,8 @@ function App() {
                 classNames={{...transitions}}
                 unmountOnExit
             >
-                <Modal ref={nodeRef} closeModal={closeIngredientModal} title='Детали ингредиента'>
-                    <IngredientDetails/>
+                <Modal ref={nodeRef} closeModal={closeIngredientModal}>
+                    <IngredientDetails title='Детали ингредиента'/>
                 </Modal>
             </CSSTransition>
 

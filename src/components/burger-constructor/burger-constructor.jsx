@@ -10,19 +10,19 @@ import {
 } from "../../services/burgerConstructor/burgerConstructorSlice";
 import {fetchOrderId} from "../../services/orderDetails/orderDetailsSlice";
 import {
-    getBun,
-    getIngredients
+    selectBun,
+    selectIngredients
 } from "../../services/burgerConstructor/selector";
-import {isLoadingIngredients,
-    hasErrorIngredients} from "../../services/burgerIngredients/selector";
+import {selectIsLoadingIngredients,
+    selectHasErrorIngredients} from "../../services/burgerIngredients/selector";
 import {useDrop} from "react-dnd";
 
 const BurgerConstructor = React.memo(({openModal}) => {
 
-    const bun = useSelector(getBun);
-    const ingredients = useSelector(getIngredients);
-    const isLoading = useSelector(isLoadingIngredients);
-    const hasError = useSelector(hasErrorIngredients);
+    const bun = useSelector(selectBun);
+    const ingredients = useSelector(selectIngredients);
+    const isLoading = useSelector(selectIsLoadingIngredients);
+    const hasError = useSelector(selectHasErrorIngredients);
 
     const dispatch = useDispatch();
 
@@ -30,14 +30,13 @@ const BurgerConstructor = React.memo(({openModal}) => {
         return ingredients.reduce((accumulator, ingredient) => accumulator + ingredient.price, 0) + (bun ? bun.price * 2 : 0);
     }, [bun, ingredients]);
 
-    const [{opacity, isOver}, dropTarget] = useDrop({
+    const [{opacity}, dropTarget] = useDrop({
         accept: "ingredient",
         // A function that is called when a draggable item is released over a drop target
         drop(ingredient) {
             addIngredientToCart(ingredient);
         },
         collect: monitor => ({
-            isOver: monitor.isOver(),
             opacity: monitor.isOver() ? 0.5 : 1
         })
     });
@@ -68,7 +67,7 @@ const BurgerConstructor = React.memo(({openModal}) => {
 
     return (
         <section className={`${styles.section} mt-10`} ref={dropTarget}>
-            <ul className={`pt-5 pb-5 ${styles['outer-list']} ${isOver ? styles['hover-over'] : ''}`} style={{opacity}}>
+            <ul className={`pt-5 pb-5 ${styles['outer-list']}`} style={{opacity}}>
                 {bun ?
                     <li className={styles.bun}><ConstructorElement type="top" isLocked={true}
                                                                    text={`${bun.name} (верх)`}

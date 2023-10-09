@@ -2,7 +2,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 664px;
+    width: 640px;
+    margin-bottom: 117px;
 }
 
 .img {
@@ -10,10 +11,14 @@
     margin-bottom: 66px;
 }
 
-.backdrop, .error {
-    padding: 0 20%;
-    text-align: center;
-    margin-top: 68px;
+.error, .backdrop  {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-top: 6px;
+    margin-bottom: 56px;
+    width: 40vw;
 }
 
 .order-id {

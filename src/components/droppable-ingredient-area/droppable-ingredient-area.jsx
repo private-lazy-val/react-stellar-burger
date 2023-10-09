@@ -1,12 +1,12 @@
 import React, {useCallback} from 'react';
 import styles from "../droppable-ingredient-area/droppable-ingredient-area.module.css";
 import {moveIngredients} from "../../services/burgerConstructor/burgerConstructorSlice";
-import {getIngredients} from "../../services/burgerConstructor/selector";
+import {selectIngredients} from "../../services/burgerConstructor/selector";
 import {useDispatch, useSelector} from "react-redux";
 import DraggableIngredient from '../draggable-ingredient/draggable-ingredient';
 
 const DroppableIngredientArea = React.memo(() => {
-    const ingredients = useSelector(getIngredients);
+    const ingredients = useSelector(selectIngredients);
     const dispatch = useDispatch();
 
     // Handle reordering logic

@@ -1,2 +1,2 @@
-export const getBun = (state) => state.burgerConstructor.bun;
-export const getIngredients = (state) => state.burgerConstructor.ingredients;
+export const selectBun = (state) => state.burgerConstructor.bun;
+export const selectIngredients = (state) => state.burgerConstructor.ingredients;
