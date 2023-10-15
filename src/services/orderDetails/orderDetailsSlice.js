@@ -12,10 +12,10 @@ export const fetchOrderId = createAsyncThunk(
             },
             body: JSON.stringify(newOrder)
         };
-        const data = await request(endpoint, options);
+        const response = await request(endpoint, options);
 
-        if (data.success && data.order.number) {
-            return data.order.number;
+        if (response.success && response.order.number) {
+            return response.order.number;
         } else {
             throw new Error('The \'number\' field is missing or empty.');
         }
