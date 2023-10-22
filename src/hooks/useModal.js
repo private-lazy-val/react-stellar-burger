@@ -16,11 +16,13 @@ const useModal = () => {
 
     const closeIngredientModal = useCallback(() => {
         dispatch(closeModal());
+        dispatch(setModalType(null));
     }, [dispatch]);
 
     const closeOrderModal = useCallback(() => {
         dispatch(resetConstructor());
         dispatch(closeModal());
+        dispatch(setModalType(null));
     }, [dispatch]);
 
     const openIngredientModal = useCallback((ingredient) => {

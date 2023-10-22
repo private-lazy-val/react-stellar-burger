@@ -3,7 +3,6 @@ import styles from "./ingredient-details.module.css";
 import {useSelector} from 'react-redux';
 import {selectIngredientDetails} from "../../../services/ingredientDetails/selector";
 import PropTypes from "prop-types";
-import Modal from "../modal/modal";
 
 const IngredientDetails = ({title}) => {
     const ingredient = useSelector(selectIngredientDetails);
