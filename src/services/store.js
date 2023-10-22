@@ -3,7 +3,7 @@ import burgerIngredientsReducer from './burgerIngredients/burgerIngredientsSlice
 import burgerConstructorReducer from './burgerConstructor/burgerConstructorSlice';
 import ingredientDetailsReducer from './ingredientDetails/ingredientDetailsSlice';
 import orderDetailsReducer from './orderDetails/orderDetailsSlice';
-import modalSliceReducer from './modal/modalSlice';
+import modalReducer from './modal/modalSlice';
 
 export default configureStore({
     reducer: {
@@ -11,6 +11,6 @@ export default configureStore({
         burgerConstructor: burgerConstructorReducer,
         ingredientDetails: ingredientDetailsReducer,
         orderDetails: orderDetailsReducer,
-        modal: modalSliceReducer
+        modal: modalReducer
     },
 });
