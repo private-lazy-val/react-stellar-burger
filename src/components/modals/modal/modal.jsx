@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 
 const modalRoot = document.getElementById("react-modals");
 
-const Modal = forwardRef(({title, children, closeModal}, ref) => {
+const Modal = forwardRef(({children, closeModal}, ref) => {
 
     useEffect(() => {
         const handleEscClose = (e) => {
@@ -34,7 +34,6 @@ const Modal = forwardRef(({title, children, closeModal}, ref) => {
 });
 
 Modal.propTypes = {
-    title: PropTypes.string,
     children: PropTypes.element.isRequired,
     closeModal: PropTypes.func.isRequired,
 };
