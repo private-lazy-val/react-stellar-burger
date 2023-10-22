@@ -6,7 +6,7 @@ export const loadAllIngredients = createAsyncThunk(
     async () => {
         const response = await request('ingredients'); // GET is used by default
         if (response.data && response.data.length > 0) {
-            return response;
+            return response.data;
         } else {
             throw new Error('Data format is incorrect or array is empty');
         }
@@ -36,7 +36,7 @@ export const burgerIngredientsSlice = createSlice({
             .addCase(loadAllIngredients.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.hasError = false;
-                state.ingredients = action.payload.data;
+                state.ingredients = action.payload;
             })
             .addCase(loadAllIngredients.rejected, (state) => {
                 state.isLoading = false;
