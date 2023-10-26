@@ -1,8 +1,7 @@
-import React, {useMemo} from "react";
+import {useMemo} from "react";
 import DroppableIngredientArea from '../droppable-ingredient-area/droppable-ingredient-area';
 import {ConstructorElement, CurrencyIcon, Button} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./burger-constructor.module.css";
-import PropTypes from "prop-types";
 import {useDispatch, useSelector} from "react-redux";
 import {
     addBun,
@@ -13,11 +12,14 @@ import {
     selectBun,
     selectIngredients
 } from "../../services/burgerConstructor/selector";
-import {selectIsLoadingIngredients,
-    selectHasErrorIngredients} from "../../services/burgerIngredients/selector";
+import {
+    selectIsLoadingIngredients,
+    selectHasErrorIngredients
+} from "../../services/burgerIngredients/selector";
 import {useDrop} from "react-dnd";
+import useModal from "../../hooks/useModal";
 
-const BurgerConstructor = React.memo(({openModal}) => {
+const BurgerConstructor = () => {
 
     const bun = useSelector(selectBun);
     const ingredients = useSelector(selectIngredients);
@@ -25,6 +27,10 @@ const BurgerConstructor = React.memo(({openModal}) => {
     const hasError = useSelector(selectHasErrorIngredients);
 
     const dispatch = useDispatch();
+
+    const {
+        openOrderModal,
+    } = useModal();
 
     const totalPrice = useMemo(() => {
         return ingredients.reduce((accumulator, ingredient) => accumulator + ingredient.price, 0) + (bun ? bun.price * 2 : 0);
@@ -57,7 +63,7 @@ const BurgerConstructor = React.memo(({openModal}) => {
                 ingredients: [bun._id, ...ingredients.map(ingredient => ingredient._id), bun._id]
             }
             dispatch(fetchOrderId(newOrder));
-            openModal(newOrder);
+            openOrderModal(newOrder);
         }
     };
 
@@ -106,16 +112,13 @@ const BurgerConstructor = React.memo(({openModal}) => {
                     <span className="text text_type_digits-medium">{totalPrice}</span>
                     <CurrencyIcon type="primary"/>
                 </div>
-                <Button htmlType="button" type="primary" size="large" onClick={submitOrder} disabled={!bun || ingredients.length < 1}>
+                <Button htmlType="button" type="primary" size="large" onClick={submitOrder}
+                        disabled={!bun || ingredients.length < 1}>
                     Оформить заказ
                 </Button>
             </div>
         </section>
     );
-});
-
-BurgerConstructor.propTypes = {
-    openModal: PropTypes.func.isRequired
 };
 
 export default BurgerConstructor;

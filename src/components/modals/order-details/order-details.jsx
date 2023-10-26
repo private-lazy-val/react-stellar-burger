@@ -27,8 +27,8 @@ const OrderDetails = () => {
                 </div>}
             {!isLoading && !hasError &&
                 <div className={styles.container}>
-                    <h3 className={`${styles['order-id']} text text_type_digits-large mb-8`}>{orderId}</h3>
-                    <p className="text text_type_main-medium">идентификатор заказа</p>
+                    <p className={`${styles['order-id']} text text_type_digits-large mb-8`} aria-label="Номер заказа">{orderId}</p>
+                    <h2 className="text text_type_main-medium">идентификатор заказа</h2>
                     <img className={styles.img} src={submittedOrderImg} alt='Заказ принят.' width='110' height='110'/>
                     <p className="text text_type_main-default mb-2">Ваш заказ начали готовить</p>
                     <p className="text text_type_main-default text_color_inactive">Дождитесь готовности на орбитальной

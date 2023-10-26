@@ -6,13 +6,18 @@ import {useDrag} from "react-dnd";
 import ingredientPropType from "../../utils/prop-types";
 import {useSelector} from "react-redux";
 import {makeSelectIngredientCount} from "../../services/burgerConstructor/selector";
+import useModal from "../../hooks/useModal";
 
-const BurgerIngredient = React.memo(({ingredient, openModal}) => {
+const BurgerIngredient = React.memo(({ingredient}) => {
     // This selection function is utilized to keep a stable reference to the created selector
     const selectIngredientCount = useMemo(makeSelectIngredientCount, []);
     // If the parts of the state that this selector depends upon (bun and ingredients) are updated in the Redux store,
     // useSelector will trigger a re-run of the selection function and, if the selected value (count) changes, the component will re-render.
     const count = useSelector(state => selectIngredientCount(state, ingredient._id));
+
+    const {
+        openIngredientModal,
+    } = useModal();
 
     const [{opacity}, dragRef] = useDrag({
         type: "ingredient",
@@ -29,7 +34,7 @@ const BurgerIngredient = React.memo(({ingredient, openModal}) => {
             className={styles.ingredient}
             style={{opacity}}
             onClick={() => {
-                openModal(ingredient)
+                openIngredientModal(ingredient)
             }}
         >
             {count > 0 && <Counter count={count} size="default" extraClass="m-1"/>}
@@ -44,8 +49,7 @@ const BurgerIngredient = React.memo(({ingredient, openModal}) => {
 });
 
 BurgerIngredient.propTypes = {
-    ingredient: ingredientPropType.isRequired,
-    openModal: PropTypes.func.isRequired
+    ingredient: ingredientPropType.isRequired
 };
 
 export default BurgerIngredient;

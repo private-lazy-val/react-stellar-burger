@@ -6,6 +6,14 @@
     padding: 0;
 }
 
+body {
+    min-height: 100vh; /* not necessary, I do it out of habit */
+    display: flex;
+    flex-direction: column;
+    color: #f2f2f3;
+}
+
+
 header {
     width: 100%;
     height: 88px;

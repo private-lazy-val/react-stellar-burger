@@ -1,4 +1,4 @@
-import React, {useRef, useMemo, useEffect} from "react";
+import {useRef, useMemo, useEffect} from "react";
 import styles from "./burger-ingredients.module.css";
 import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useSelector, useDispatch} from 'react-redux';
@@ -10,14 +10,13 @@ import {
     selectHasErrorIngredients
 } from "../../services/burgerIngredients/selector";
 import BurgerIngredient from "../burger-ingredient/burger-ingredient";
-import PropTypes from "prop-types";
 import useLoadingAndErrorHandling from "../../hooks/useLoadingAndErrorHandling";
 import ErrorComponent from "../../utils/error-component";
 import LoadingComponent from "../../utils/loading-component";
 
+const BurgerIngredients = () => {
 
-const BurgerIngredients = React.memo(({openModal}) => {
-    const { isLoading, hasError } = useLoadingAndErrorHandling(selectIsLoadingIngredients, selectHasErrorIngredients);
+    const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingIngredients, selectHasErrorIngredients);
 
     const allIngredients = useSelector(selectAllIngredients);
     const currentTab = useSelector(selectCurrentTab);
@@ -63,12 +62,12 @@ const BurgerIngredients = React.memo(({openModal}) => {
         }
     };
 
-    if(isLoading) {
-        return <div className={styles.backdrop}><LoadingComponent /></div>;
+    if (isLoading) {
+        return <div className={styles.backdrop}><LoadingComponent/></div>;
     }
 
-    if(!isLoading && hasError) {
-        return <div className={styles.error}><ErrorComponent /></div>;
+    if (!isLoading && hasError) {
+        return <div className={styles.error}><ErrorComponent/></div>;
     }
 
     return (
@@ -89,7 +88,7 @@ const BurgerIngredients = React.memo(({openModal}) => {
                         <h2 className="text text_type_main-medium mt-10">{category}</h2>
                         <ul className={`${styles.ingredients} mt-6 ml-4`}>
                             {ingredients.map((ingredient) => (
-                                <BurgerIngredient key={ingredient._id} ingredient={ingredient} openModal={openModal}/>
+                                <BurgerIngredient key={ingredient._id} ingredient={ingredient}/>
                             ))}
                         </ul>
                     </li>
@@ -97,10 +96,5 @@ const BurgerIngredients = React.memo(({openModal}) => {
             </ul>
         </section>
     );
-});
-
-BurgerIngredients.propTypes = {
-    openModal: PropTypes.func.isRequired
 };
-
 export default BurgerIngredients;
