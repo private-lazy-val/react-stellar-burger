@@ -13,17 +13,6 @@
     margin: 24px 0 80px 0;
 }
 
-.errmsg {
-    background-color: lightpink;
-    color: firebrick;
-    font-weight: bold;
-}
-
-.offscreen {
-    position: absolute;
-    left: -9999px;
-}
-
 .submit {
     width: fit-content;
 }
@@ -36,12 +25,8 @@
     text-decoration: none;
     color: #4C4CFF;
     margin-left: 8px;
+    transition: var(--common-transition);
 }
-
-.link:hover {
-    color: #801AB2;
-}
-
 
 .offscreen {
     position: absolute;

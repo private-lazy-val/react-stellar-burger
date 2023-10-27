@@ -1,10 +1,13 @@
-
+import {useLocation, Navigate, Outlet} from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 const ProtectedRouteElement = () => {
+    const {auth} = useAuth();
+    const location = useLocation();
     return (
-        <div>
-            
-        </div>
+        auth?.user
+        ? <Outlet/>
+            : <Navigate to='/login' state={{from: location}} replace/>
     );
 };
 

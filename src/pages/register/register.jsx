@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import axios from "axios";
 import styles from '../auth.module.css';
 import {Button, EmailInput, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
@@ -13,7 +13,8 @@ const REGISTER_URL = '/register';
 
 const Register = () => {
     const navigate = useNavigate();
-    const errRef = useRef();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || '/login';
 
     const [user, setUser] = useState('');
     const [validName, setValidName] = useState(false);
@@ -24,9 +25,8 @@ const Register = () => {
     const [pwd, setPwd] = useState('');
     const [validPwd, setValidPwd] = useState(false);
 
-    const [success, setSuccess] = useState(false);
-
     const [errMsg, setErrMsg] = useState('');
+    const errRef = useRef();
 
     useEffect(() => {
         setValidName(USER_REGEX.test(user));
@@ -57,10 +57,11 @@ const Register = () => {
             console.log(response?.data);
             // console.log(response?.accessToken);
             console.log(JSON.stringify(response))
-            setSuccess(true);
+
             setUser('');
             setEmail('');
             setPwd('');
+            navigate(from, {replace: true});
         } catch (err) {
             if (!err?.response) {
                 setErrMsg('No Server Response');
@@ -75,69 +76,65 @@ const Register = () => {
 
 
     return (
-        <>
-            {success ? navigate('/login') : (
-                <section className={styles.register}>
-                    {/*screen reader will announce this error immediately when the focus is set on this p*/}
-                    <p ref={errRef} className={errMsg ? styles.errmsg : styles.offscreen} aria-live="assertive">{errMsg}</p>
-                    <h1 className="text text_type_main-medium">Регистрация</h1>
-                    <form className={styles.form} onSubmit={handleSubmit}>
-                        <Input
-                            type="text"
-                            id="username"
-                            name='username'
-                            placeholder="Имя"
-                            value={user}
-                            onChange={(e) => setUser(e.target.value)}
-                            required
-                            autoComplete="off"
-                            // When aria-invalid is set to "true", screen readers will announce that the input is invalid
-                            // when the user focuses on or navigates to that input
-                            aria-invalid={validName ? "false" : "true"}
-                        />
+        <section className={styles.register}>
+            {/*screen reader will announce this error immediately when the focus is set on this p*/}
+            <p ref={errRef} className={errMsg ? styles.errmsg : styles.offscreen} aria-live="assertive">{errMsg}</p>
+            <h1 className="text text_type_main-medium">Регистрация</h1>
+            <form className={styles.form} onSubmit={handleSubmit}>
+                <Input
+                    type="text"
+                    id="username"
+                    name='username'
+                    placeholder="Имя"
+                    value={user}
+                    onChange={(e) => setUser(e.target.value)}
+                    required
+                    autoComplete="off"
+                    // When aria-invalid is set to "true", screen readers will announce that the input is invalid
+                    // when the user focuses on or navigates to that input
+                    aria-invalid={validName ? "false" : "true"}
+                />
 
-                        <EmailInput
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="E-mail"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            autoComplete="off"
-                            aria-invalid={validEmail ? "false" : "true"}
-                        />
+                <EmailInput
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="E-mail"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    autoComplete="off"
+                    aria-invalid={validEmail ? "false" : "true"}
+                />
 
-                        <PasswordInput
-                            type="password"
-                            id="password"
-                            name='password'
-                            placeholder="Пароль"
-                            value={pwd}
-                            onChange={(e) => setPwd(e.target.value)}
-                            required
-                            autoComplete="off"
-                            aria-invalid={validPwd ? "false" : "true"}
-                        />
+                <PasswordInput
+                    type="password"
+                    id="password"
+                    name='password'
+                    placeholder="Пароль"
+                    value={pwd}
+                    onChange={(e) => setPwd(e.target.value)}
+                    required
+                    autoComplete="off"
+                    aria-invalid={validPwd ? "false" : "true"}
+                />
 
-                        <Button
-                            htmlType="submit"
-                            type="primary"
-                            size="medium"
-                            extraClass={styles.submit}
-                            disabled={!validName || !validPwd || !validEmail}
-                        >
-                            Зарегистрироваться
-                        </Button>
-                    </form>
+                <Button
+                    htmlType="submit"
+                    type="primary"
+                    size="medium"
+                    extraClass={styles.submit}
+                    disabled={!validName || !validPwd || !validEmail}
+                >
+                    Зарегистрироваться
+                </Button>
+            </form>
 
-                    <p className="text text_type_main-default text_color_inactive">
-                        Уже зарегистрированы?
-                        <span className="line"><Link to="/login" className={styles.link}>Войти</Link></span>
-                    </p>
-                </section>
-            )}
-        </>
+            <p className="text text_type_main-default text_color_inactive">
+                Уже зарегистрированы?
+                <span className="line"><Link to="/login" className={styles.link}>Войти</Link></span>
+            </p>
+        </section>
     )
 }
 

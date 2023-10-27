@@ -37,6 +37,10 @@
     margin-left: 48px;
 }
 
+.bun svg {
+    cursor: default;
+}
+
 .checkout {
     display: flex;
     align-items: center;

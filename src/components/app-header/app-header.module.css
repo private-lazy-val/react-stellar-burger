@@ -6,15 +6,16 @@
     white-space: nowrap;
 }
 
-.link {
-    text-decoration: none;
-    display: flex;
-    gap: 8px;
-    color: inherit;
-}
-
 .list-item:last-child {
     margin-left: auto;
+}
+
+.list-item a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--common-transition);
 }
 
 .logo {
