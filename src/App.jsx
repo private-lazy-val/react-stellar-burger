@@ -8,6 +8,10 @@ import {CSSTransition} from "react-transition-group";
 import {Route, Routes} from "react-router-dom";
 import Layout from "./components/layout/layout";
 import CreateBurger from "./components/create-burger/create-burger";
+import Register from "./pages/register/register";
+import Login from "./pages/login/login";
+import ResetPassword from "./pages/reset-password/reset-password";
+import ForgotPassword from "./pages/forgot-password/forgot-password";
 
 function App() {
     const {
@@ -24,7 +28,21 @@ function App() {
         <>
             <Routes>
                 <Route path='/' element={<Layout/>}>
+                    {/*public routes*/}
                     <Route index element={<CreateBurger/>}/>
+                    <Route path='register' element={<Register/>}/>
+                    <Route path='login' element={<Login/>}/>
+                    <Route path='forgot-password' element={<ForgotPassword/>}/>
+                    <Route path='reset-password' element={<ResetPassword/>}/>
+                    {/*<Route path='ingredients/:id'></Route>*/}
+
+                    {/*protected routes*/}
+                    {/*<Route path='profile'>*/}
+                    {/*    <Route index element={<Profile/>}/>*/}
+                    {/*</Route>*/}
+
+                    {/*catch all*/}
+                    {/*<Route path='*' element={<Missing/>}/>*/}
                 </Route>
             </Routes>
 
