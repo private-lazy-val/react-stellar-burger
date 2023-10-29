@@ -37,6 +37,7 @@ ul, li {
 
 a {
     color: #f2f2f3;
+    text-decoration: none;
 }
 
 a:hover {

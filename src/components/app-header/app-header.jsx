@@ -22,15 +22,15 @@ const AppHeader = React.memo(() => {
                     </li>
                     <li className={styles['list-item']}>
                         <Link to='/feed'
-                              className={`text text_type_main-default ${location.pathname === '/feed' ? '' : 'text_color_inactive'}`}>
-                            <ListIcon type={location.pathname === '/feed' ? 'primary' : 'secondary'}/>
+                              className={`text text_type_main-default ${location.pathname.startsWith('/feed') ? '' : 'text_color_inactive'}`}>
+                            <ListIcon type={location.pathname.startsWith('/feed') ? 'primary' : 'secondary'}/>
                             <span>Лента заказов</span>
                         </Link>
                     </li>
                     <li className={styles['list-item']}>
                         <Link to='/profile'
-                              className={`text text_type_main-default ${location.pathname === '/profile' ? '' : 'text_color_inactive'}`}>
-                            <ProfileIcon type={location.pathname === '/profile' ? 'primary' : 'secondary'}/>
+                              className={`text text_type_main-default ${location.pathname.startsWith('/profile') ? '' : 'text_color_inactive'}`}>
+                            <ProfileIcon type={location.pathname.startsWith('/profile') ? 'primary' : 'secondary'}/>
                             <span>Личный кабинет</span>
                         </Link>
                     </li>

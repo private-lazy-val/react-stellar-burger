@@ -1,22 +1,23 @@
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import axios from "axios";
 import styles from '../auth.module.css';
 import {Button, EmailInput, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
+import {useDispatch, useSelector} from "react-redux";
+import {setCredentials} from "../../services/auth/authSlice";
+import {useRegisterMutation} from "../../services/auth/authApiSlice";
 
-
-const USER_REGEX = /^[\p{L}\s'-]{2,30}$/u;
+const NAME_REGEX = /^[\p{L}\s'-]{2,30}$/u;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-
-const REGISTER_URL = '/register';
 
 const Register = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || '/login';
+    const from = location.state?.from?.pathname || '/profile';
 
-    const [user, setUser] = useState('');
+    const [errorMessage, setErrorMessage] = useState(null);
+
+    const [name, setName] = useState('');
     const [validName, setValidName] = useState(false);
 
     const [email, setEmail] = useState('');
@@ -25,12 +26,13 @@ const Register = () => {
     const [pwd, setPwd] = useState('');
     const [validPwd, setValidPwd] = useState(false);
 
-    const [errMsg, setErrMsg] = useState('');
-    const errRef = useRef();
+    const [register, {isLoading}] = useRegisterMutation();
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        setValidName(USER_REGEX.test(user));
-    }, [user])
+        setValidName(NAME_REGEX.test(name));
+    }, [name])
 
     useEffect(() => {
         setValidEmail(EMAIL_REGEX.test(email));
@@ -40,61 +42,51 @@ const Register = () => {
         setValidPwd(PWD_REGEX.test(pwd));
     }, [pwd])
 
-    useEffect(() => {
-        setErrMsg('');
-    }, [user, email, pwd])
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(REGISTER_URL,
-                JSON.stringify({user, email, pwd}),
-                {
-                    headers: {'Content-Type': 'application/json'},
-                    withCredentials: true
-                }
-            );
-            console.log(response?.data);
-            // console.log(response?.accessToken);
-            console.log(JSON.stringify(response))
-
-            setUser('');
+            const userData = await register({email, password: pwd, name}).unwrap();
+            const { success, user, accessToken, refreshToken } = userData;
+            if(success) {
+                dispatch(setCredentials({
+                    user: user,
+                    accessToken: accessToken,
+                    refreshToken: refreshToken
+                }));
+            }
+            setName('');
             setEmail('');
             setPwd('');
             navigate(from, {replace: true});
         } catch (err) {
             if (!err?.response) {
-                setErrMsg('No Server Response');
+                setErrorMessage('No Server Response');
             } else if (err.response?.status === 409) {
-                setErrMsg('Username Taken');
+                setErrorMessage('Username Taken');
             } else {
-                setErrMsg('Registration Failed');
+                setErrorMessage('Registration Failed');
             }
-            errRef.current.focus();
         }
     }
 
-
-    return (
-        <section className={styles.register}>
-            {/*screen reader will announce this error immediately when the focus is set on this p*/}
-            <p ref={errRef} className={errMsg ? styles.errmsg : styles.offscreen} aria-live="assertive">{errMsg}</p>
+    return isLoading ? <h1>Loading...</h1> : (
+        <main className={styles.main}>
             <h1 className="text text_type_main-medium">Регистрация</h1>
+
+            {errorMessage && <p className="text text_type_main-default text_color_error">{errorMessage}</p>}
+
             <form className={styles.form} onSubmit={handleSubmit}>
                 <Input
                     type="text"
-                    id="username"
-                    name='username'
+                    id="name"
+                    name='name'
                     placeholder="Имя"
-                    value={user}
-                    onChange={(e) => setUser(e.target.value)}
-                    required
-                    autoComplete="off"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     // When aria-invalid is set to "true", screen readers will announce that the input is invalid
                     // when the user focuses on or navigates to that input
                     aria-invalid={validName ? "false" : "true"}
                 />
-
                 <EmailInput
                     type="email"
                     id="email"
@@ -102,20 +94,14 @@ const Register = () => {
                     placeholder="E-mail"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    required
-                    autoComplete="off"
                     aria-invalid={validEmail ? "false" : "true"}
                 />
-
                 <PasswordInput
-                    type="password"
                     id="password"
                     name='password'
                     placeholder="Пароль"
                     value={pwd}
                     onChange={(e) => setPwd(e.target.value)}
-                    required
-                    autoComplete="off"
                     aria-invalid={validPwd ? "false" : "true"}
                 />
 
@@ -134,7 +120,7 @@ const Register = () => {
                 Уже зарегистрированы?
                 <span className="line"><Link to="/login" className={styles.link}>Войти</Link></span>
             </p>
-        </section>
+        </main>
     )
 }
 
