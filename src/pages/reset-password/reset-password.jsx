@@ -2,13 +2,19 @@ import styles from "../auth.module.css";
 import {Button, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Link, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
-import request, {BASE_URL} from "../../app/api/api";
+import {resetPassword} from "../../services/user/action";
+import {useDispatch, useSelector} from "react-redux";
+import {selectErrMsg} from "../../services/user/selector";
+import {resetError} from '../../services/user/userSlice';
+
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const TOKEN_REGEX = /^\d{6}$/;
 
 const ResetPassword = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const errMsg = useSelector(selectErrMsg);
 
     const [pwd, setPwd] = useState('');
     const [validPwd, setValidPwd] = useState(false);
@@ -24,35 +30,43 @@ const ResetPassword = () => {
         setValidToken(TOKEN_REGEX.test(token));
     }, [token])
 
+    useEffect(() => {
+        return () => {
+            dispatch(resetError());
+        };
+    }, [dispatch])
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await request(BASE_URL + 'password-reset/reset',
-                JSON.stringify({password: pwd, token}),
-                {
-                    headers: {'Content-Type': 'application/json'},
-                    withCredentials: true
+        dispatch(resetPassword({password: pwd, token}))
+            .then((action) => {
+                if (action.type === 'user/resetPassword/fulfilled') {
+                    navigate('/login');
+                    setPwd('');
+                    setToken('');
                 }
-            );
-            if (response.success) {
-                setPwd('');
-                setToken('');
-                navigate('/login');
-            }
-        } catch (err) {
-        }
+            });
     }
+
+    const handlePwdChange = (e) => {
+        setPwd(e.target.value);
+    };
+
+    const handleTokenChange = (e) => {
+        setToken(e.target.value);
+    };
 
     return (
         <main className={styles.main}>
             <h1 className="text text_type_main-medium">Восстановление пароля</h1>
+            {errMsg && <p className="text text_type_main-default text_color_error mt-2">{errMsg}</p>}
             <form className={styles.form} onSubmit={handleSubmit}>
                 <PasswordInput
                     id="password"
                     name='password'
                     placeholder="Введите новый пароль"
                     value={pwd}
-                    onChange={(e) => setPwd(e.target.value)}
+                    onChange={handlePwdChange}
                     aria-invalid={validPwd ? "false" : "true"}
                 />
 
@@ -62,7 +76,7 @@ const ResetPassword = () => {
                     name='token'
                     placeholder="Код из письма"
                     value={token}
-                    onChange={(e) => setToken(e.target.value)}
+                    onChange={handleTokenChange}
                     required
                     autoComplete="off"
                     aria-invalid={validToken ? "false" : "true"}

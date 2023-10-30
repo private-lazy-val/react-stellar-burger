@@ -1,5 +1,8 @@
-export function cookieUtils(name, value, props) {
-    props = props || {};
+export function setCookie(name, value, props = {}) {
+    props = {
+        path: '/',  //задаем корневой адрес для cookies
+        ...props
+    };
     let exp = props.expires;
     if (typeof exp == 'number' && exp) {
         const d = new Date();
@@ -22,8 +25,12 @@ export function cookieUtils(name, value, props) {
 }
 
 export function getCookie(name) {
-    const matches = document.cookie.match(new RegExp(
-        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
+    const matches = document.cookie.match(
+        new RegExp('(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)')
+    );
     return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+export function deleteCookie(name) {
+    setCookie(name, '', {expires: -1});
 }

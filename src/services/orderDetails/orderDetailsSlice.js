@@ -4,7 +4,7 @@ import request from "../../app/api/api";
 export const fetchOrderId = createAsyncThunk(
     "orderDetails/getOrderId",
     async (newOrder) => {
-        const endpoint = 'orders';
+        const endpoint = '/orders';
         const options = {
             method: 'POST',
             headers: {

@@ -38,8 +38,10 @@ ul, li {
 a {
     color: #f2f2f3;
     text-decoration: none;
+    transition: var(--common-transition);
 }
 
 a:hover {
     color: #f2f2f3;
 }
+

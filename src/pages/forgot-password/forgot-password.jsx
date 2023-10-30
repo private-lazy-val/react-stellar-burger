@@ -2,16 +2,27 @@ import {useEffect, useState} from "react";
 import styles from "../auth.module.css";
 import {Button, EmailInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Link, useNavigate} from "react-router-dom";
-import request, {BASE_URL} from '../../app/api/api';
-
+import {forgotPassword} from "../../services/user/action";
+import {useDispatch, useSelector} from "react-redux";
+import {selectErrMsg} from "../../services/user/selector";
+import {resetError} from '../../services/user/userSlice';
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
 const ForgotPassword = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
     const [validEmail, setValidEmail] = useState(false);
+
+    const errMsg = useSelector(selectErrMsg);
+
+    useEffect(() => {
+        return () => {
+            dispatch(resetError());
+        };
+    }, [dispatch])
 
     useEffect(() => {
         setValidEmail(EMAIL_REGEX.test(email));
@@ -19,25 +30,23 @@ const ForgotPassword = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await request(BASE_URL + 'password-reset',
-                JSON.stringify({email}),
-                {
-                    headers: {'Content-Type': 'application/json'},
-                    withCredentials: true
+        dispatch(forgotPassword({email}))
+            .then((action) => {
+                if (action.type === 'user/forgotPassword/fulfilled') {
+                    navigate('/reset-password');
+                    setEmail('');
                 }
-            );
-            if(response.success) {
-                setEmail('');
-                navigate('/reset-password');
-            }
-        } catch (err) {
-        }
+            });
     }
+
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+    };
 
     return (
         <main className={styles.main}>
             <h1 className="text text_type_main-medium">Восстановление пароля</h1>
+            {errMsg && <p className="text text_type_main-default text_color_error mt-2">{errMsg}</p>}
             <form className={styles.form} onSubmit={handleSubmit}>
                 <EmailInput
                     type="email"
@@ -45,7 +54,7 @@ const ForgotPassword = () => {
                     name="email"
                     placeholder="Укажите e-mail"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={handleEmailChange}
                     aria-invalid={validEmail ? "false" : "true"}
                 />
 

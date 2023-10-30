@@ -1,4 +1,4 @@
-import {useRef} from "react";
+import {useEffect, useRef} from "react";
 import {Route, Routes} from "react-router-dom";
 import transitions from "./components/modals/modal/modal-transitions.module.css";
 import {CSSTransition} from "react-transition-group";
@@ -14,9 +14,17 @@ import Profile from "./pages/profile/profile";
 import Missing from "./pages/missing/missing";
 import Modal from "./components/modals/modal/modal"
 import useModal from "./hooks/useModal";
-import RequireAuth from "./services/auth/RequireAuth";
+import {useDispatch} from "react-redux";
+import {checkUserAuth} from "./services/user/action";
+import {OnlyAuth, OnlyUnAuth} from "./components/protected-routes/protected-routes";
 
 function App() {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(checkUserAuth());
+    }, []);
+
     const {
         isModalOpen,
         modalType,
@@ -29,32 +37,29 @@ function App() {
 
     return (
         <>
-                <Routes>
-                    <Route path='/' element={<Layout/>}>
-                        {/*public routes*/}
-                        <Route index element={<Home/>}/>
-                        <Route path='register' element={<Register/>}/>
-                        <Route path='login' element={<Login/>}/>
-                        <Route path='forgot-password' element={<ForgotPassword/>}/>
-                        <Route path='reset-password' element={<ResetPassword/>}/>
-                        {/*<Route path='ingredients/:id'></Route>*/}
-                        {/*<Route path='feed'>*/}
-                        {/*    <Route index element={<Feed/>}/>*/}
-                        {/*</Route>*/}
+            <Routes>
+                <Route path='/' element={<Layout/>}>
+                    {/*public routes*/}
+                    <Route index element={<Home/>}/>
+                    <Route path='register' element={<OnlyUnAuth component={<Register/>}/>}/>
+                    <Route path='login' element={<OnlyUnAuth component={<Login/>}/>}/>
+                    <Route path='forgot-password' element={<OnlyUnAuth component={<ForgotPassword/>}/>}/>
+                    <Route path='reset-password' element={<OnlyUnAuth component={<ResetPassword/>}/>}/>
+                    {/*<Route path='ingredients/:id'></Route>*/}
+                    {/*<Route path='feed'>*/}
+                    {/*    <Route index element={<Feed/>}/>*/}
+                    {/*</Route>*/}
 
-                        {/*protected routes*/}
-
-                        <Route element={<RequireAuth/>}>
-                            <Route path='profile'>
-                                <Route index element={<Profile/>}/>
-                                {/*<Route path='/orders' element={</>}/>*/}
-                                {/*<Route path='/:id' element={</>}/>*/}
-                            </Route>
-                        </Route>
-                        {/*catch all*/}
-                        <Route path='*' element={<Missing/>}/>
+                    {/*protected routes*/}
+                    <Route path='profile'>
+                        <Route index element={<OnlyAuth component={<Profile/>}/>}/>
+                        {/*<Route path='/orders' element={</>}/>*/}
+                        {/*<Route path='/:id' element={</>}/>*/}
                     </Route>
-                </Routes>
+
+                    <Route path='*' element={<Missing/>}/>
+                </Route>
+            </Routes>
 
             <CSSTransition
                 in={isModalOpen && modalType === 'ingredient'}

@@ -2,16 +2,22 @@ import styles from "../auth.module.css";
 import {Button, EmailInput, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {useLoginMutation} from "../../services/auth/authApiSlice";
-import {useDispatch} from "react-redux";
-import {setCredentials} from "../../services/auth/authSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {login} from '../../services/user/action';
+import {selectErrMsg} from "../../services/user/selector";
+import {resetError} from '../../services/user/userSlice';
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
 const Login = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const location = useLocation();
+    // After a successful login, the user will be redirected back to the route they initially tried to access.
+    // If there was no initial route (or if something went wrong with saving that route),
+    // the user would be redirected to a default location, in this case '/'.
     const from = location.state?.from?.pathname || '/';
 
     const [email, setEmail] = useState('');
@@ -20,11 +26,7 @@ const Login = () => {
     const [pwd, setPwd] = useState('');
     const [validPwd, setValidPwd] = useState(false);
 
-    const [login, {isLoading}] = useLoginMutation();
-
-    const dispatch = useDispatch();
-
-    const [errorMessage, setErrorMessage] = useState(null);
+    const errMsg = useSelector(selectErrMsg);
 
     useEffect(() => {
         setValidEmail(EMAIL_REGEX.test(email));
@@ -35,41 +37,37 @@ const Login = () => {
     }, [pwd])
 
 
+    useEffect(() => {
+        // This function will be called when the component is unmounted
+        return () => {
+            dispatch(resetError());
+        };
+    }, [dispatch])
+
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        try {
-            const userData = await login({email, password: pwd}).unwrap();
-            const { success, user, accessToken, refreshToken } = userData;
-            if(success) {
-                dispatch(setCredentials({
-                    user: user,
-                    accessToken: accessToken,
-                    refreshToken: refreshToken
-                }));
-            }
-            setEmail('')
-            setPwd('')
-            navigate(from, {replace: true});
-        } catch (err) {
-            if (!err?.originalStatus) {
-                // isLoading: true until timeout occurs
-                setErrorMessage('No Server Response');
-            } else if (err.originalStatus === 400) {
-                setErrorMessage('Missing Email or Password');
-            } else if (err.originalStatus === 401) {
-                setErrorMessage('Unauthorized');
-            } else {
-                setErrorMessage('Login Failed');
-            }
-        }
+        e.preventDefault();
+        dispatch(login({email, password: pwd}))
+            .then((action) => {
+                if (action.type === 'user/login/fulfilled') {
+                    navigate(from, {replace: true});
+                    setEmail('');
+                    setPwd('');
+                }
+            });
     }
 
-    return isLoading ? <h1>Loading...</h1> : (
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+    };
+
+    const handlePwdChange = (e) => {
+        setPwd(e.target.value);
+    };
+
+    return (
         <main className={styles.main}>
             <h1 className="text text_type_main-medium">Вход</h1>
-
-            {errorMessage && <p className="text text_type_main-default text_color_error">{errorMessage}</p>}
-
+            {errMsg && <p className="text text_type_main-default text_color_error mt-2">{errMsg}</p>}
             <form className={styles.form} onSubmit={handleSubmit}>
                 <EmailInput
                     type="email"
@@ -77,7 +75,7 @@ const Login = () => {
                     name="email"
                     placeholder="E-mail"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={handleEmailChange}
                     aria-invalid={validEmail ? "false" : "true"}
                 />
                 <PasswordInput
@@ -85,7 +83,7 @@ const Login = () => {
                     name='password'
                     placeholder="Пароль"
                     value={pwd}
-                    onChange={(e) => setPwd(e.target.value)}
+                    onChange={handlePwdChange}
                     aria-invalid={validPwd ? "false" : "true"}
                 />
 
