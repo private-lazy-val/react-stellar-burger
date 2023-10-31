@@ -1,0 +1,25 @@
+.wrapper {
+    margin-top: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.list {
+    display: flex;
+    column-gap: 22px;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 8px;
+    width: 112px;
+}
+
+.backdrop, .error {
+    margin-top: 180px;
+    margin-inline: auto;
+    text-align: center;
+}

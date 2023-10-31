@@ -6,11 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {register} from '../../services/user/action';
 import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/userSlice';
-
-
-const NAME_REGEX = /^[\p{L}\s'-]{2,30}$/u;
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const EMAIL_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
 
 const Register = () => {
     const dispatch = useDispatch();

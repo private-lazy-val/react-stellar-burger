@@ -19,6 +19,7 @@
     flex-direction: column;
     align-items: center;
     gap: 24px;
+    position: relative;
 }
 
 .sidebar {
@@ -63,17 +64,19 @@
     color: #fff;
 }
 
-.instructions {
-    font-size: 0.75rem;
-    background: transparent;
-    color: #E52B1A;
-    position: absolute;
-    left: 10px;
-    z-index: 2;
-    top: 57px;
+.profile-btns {
+    display: flex;
+    gap: 15px;
 }
 
-.offscreen {
+.backdrop, .error {
+    margin-top: 180px;
+    margin-inline: auto;
+    text-align: center;
+}
+
+.err {
     position: absolute;
-    left: -9999px;
+    top: -42px;
+    z-index: 2;
 }

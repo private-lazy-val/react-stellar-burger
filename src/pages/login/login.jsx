@@ -6,9 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {login} from '../../services/user/action';
 import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/userSlice';
-
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const EMAIL_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+import {EMAIL_REGEX, PWD_REGEX} from "../../utils/input-regex";
 
 const Login = () => {
     const navigate = useNavigate();

@@ -19,7 +19,7 @@ export const burgerIngredientsSlice = createSlice({
     initialState: {
         ingredients: [],
         currentTab: 'Булки',
-        isLoading: true,
+        isLoading: false,
         hasError: false,
     },
     reducers: {

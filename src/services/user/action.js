@@ -3,13 +3,16 @@ import {setUser, setAuthChecked} from "./userSlice";
 import {api} from "../../utils/api";
 import {deleteCookie, getCookie, setCookie} from "../../utils/cookie";
 
-export const getUser = () => {
-    return (dispatch) => {
-        return api.getUser().then((res) => {
-            dispatch(setUser(res.user));
-        });
-    };
-};
+export const getUser = createAsyncThunk(
+    "user/getUser",
+    async () => {
+        const res = await api.getUser();
+        if (!res.success) {
+            throw new Error(res.message || "Getting user failed");
+        }
+        return res.user;
+    }
+);
 
 export const updateUser = createAsyncThunk(
     "user/updateUser",
@@ -96,3 +99,6 @@ export const resetPassword = createAsyncThunk(
     }
 );
 
+export const resetError = () => ({
+    type: 'user/resetError'
+});

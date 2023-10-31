@@ -6,10 +6,7 @@ import {resetPassword} from "../../services/user/action";
 import {useDispatch, useSelector} from "react-redux";
 import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/userSlice';
-
-
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const TOKEN_REGEX = /^\d{6}$/;
+import {PWD_REGEX, TOKEN_REGEX} from "../../utils/input-regex";
 
 const ResetPassword = () => {
     const navigate = useNavigate();

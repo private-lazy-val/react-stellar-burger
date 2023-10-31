@@ -1,14 +1,16 @@
 import React, {useMemo} from 'react';
 import styles from "./burger-ingredient.module.css";
 import {Counter, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
-import PropTypes from "prop-types";
 import {useDrag} from "react-dnd";
 import ingredientPropType from "../../utils/prop-types";
 import {useSelector} from "react-redux";
 import {makeSelectIngredientCount} from "../../services/burgerConstructor/selector";
 import useModal from "../../hooks/useModal";
+import {Link, useLocation} from "react-router-dom";
 
 const BurgerIngredient = React.memo(({ingredient}) => {
+    const location = useLocation();
+    const ingredientId = ingredient['_id'];
     // This selection function is utilized to keep a stable reference to the created selector
     const selectIngredientCount = useMemo(makeSelectIngredientCount, []);
     // If the parts of the state that this selector depends upon (bun and ingredients) are updated in the Redux store,
@@ -16,7 +18,7 @@ const BurgerIngredient = React.memo(({ingredient}) => {
     const count = useSelector(state => selectIngredientCount(state, ingredient._id));
 
     const {
-        openIngredientModal,
+        openIngredientModal
     } = useModal();
 
     const [{opacity}, dragRef] = useDrag({
@@ -29,7 +31,13 @@ const BurgerIngredient = React.memo(({ingredient}) => {
     });
 
     return (
-        <li
+        <Link
+            key={ingredientId}
+            // Тут мы формируем динамический путь для нашего ингредиента
+            to={`/ingredients/${ingredientId}`}
+            // а также сохраняем в свойство background роут,
+            // на котором была открыта наша модалка
+            state={{background: location}}
             ref={dragRef}
             className={styles.ingredient}
             style={{opacity}}
@@ -44,7 +52,7 @@ const BurgerIngredient = React.memo(({ingredient}) => {
                 <CurrencyIcon type="primary"/>
             </div>
             <span className="text text_type_main-default">{ingredient.name}</span>
-        </li>
+        </Link>
     );
 });
 

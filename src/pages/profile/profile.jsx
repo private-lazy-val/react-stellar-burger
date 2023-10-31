@@ -1,14 +1,11 @@
 import {NavLink, useNavigate} from "react-router-dom";
 import {Button, EmailInput, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import styles from '../auth.module.css';
 import {useDispatch, useSelector} from "react-redux";
 import {logout, updateUser} from "../../services/user/action";
-import {selectUser} from "../../services/user/selector";
-
-const NAME_REGEX = /^[\p{L}\s'-]{2,30}$/u;
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const EMAIL_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+import {selectErrMsg, selectUser} from "../../services/user/selector";
+import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -18,7 +15,8 @@ const Profile = () => {
         : 'text text_type_main-medium text_color_inactive';
 
 
-    let user = useSelector(selectUser);
+    const user = useSelector(selectUser);
+    const errMsg = useSelector(selectErrMsg);
 
     const [name, setName] = useState('');
     const [validName, setValidName] = useState(false);
@@ -55,7 +53,6 @@ const Profile = () => {
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
     };
-
     const handlePwdChange = (e) => {
         setPwd(e.target.value);
     };
@@ -67,8 +64,15 @@ const Profile = () => {
                 if (action.type === 'user/updateUser/fulfilled') {
                     setName(user.name);
                     setEmail(user.email);
+                    setPwd('00000000');
                 }
             });
+    }
+
+    const resetFields = () => {
+        setName(user.name);
+        setEmail(user.email);
+        setPwd('00000000');
     }
 
     const onLogout = () => {
@@ -85,11 +89,12 @@ const Profile = () => {
             <div aria-label='sidebar'>
                 <ul className={styles.sidebar}>
                     <li><NavLink to='/profile' className={setActive}>Профиль</NavLink></li>
-                    <li><NavLink to='orders' className={setActive}>История заказов</NavLink></li>
+                    <li><NavLink to='/profile/orders' className={setActive}>История заказов</NavLink></li>
                     <li><NavLink to='/login' className={setActive} onClick={onLogout}>Выход</NavLink></li>
                 </ul>
             </div>
             <form className={styles["profile-form"]} onSubmit={handleUpdate}>
+                {errMsg && <p className={`${styles.err} text text_type_main-default text_color_error mt-2`}>Oops! Something went wrong...</p>}
                 <Input
                     type="text"
                     id="username"
@@ -110,7 +115,6 @@ const Profile = () => {
                     isIcon={true}
                     aria-invalid={validEmail ? "false" : "true"}
                 />
-
                 <PasswordInput
                     type='password'
                     id="password"
@@ -121,15 +125,20 @@ const Profile = () => {
                     icon="EditIcon"
                     aria-invalid={validPwd ? "false" : "true"}
                 />
-                <Button
-                    htmlType="submit"
-                    type="primary"
-                    size="medium"
-                    extraClass={styles.submit}
-                    disabled={!validName || !validPwd || !validEmail}
-                >
-                    Сохранить
-                </Button>
+                {validName && validPwd && validEmail &&
+                    <div className={styles[`profile-btns`]}>
+                        <Button
+                            htmlType="submit"
+                            type="primary"
+                            size="medium"
+                            extraClass={styles.submit}>
+                            Сохранить
+                        </Button>
+                        <Button htmlType="button" type="secondary" size="large" onClick={resetFields}>
+                            Отмена
+                        </Button>
+                    </div>
+                }
             </form>
         </main>
     );

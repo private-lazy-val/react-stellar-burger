@@ -6,8 +6,7 @@ import {forgotPassword} from "../../services/user/action";
 import {useDispatch, useSelector} from "react-redux";
 import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/userSlice';
-
-const EMAIL_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+import {EMAIL_REGEX} from "../../utils/input-regex";
 
 const ForgotPassword = () => {
     const dispatch = useDispatch();

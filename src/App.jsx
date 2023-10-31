@@ -1,5 +1,5 @@
 import {useEffect, useRef} from "react";
-import {Route, Routes} from "react-router-dom";
+import {Route, Routes, useLocation} from "react-router-dom";
 import transitions from "./components/modals/modal/modal-transitions.module.css";
 import {CSSTransition} from "react-transition-group";
 import OrderDetails from "./components/modals/order-details/order-details";
@@ -17,61 +17,80 @@ import useModal from "./hooks/useModal";
 import {useDispatch} from "react-redux";
 import {checkUserAuth} from "./services/user/action";
 import {OnlyAuth, OnlyUnAuth} from "./components/protected-routes/protected-routes";
+import IngredientPage from "./components/ingredient-page/ingredient-page";
 
 function App() {
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(checkUserAuth());
-    }, []);
-
+    const location = useLocation();
+    const background = location.state && location.state.background;
     const {
         isModalOpen,
         modalType,
+        openIngredientModal,
         closeIngredientModal,
         closeOrderModal
     } = useModal();
+
+    useEffect(() => {
+        dispatch(checkUserAuth());
+        // Check if modal should be opened on load
+        if (localStorage.getItem('ingredientModalOpen')) {
+            const ingredient = JSON.parse(localStorage.getItem('ingredientModalData'));
+            openIngredientModal(ingredient);
+        }
+    }, [openIngredientModal, dispatch]);
 
     // Used in CSSTransition
     const nodeRef = useRef(null);
 
     return (
         <>
-            <Routes>
+            {/*If background is not set, then the Routes component will render based on the current location*/}
+            <Routes location={background || location}>
                 <Route path='/' element={<Layout/>}>
-                    {/*public routes*/}
                     <Route index element={<Home/>}/>
-                    <Route path='register' element={<OnlyUnAuth component={<Register/>}/>}/>
-                    <Route path='login' element={<OnlyUnAuth component={<Login/>}/>}/>
-                    <Route path='forgot-password' element={<OnlyUnAuth component={<ForgotPassword/>}/>}/>
-                    <Route path='reset-password' element={<OnlyUnAuth component={<ResetPassword/>}/>}/>
-                    {/*<Route path='ingredients/:id'></Route>*/}
-                    {/*<Route path='feed'>*/}
-                    {/*    <Route index element={<Feed/>}/>*/}
-                    {/*</Route>*/}
+                    <Route path='ingredients/:ingredientId'
+                           element={<IngredientPage title='Детали ингредиента'/>}
+                    />
 
                     {/*protected routes*/}
                     <Route path='profile'>
                         <Route index element={<OnlyAuth component={<Profile/>}/>}/>
-                        {/*<Route path='/orders' element={</>}/>*/}
-                        {/*<Route path='/:id' element={</>}/>*/}
                     </Route>
 
+                    {/*auth*/}
+                    <Route path='register' element={<OnlyUnAuth component={<Register/>}/>}/>
+                    <Route path='login' element={<OnlyUnAuth component={<Login/>}/>}/>
+                    <Route path='forgot-password' element={<OnlyUnAuth component={<ForgotPassword/>}/>}/>
+                    <Route path='reset-password' element={<OnlyUnAuth component={<ResetPassword/>}/>}/>
+
+                    {/*catch all*/}
                     <Route path='*' element={<Missing/>}/>
                 </Route>
             </Routes>
 
-            <CSSTransition
-                in={isModalOpen && modalType === 'ingredient'}
-                nodeRef={nodeRef}
-                timeout={600}
-                classNames={{...transitions}}
-                unmountOnExit
-            >
-                <Modal ref={nodeRef} closeModal={closeIngredientModal}>
-                    <IngredientDetails title='Детали ингредиента'/>
-                </Modal>
-            </CSSTransition>
+            {/*If background exists, the Routes component will use background as its location*/}
+            {background && (
+                <Routes>
+                    <Route
+                        path='/ingredients/:ingredientId'
+                        element={
+                            <CSSTransition
+                                in={modalType === 'ingredient'}
+                                nodeRef={nodeRef}
+                                timeout={600}
+                                classNames={{...transitions}}
+                                unmountOnExit
+                            >
+                                <Modal ref={nodeRef} closeModal={closeIngredientModal}>
+                                    <IngredientDetails title='Детали ингредиента'/>
+                                </Modal>
+                            </CSSTransition>
+                        }
+                    />
+                </Routes>
+            )}
+
 
             <CSSTransition
                 in={isModalOpen && modalType === 'order'}
