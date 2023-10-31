@@ -79,7 +79,7 @@ const Profile = () => {
         dispatch(logout())
             .then((action) => {
                 if (action.type === 'user/logout/fulfilled') {
-                    navigate('/login');
+                    navigate('/login'); // не понимаю как решить проблему здесь когда кидает на пустую страницу логина
                 }
             });
     }
