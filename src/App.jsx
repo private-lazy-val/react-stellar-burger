@@ -18,6 +18,7 @@ import {useDispatch} from "react-redux";
 import {checkUserAuth} from "./services/user/action";
 import {OnlyAuth, OnlyUnAuth} from "./components/protected-routes/protected-routes";
 import IngredientPage from "./components/ingredient-page/ingredient-page";
+import ResetPasswordRoute from "./components/reset-password-route/reset-password-route";
 
 function App() {
     const dispatch = useDispatch();
@@ -62,7 +63,7 @@ function App() {
                     <Route path='register' element={<OnlyUnAuth component={<Register/>}/>}/>
                     <Route path='login' element={<OnlyUnAuth component={<Login/>}/>}/>
                     <Route path='forgot-password' element={<OnlyUnAuth component={<ForgotPassword/>}/>}/>
-                    <Route path='reset-password' element={<OnlyUnAuth component={<ResetPassword/>}/>}/>
+                    <Route path='reset-password' element={<OnlyUnAuth component={<ResetPasswordRoute component={<ResetPassword/>}/>}/>}/>
 
                     {/*catch all*/}
                     <Route path='*' element={<Missing/>}/>

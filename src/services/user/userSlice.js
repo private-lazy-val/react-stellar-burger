@@ -39,7 +39,7 @@ export const userSlice = createSlice({
             })
             .addCase(logout.fulfilled, (state) => {
                 state.user = null;
-                state.isAuthChecked = false;
+                state.isAuthChecked = true;
             })
             .addCase(forgotPassword.rejected, (state, action) => {
                 state.errMsg = action.error.message;

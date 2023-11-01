@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/userSlice';
 import {EMAIL_REGEX} from "../../utils/input-regex";
+import {forgotPwdFulfilled} from "../../utils/action-types";
 
 const ForgotPassword = () => {
     const dispatch = useDispatch();
@@ -31,7 +32,9 @@ const ForgotPassword = () => {
         e.preventDefault();
         dispatch(forgotPassword({email}))
             .then((action) => {
-                if (action.type === 'user/forgotPassword/fulfilled') {
+                if (action.type === forgotPwdFulfilled) {
+                    localStorage.setItem('visitedForgotPassword', 'true');
+
                     navigate('/reset-password');
                     setEmail('');
                 }

@@ -6,6 +6,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {logout, updateUser} from "../../services/user/action";
 import {selectErrMsg, selectUser} from "../../services/user/selector";
 import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
+import {setAuthChecked, setUser} from "../../services/user/userSlice";
+import {logoutFulfilled, updateUserFulfilled} from "../../utils/action-types";
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -61,7 +63,7 @@ const Profile = () => {
         e.preventDefault();
         dispatch(updateUser({name, email, password: pwd}))
             .then((action) => {
-                if (action.type === 'user/updateUser/fulfilled') {
+                if (action.type === updateUserFulfilled) {
                     setName(user.name);
                     setEmail(user.email);
                     setPwd('00000000');
@@ -78,8 +80,8 @@ const Profile = () => {
     const onLogout = () => {
         dispatch(logout())
             .then((action) => {
-                if (action.type === 'user/logout/fulfilled') {
-                    navigate('/login'); // не понимаю как решить проблему здесь когда кидает на пустую страницу логина
+                if (action.type === logoutFulfilled) {
+                    navigate('/login');
                 }
             });
     }

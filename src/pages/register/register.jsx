@@ -7,6 +7,7 @@ import {register} from '../../services/user/action';
 import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/userSlice';
 import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
+import {registerFulfilled} from "../../utils/action-types";
 
 const Register = () => {
     const dispatch = useDispatch();
@@ -49,7 +50,7 @@ const Register = () => {
         e.preventDefault();
         dispatch(register({email, password: pwd, name}))
             .then((action) => {
-                if (action.type === 'user/register/fulfilled') {
+                if (action.type === registerFulfilled) {
                     navigate(from, {replace: true});
 
                     setName('');

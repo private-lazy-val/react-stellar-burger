@@ -7,6 +7,7 @@ import {login} from '../../services/user/action';
 import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/userSlice';
 import {EMAIL_REGEX, PWD_REGEX} from "../../utils/input-regex";
+import {loginFulfilled} from "../../utils/action-types";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -46,7 +47,7 @@ const Login = () => {
         e.preventDefault();
         dispatch(login({email, password: pwd}))
             .then((action) => {
-                if (action.type === 'user/login/fulfilled') {
+                if (action.type === loginFulfilled) {
                     navigate(from, {replace: true});
                     setEmail('');
                     setPwd('');

@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/userSlice';
 import {PWD_REGEX, TOKEN_REGEX} from "../../utils/input-regex";
+import {resetPwdFulfilled} from "../../utils/action-types";
 
 const ResetPassword = () => {
     const navigate = useNavigate();
@@ -37,8 +38,10 @@ const ResetPassword = () => {
         e.preventDefault();
         dispatch(resetPassword({password: pwd, token}))
             .then((action) => {
-                if (action.type === 'user/resetPassword/fulfilled') {
+                if (action.type === resetPwdFulfilled) {
                     navigate('/login');
+                    localStorage.removeItem('visitedForgotPassword');
+
                     setPwd('');
                     setToken('');
                 }

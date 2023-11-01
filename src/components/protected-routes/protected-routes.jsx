@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { Navigate, useLocation } from "react-router-dom";
 import {selectAuthStatus, selectUser} from "../../services/user/selector";
+import LoadingComponent from "../../utils/loading-component";
 
 const ProtectedRoutes = ({ onlyUnAuth = false, component }) => {
     // isAuthChecked это флаг, показывающий что проверка токена произведена
@@ -14,7 +15,7 @@ const ProtectedRoutes = ({ onlyUnAuth = false, component }) => {
         // Запрос еще выполняется
         // Выводим прелоадер в ПР
         // Здесь возвращается просто null для экономии времени
-        return null;
+        return null
     }
 
     if (onlyUnAuth && user) {
@@ -22,14 +23,12 @@ const ProtectedRoutes = ({ onlyUnAuth = false, component }) => {
         // Делаем редирект на главную страницу или на тот адрес, что записан в location.state.from
         const { from } = location.state || { from: { pathname: "/" } };
         return <Navigate to={from} />;
+
     }
 
     if (!onlyUnAuth && !user) {
         return <Navigate to="/login" state={{ from: location }} />;
     }
-
-    // !onlyUnAuth && user Пользователь авторизован и роут для авторизованного пользователя
-
     return component;
 };
 
