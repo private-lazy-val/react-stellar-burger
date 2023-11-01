@@ -34,7 +34,6 @@ const ForgotPassword = () => {
             .then((action) => {
                 if (action.type === forgotPwdFulfilled) {
                     localStorage.setItem('visitedForgotPassword', 'true');
-
                     navigate('/reset-password');
                     setEmail('');
                 }

@@ -10,14 +10,7 @@ import {EMAIL_REGEX, PWD_REGEX} from "../../utils/input-regex";
 import {loginFulfilled} from "../../utils/action-types";
 
 const Login = () => {
-    const navigate = useNavigate();
     const dispatch = useDispatch();
-
-    const location = useLocation();
-    // After a successful login, the user will be redirected back to the route they initially tried to access.
-    // If there was no initial route (or if something went wrong with saving that route),
-    // the user would be redirected to a default location, in this case '/'.
-    const from = location.state?.from?.pathname || '/';
 
     const [email, setEmail] = useState('');
     const [validEmail, setValidEmail] = useState(false);
@@ -48,7 +41,7 @@ const Login = () => {
         dispatch(login({email, password: pwd}))
             .then((action) => {
                 if (action.type === loginFulfilled) {
-                    navigate(from, {replace: true});
+
                     setEmail('');
                     setPwd('');
                 }

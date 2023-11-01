@@ -39,9 +39,8 @@ const ResetPassword = () => {
         dispatch(resetPassword({password: pwd, token}))
             .then((action) => {
                 if (action.type === resetPwdFulfilled) {
-                    navigate('/login');
                     localStorage.removeItem('visitedForgotPassword');
-
+                    navigate('/login');
                     setPwd('');
                     setToken('');
                 }

@@ -26,7 +26,7 @@ const Profile = () => {
     const [email, setEmail] = useState('');
     const [validEmail, setValidEmail] = useState(false);
 
-    const [pwd, setPwd] = useState('00000000');
+    const [pwd, setPwd] = useState('0000');
     const [validPwd, setValidPwd] = useState(false);
 
     useEffect(() => {
@@ -66,7 +66,7 @@ const Profile = () => {
                 if (action.type === updateUserFulfilled) {
                     setName(user.name);
                     setEmail(user.email);
-                    setPwd('00000000');
+                    setPwd('0000');
                 }
             });
     }
@@ -74,7 +74,7 @@ const Profile = () => {
     const resetFields = () => {
         setName(user.name);
         setEmail(user.email);
-        setPwd('00000000');
+        setPwd('0000');
     }
 
     const onLogout = () => {
