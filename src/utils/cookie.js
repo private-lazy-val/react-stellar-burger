@@ -3,7 +3,7 @@ export function setCookie(name, value, props = {}) {
         path: '/',  //задаем корневой адрес для cookies
         ...props
     };
-    let exp = props.expires;
+    let exp = props.expires || new Date(Date.now() + 1000 * 60 * 60 * 24 * 30 * 12);// время жизни 1 год
     if (typeof exp == 'number' && exp) {
         const d = new Date();
         d.setTime(d.getTime() + exp * 1000);

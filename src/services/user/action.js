@@ -53,8 +53,8 @@ export const checkUserAuth = () => {
         if (getCookie("accessToken")) {
             dispatch(getUser())
                 .catch(() => {
-                    deleteCookie("accessToken");
-                    deleteCookie("refreshToken");
+                    // deleteCookie("accessToken");
+                    // deleteCookie("refreshToken");
                     // use reducers when you have direct, synchronous updates to the state
                     dispatch(setUser(null));
                 })
