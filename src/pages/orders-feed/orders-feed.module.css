@@ -38,31 +38,37 @@
 }
 
 .ingredient {
-    background: #131316;
+    background: linear-gradient(63deg, #801AB2 0%, #4C4CFF 100%);
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    overflow: hidden;
     display: flex;
     place-content: center;
-    border: 2px solid linear-gradient(63deg, #801AB2 0%, #4C4CFF 100%);
-    padding: 4px;
-
-
-    /*height: 100%;*/
-    /*background-clip: padding-box;*/
-    /*border: 2px solid transparent;*/
-
-
-    /*position: absolute;*/
-    /*top: 0;*/
-    /*z-index: -1;*/
+    padding: 2px;
+    overflow: hidden;
+    position: relative;
+    margin-right: -20px;
 }
+
+.ingredient:nth-child(odd) {
+    margin-right: -20px;
+    z-index: 2;  /*This ensures the first circle is on top */
+}
+
+.ingredient:nth-child(even) {
+    z-index: 1;  /* This ensures the second circle is below the first one */
+}
+
+/*.ingredient:last-child {*/
+/*    margin-left: -20px;*/
+/*    z-index: 0;*/
+/*}*/
 
 .ingredient-img {
     object-fit: cover;
-    /*overflow: hidden;*/
+    background: #131316;
     width: 100%;
+    border-radius: 100%;
 }
 
 

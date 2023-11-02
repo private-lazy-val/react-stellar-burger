@@ -39,9 +39,16 @@ a {
     color: #f2f2f3;
     text-decoration: none;
     transition: var(--common-transition);
+    cursor: pointer;
 }
 
 a:hover {
     color: #f2f2f3;
+}
+
+button {
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 

@@ -13,7 +13,8 @@ const OrdersFeed = () => {
                         <div className={styles.date}>
                             <p className="text text_type_digits-default">#034535</p>
                             <div>
-                                <FormattedDate date={new Date(dateFromServer)} className="text text_type_main-default text_color_inactive"/>
+                                <FormattedDate date={new Date(dateFromServer)}
+                                               className="text text_type_main-default text_color_inactive"/>
                                 <span className="text text_type_main-default text_color_inactive">&nbsp;i-GMT+3</span>
                             </div>
                         </div>
@@ -21,13 +22,34 @@ const OrdersFeed = () => {
                         <div className={styles.summary}>
                             <ul className={styles.ingredients}>
                                 <li className={styles.ingredient}>
-                                    <img className={styles[`ingredient-img`]} src="https://code.s3.yandex.net/react/code/sauce-04.png" alt="Соус фирменный Space Sauce"/>
+                                    <img className={styles[`ingredient-img`]}
+                                         src="https://code.s3.yandex.net/react/code/bun-01.png"
+                                         alt="Флюоресцентная булка R2-D3"/>
                                 </li>
                                 <li className={styles.ingredient}>
-                                    <img className={styles[`ingredient-img`]} src="https://code.s3.yandex.net/react/code/sauce-04.png" alt="Соус фирменный Space Sauce"/>
+                                    <img className={styles[`ingredient-img`]}
+                                         src="https://code.s3.yandex.net/react/code/meat-03.png"
+                                         alt="Филе Люминесцентного тетраодонтимформа"/>
                                 </li>
                                 <li className={styles.ingredient}>
-                                    <img className={styles[`ingredient-img`]} src="https://code.s3.yandex.net/react/code/sauce-04.png" alt="Соус фирменный Space Sauce"/>
+                                    <img className={styles[`ingredient-img`]}
+                                         src="https://code.s3.yandex.net/react/code/sauce-04.png"
+                                         alt="Соус фирменный Space Sauce"/>
+                                </li>
+                                <li className={styles.ingredient}>
+                                    <img className={styles[`ingredient-img`]}
+                                         src="https://code.s3.yandex.net/react/code/core.png"
+                                         alt="Кристаллы марсианских альфа-сахаридов"/>
+                                </li>
+                                <li className={styles.ingredient}>
+                                    <img className={styles[`ingredient-img`]}
+                                         src="https://code.s3.yandex.net/react/code/sauce-03-large.png"
+                                         alt="Соус традиционный галактический"/>
+                                </li>
+                                <li className={styles.ingredient}>
+                                    <img className={styles[`ingredient-img`]}
+                                         src="https://code.s3.yandex.net/react/code/sauce-03-large.png"
+                                         alt="Соус традиционный галактический"/>
                                 </li>
                             </ul>
                             <div className={styles.total}>
@@ -37,12 +59,11 @@ const OrdersFeed = () => {
                         </div>
 
 
-
                     </li>
                 </ul>
 
             </section>
-            
+
         </main>
     );
 };

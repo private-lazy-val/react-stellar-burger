@@ -80,3 +80,7 @@
     top: -42px;
     z-index: 2;
 }
+
+.logout-btn:hover {
+    color: #f2f2f3;
+}

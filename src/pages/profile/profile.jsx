@@ -76,12 +76,7 @@ const Profile = () => {
     }
 
     const onLogout = () => {
-        dispatch(logout())
-            .then((action) => {
-                if (action.type === logoutFulfilled) {
-                    navigate('/login');
-                }
-            });
+        dispatch(logout());
     }
 
     return (
@@ -90,7 +85,7 @@ const Profile = () => {
                 <ul className={styles.sidebar}>
                     <li><NavLink to='/profile' className={setActive}>Профиль</NavLink></li>
                     <li><NavLink to='/profile/orders' className={setActive}>История заказов</NavLink></li>
-                    <li><NavLink to='/login' className={setActive} onClick={onLogout}>Выход</NavLink></li>
+                    <li><button className={`${styles['logout-btn']} text text_type_main-medium text_color_inactive`} type='button' onClick={onLogout}>Выход</button></li>
                 </ul>
             </div>
             <form className={styles["profile-form"]} onSubmit={handleUpdate}>
