@@ -10,7 +10,7 @@ const AppHeader = React.memo(() => {
         : 'text text_type_main-default text_color_inactive';
 
     return (
-        <header className="pb-4 pt-4">
+        <header className={`${styles.header} pb-4 pt-4`}>
             <NavLink to="/" className={styles.logo}>
                 <Logo/>
             </NavLink>

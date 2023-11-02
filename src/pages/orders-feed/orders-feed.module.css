@@ -4,10 +4,22 @@
     margin: 40px auto 0 auto;
 }
 
-.section {
+.content {
+    display: flex;
+    gap: 60px;
+}
+
+.feed-section {
+    max-width: 600px;
+    width: 100%;
+}
+
+.orders-list {
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
+    gap: 16px;
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
 }
 
 .order {
@@ -43,37 +55,93 @@
     height: 64px;
     border-radius: 50%;
     display: flex;
-    place-content: center;
+    justify-content: center;
+    align-items: center;
     padding: 2px;
     overflow: hidden;
     position: relative;
     margin-right: -20px;
 }
 
-.ingredient:nth-child(odd) {
-    margin-right: -20px;
-    z-index: 2;  /*This ensures the first circle is on top */
+.ingredient:nth-child(1) {
+    z-index: 5;
 }
 
-.ingredient:nth-child(even) {
-    z-index: 1;  /* This ensures the second circle is below the first one */
+.ingredient:nth-child(2) {
+    z-index: 4;
 }
 
-/*.ingredient:last-child {*/
-/*    margin-left: -20px;*/
-/*    z-index: 0;*/
-/*}*/
+.ingredient:nth-child(3) {
+    z-index: 3;
+}
+
+.ingredient:nth-child(4) {
+    z-index: 2;
+}
+
+.ingredient:nth-child(5) {
+    z-index: 1;
+}
+
+.ingredient:nth-child(6) {
+    z-index: 0;
+}
 
 .ingredient-img {
     object-fit: cover;
     background: #131316;
     width: 100%;
+    height: 100%;
     border-radius: 100%;
 }
 
+.fifth-ingredient-img {
+    background: #1C1C21;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hidden-ingredient {
+    position: absolute;
+}
 
 .total {
     display: flex;
     align-items: center;
     column-gap: 8px;
 }
+
+
+.stats-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+}
+
+.orders-statuses {
+    display: flex;
+    gap: 100px;
+}
+
+.orders-ids-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 40px
+}
+
+.orders-ready, .orders-inprogress {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.header-in-progress {
+    white-space: nowrap;
+}
+
+.order-ready-item {
+    color: #0CC;
+}
+

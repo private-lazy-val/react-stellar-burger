@@ -4,9 +4,9 @@ import request from "../../app/api/api";
 export const loadAllIngredients = createAsyncThunk(
     "burgerIngredients/loadIngredients",
     async () => {
-        const response = await request('/ingredients'); // GET is used by default
-        if (response.data && response.data.length > 0) {
-            return response.data;
+        const res = await request('/ingredients'); // GET is used by default
+        if (res.data && res.data.length > 0) {
+            return res.data;
         } else {
             throw new Error('Data format is incorrect or array is empty');
         }

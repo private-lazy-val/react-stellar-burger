@@ -18,15 +18,17 @@ import {
 } from "../../services/burgerIngredients/selector";
 import {useDrop} from "react-dnd";
 import useModal from "../../hooks/useModal";
+import {selectAllOrders, selectTodayTotalOrders, selectTotalOrders} from "../../services/ordersFeed/selector";
 
 const BurgerConstructor = () => {
-
-    const bun = useSelector(selectBun);
-    const ingredients = useSelector(selectIngredients);
-    const isLoading = useSelector(selectIsLoadingIngredients);
-    const hasError = useSelector(selectHasErrorIngredients);
-
     const dispatch = useDispatch();
+
+    const { bun, ingredients, isLoading, hasError } = useSelector(state => ({
+        bun: selectBun(state),
+        ingredients: selectIngredients(state),
+        isLoading: selectIsLoadingIngredients(state),
+        hasError: selectHasErrorIngredients(state)
+    }));
 
     const {
         openOrderModal,
