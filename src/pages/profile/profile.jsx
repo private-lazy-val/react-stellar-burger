@@ -26,7 +26,7 @@ const Profile = () => {
     const [email, setEmail] = useState('');
     const [validEmail, setValidEmail] = useState(false);
 
-    const [pwd, setPwd] = useState('0000');
+    const [pwd, setPwd] = useState('00000');
     const [validPwd, setValidPwd] = useState(false);
 
     useEffect(() => {
@@ -66,7 +66,7 @@ const Profile = () => {
                 if (action.type === updateUserFulfilled) {
                     setName(user.name);
                     setEmail(user.email);
-                    setPwd('0000');
+                    setPwd('00000');
                 }
             });
     }
@@ -74,7 +74,7 @@ const Profile = () => {
     const resetFields = () => {
         setName(user.name);
         setEmail(user.email);
-        setPwd('0000');
+        setPwd('00000');
     }
 
     const onLogout = () => {
@@ -127,7 +127,7 @@ const Profile = () => {
                     icon="EditIcon"
                     aria-invalid={validPwd ? "false" : "true"}
                 />
-                {validName && validPwd && validEmail &&
+                {(pwd !== '0000' && validPwd) || name !== user.name || email !== user.email ? (
                     <div className={styles[`profile-btns`]}>
                         <Button
                             htmlType="submit"
@@ -140,7 +140,7 @@ const Profile = () => {
                             Отмена
                         </Button>
                     </div>
-                }
+                ) : null}
             </form>
         </main>
     );
