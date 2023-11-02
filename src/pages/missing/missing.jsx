@@ -7,7 +7,7 @@ const Missing = () => {
     const goBack = () => navigate(-1);
     return (
         <main className={styles.main}>
-            <h2 className={`text text_type_main-medium`}>Well, that's disappointing!</h2>
+            <h1 className={`text text_type_main-medium`}>Well, that's disappointing!</h1>
             <Button htmlType="button" type="secondary" size="large" onClick={goBack}>
                 Go back
             </Button>

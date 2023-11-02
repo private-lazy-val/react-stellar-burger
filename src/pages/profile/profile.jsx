@@ -6,7 +6,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {logout, updateUser} from "../../services/user/action";
 import {selectErrMsg, selectUser} from "../../services/user/selector";
 import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
-import {setAuthChecked, setUser} from "../../services/user/userSlice";
 import {logoutFulfilled, updateUserFulfilled} from "../../utils/action-types";
 
 const Profile = () => {
@@ -15,7 +14,6 @@ const Profile = () => {
     const setActive = ({isActive}) => isActive
         ? 'text text_type_main-medium'
         : 'text text_type_main-medium text_color_inactive';
-
 
     const user = useSelector(selectUser);
     const errMsg = useSelector(selectErrMsg);
@@ -79,11 +77,11 @@ const Profile = () => {
 
     const onLogout = () => {
         dispatch(logout())
-            // .then((action) => {
-            //     if (action.type === logoutFulfilled) {
-            //         navigate('/login');
-            //     }
-            // });
+            .then((action) => {
+                if (action.type === logoutFulfilled) {
+                    navigate('/login');
+                }
+            });
     }
 
     return (
@@ -127,7 +125,7 @@ const Profile = () => {
                     icon="EditIcon"
                     aria-invalid={validPwd ? "false" : "true"}
                 />
-                {(pwd !== '0000' && validPwd) || name !== user.name || email !== user.email ? (
+                {(pwd !== '0000' && validPwd) || (name !== user.name && validName) || (email !== user.email && validEmail) ? (
                     <div className={styles[`profile-btns`]}>
                         <Button
                             htmlType="submit"

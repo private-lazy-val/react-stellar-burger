@@ -5,7 +5,7 @@ import {CSSTransition} from "react-transition-group";
 import OrderDetails from "./components/modals/order-details/order-details";
 import IngredientDetails from "./components/modals/ingredient-details/ingredient-details";
 import Layout from "./components/layout/layout";
-import Home from "./components/home/home";
+import Home from "./pages/home/home";
 import Register from "./pages/register/register";
 import Login from "./pages/login/login";
 import ResetPassword from "./pages/reset-password/reset-password";
@@ -17,8 +17,9 @@ import useModal from "./hooks/useModal";
 import {useDispatch} from "react-redux";
 import {checkUserAuth} from "./services/user/action";
 import {OnlyAuth, OnlyUnAuth} from "./components/protected-routes/protected-routes";
-import IngredientPage from "./components/ingredient-page/ingredient-page";
+import IngredientPage from "./pages/ingredient-page/ingredient-page";
 import ResetPasswordRoute from "./components/reset-password-route/reset-password-route";
+import OrdersFeed from "./pages/orders-feed/orders-feed";
 
 function App() {
     const dispatch = useDispatch();
@@ -53,10 +54,16 @@ function App() {
                     <Route path='ingredients/:ingredientId'
                            element={<IngredientPage title='Детали ингредиента'/>}
                     />
+                    <Route path='feed' element={<OrdersFeed/>}>
+                    {/*    <Route path='feed/:id' element={<Order/>}/>*/}
+                    </Route>
 
                     {/*protected routes*/}
                     <Route path='profile'>
                         <Route index element={<OnlyAuth component={<Profile/>}/>}/>
+                        {/*<Route path='orders' element={<OnlyAuth component={<Orders/>}/>}>*/}
+                        {/*    <Route path=':id' element={<OnlyAuth component={<Order/>}/>}/>*/}
+                        {/*</Route>*/}
                     </Route>
 
                     {/*auth*/}

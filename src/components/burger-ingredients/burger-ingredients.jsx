@@ -24,7 +24,7 @@ const BurgerIngredients = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(loadAllIngredients());
+            dispatch(loadAllIngredients());
     }, [dispatch]);
 
     const categorizedItems = useMemo(() => ({

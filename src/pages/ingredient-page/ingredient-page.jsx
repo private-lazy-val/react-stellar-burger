@@ -13,7 +13,7 @@ import useLoadingAndErrorHandling from "../../hooks/useLoadingAndErrorHandling";
 import LoadingComponent from "../../utils/loading-component";
 import ErrorComponent from "../../utils/error-component";
 
-const IngredientDetails = ({title}) => {
+const IngredientPage = ({title}) => {
     const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingIngredients, selectHasErrorIngredients);
 
     const dispatch = useDispatch();
@@ -35,10 +35,10 @@ const IngredientDetails = ({title}) => {
 
     return (
             ingredient && (
-                <div className={styles.wrapper}>
-                    <h2 className="text text_type_main-large">{title}</h2>
+                <main className={styles.wrapper}>
+                    <h1 className="text text_type_main-large">{title}</h1>
                     <img className='mt-3' src={ingredient.image_large} alt={ingredient.name}/>
-                    <h3 className="text text_type_main-medium mt-4 mb-8">{ingredient.name}</h3>
+                    <h2 className="text text_type_main-medium mt-4 mb-8">{ingredient.name}</h2>
                     <ul className={styles.list}>
                         <li className={styles.item}>
                             <span className="text text_type_main-default text_color_inactive">Калории,ккал</span>
@@ -60,12 +60,12 @@ const IngredientDetails = ({title}) => {
                                 className="text text_type_digits-default text_color_inactive">{ingredient.carbohydrates}</span>
                         </li>
                     </ul>
-                </div>)
+                </main>)
     );
 };
 
-IngredientDetails.propTypes = {
+IngredientPage.propTypes = {
     title: PropTypes.string.isRequired,
 };
 
-export default IngredientDetails;
+export default IngredientPage;
