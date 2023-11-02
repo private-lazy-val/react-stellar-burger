@@ -2,7 +2,7 @@ import {useEffect, useRef} from "react";
 import {Route, Routes, useLocation} from "react-router-dom";
 import transitions from "./components/modals/modal/modal-transitions.module.css";
 import {CSSTransition} from "react-transition-group";
-import OrderDetails from "./components/modals/order-details/order-details";
+import SubmitOrder from "./components/modals/submit-order/submit-order";
 import IngredientDetails from "./components/modals/ingredient-details/ingredient-details";
 import Layout from "./components/layout/layout";
 import Home from "./pages/home/home";
@@ -20,6 +20,7 @@ import {OnlyAuth, OnlyUnAuth} from "./components/protected-routes/protected-rout
 import IngredientPage from "./pages/ingredient-page/ingredient-page";
 import ResetPasswordRoute from "./components/reset-password-route/reset-password-route";
 import OrdersFeed from "./pages/orders-feed/orders-feed";
+import OrderData from "./components/modals/order-data/order-data";
 
 function App() {
     const dispatch = useDispatch();
@@ -30,7 +31,9 @@ function App() {
         modalType,
         openIngredientModal,
         closeIngredientModal,
-        closeOrderModal
+        openOrderModal,
+        closeOrderModal,
+        closeSubmitOrderModal
     } = useModal();
 
     useEffect(() => {
@@ -40,7 +43,11 @@ function App() {
             const ingredient = JSON.parse(localStorage.getItem('ingredientModalData'));
             openIngredientModal(ingredient);
         }
-    }, [openIngredientModal, dispatch]);
+        if (localStorage.getItem('orderModalOpen')) {
+            const order = JSON.parse(localStorage.getItem('orderModalData'));
+            openOrderModal(order);
+        }
+    }, [openIngredientModal, openOrderModal, dispatch]);
 
     // Used in CSSTransition
     const nodeRef = useRef(null);
@@ -55,7 +62,7 @@ function App() {
                            element={<IngredientPage title='Детали ингредиента'/>}
                     />
                     <Route path='feed' element={<OrdersFeed/>}>
-                    {/*    <Route path='feed/:id' element={<Order/>}/>*/}
+                        {/*<Route path='feed/:id' element={<OrderPage/>}/>*/}
                     </Route>
 
                     {/*protected routes*/}
@@ -96,19 +103,35 @@ function App() {
                             </CSSTransition>
                         }
                     />
+                    <Route
+                        path='feed/:id'
+                        element={
+                            <CSSTransition
+                                in={modalType === 'order'}
+                                nodeRef={nodeRef}
+                                timeout={600}
+                                classNames={{...transitions}}
+                                unmountOnExit
+                            >
+                                <Modal ref={nodeRef} closeModal={closeOrderModal}>
+                                    <OrderData/>
+                                </Modal>
+                            </CSSTransition>
+                        }
+                    />
                 </Routes>
             )}
 
 
             <CSSTransition
-                in={isModalOpen && modalType === 'order'}
+                in={isModalOpen && modalType === 'submit-order'}
                 nodeRef={nodeRef}
                 timeout={600}
                 classNames={{...transitions}}
                 unmountOnExit
             >
-                <Modal ref={nodeRef} closeModal={closeOrderModal}>
-                    <OrderDetails/>
+                <Modal ref={nodeRef} closeModal={closeSubmitOrderModal}>
+                    <SubmitOrder/>
                 </Modal>
             </CSSTransition>
         </>

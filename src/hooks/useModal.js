@@ -30,24 +30,40 @@ const useModal = () => {
         navigate(-1);
     }, [dispatch, navigate]);
 
-    const openOrderModal = useCallback(() => {
+    const openSubmitOrderModal = useCallback(() => {
         dispatch(openModal());
-        dispatch(setModalType('order'));
+        dispatch(setModalType('submit-order'));
     }, [dispatch]);
 
-    const closeOrderModal = useCallback(() => {
+    const closeSubmitOrderModal = useCallback(() => {
         dispatch(resetConstructor());
         dispatch(closeModal());
         dispatch(setModalType(null));
     }, [dispatch]);
 
+    const openOrderModal = useCallback((order) => {
+        localStorage.setItem('orderModalOpen', 'true');
+        localStorage.setItem('orderModalData', JSON.stringify(order));
+        dispatch(setModalType('order'));
+        dispatch(showDetails(order));
+    }, [dispatch]);
+
+    const closeOrderModal = useCallback(() => {
+        localStorage.removeItem('orderModalOpen');
+        localStorage.removeItem('orderModalData');
+        dispatch(setModalType(null));
+        navigate(-1);
+    }, [dispatch, navigate]);
+
     return {
         isModalOpen,
         modalType,
         openIngredientModal,
-        openOrderModal,
         closeIngredientModal,
-        closeOrderModal,
+        openSubmitOrderModal,
+        closeSubmitOrderModal,
+        openOrderModal,
+        closeOrderModal
     };
 };
 

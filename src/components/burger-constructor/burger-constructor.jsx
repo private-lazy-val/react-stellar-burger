@@ -7,7 +7,7 @@ import {
     addBun,
     addIngredient
 } from "../../services/burgerConstructor/burgerConstructorSlice";
-import {fetchOrderId} from "../../services/orderDetails/orderDetailsSlice";
+import {fetchOrderId} from "../../services/submitOrder/submitOrderSlice";
 import {
     selectBun,
     selectIngredients
@@ -31,7 +31,7 @@ const BurgerConstructor = () => {
     }));
 
     const {
-        openOrderModal,
+        openSubmitOrderModal,
     } = useModal();
 
     const totalPrice = useMemo(() => {
@@ -65,7 +65,7 @@ const BurgerConstructor = () => {
                 ingredients: [bun._id, ...ingredients.map(ingredient => ingredient._id), bun._id]
             }
             dispatch(fetchOrderId(newOrder));
-            openOrderModal(newOrder);
+            openSubmitOrderModal(newOrder);
         }
     };
 

@@ -13,13 +13,16 @@ import BurgerIngredient from "../burger-ingredient/burger-ingredient";
 import useLoadingAndErrorHandling from "../../hooks/useLoadingAndErrorHandling";
 import ErrorComponent from "../../utils/error-component";
 import LoadingComponent from "../../utils/loading-component";
+import {selectAllOrders, selectTodayTotalOrders, selectTotalOrders} from "../../services/ordersFeed/selector";
 
 const BurgerIngredients = () => {
 
     const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingIngredients, selectHasErrorIngredients);
 
-    const allIngredients = useSelector(selectAllIngredients);
-    const currentTab = useSelector(selectCurrentTab);
+    const { allIngredients, currentTab } = useSelector(state => ({
+        allIngredients: selectAllIngredients(state),
+        currentTab: selectCurrentTab(state)
+    }));
 
     const dispatch = useDispatch();
 

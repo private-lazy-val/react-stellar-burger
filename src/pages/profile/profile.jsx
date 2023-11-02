@@ -6,10 +6,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {logout, updateUser} from "../../services/user/action";
 import {selectErrMsg, selectUser} from "../../services/user/selector";
 import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
-import {logoutFulfilled, updateUserFulfilled} from "../../utils/action-types";
+import {updateUserFulfilled} from "../../utils/action-types";
 
 const Profile = () => {
-    const navigate = useNavigate();
     const dispatch = useDispatch();
     const setActive = ({isActive}) => isActive
         ? 'text text_type_main-medium'
