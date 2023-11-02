@@ -79,11 +79,11 @@ const Profile = () => {
 
     const onLogout = () => {
         dispatch(logout())
-            .then((action) => {
-                if (action.type === logoutFulfilled) {
-                    navigate('/login');
-                }
-            });
+            // .then((action) => {
+            //     if (action.type === logoutFulfilled) {
+            //         navigate('/login');
+            //     }
+            // });
     }
 
     return (
