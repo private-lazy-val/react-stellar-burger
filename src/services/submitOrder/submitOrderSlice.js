@@ -1,8 +1,8 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import request from "../../app/api/api";
+import request from "../../api/api";
 
 export const fetchOrderId = createAsyncThunk(
-    "submitOrder/getOrderId",
+    "submitOrder/fetchOrderId",
     async (newOrder) => {
         const endpoint = '/orders';
         const options = {

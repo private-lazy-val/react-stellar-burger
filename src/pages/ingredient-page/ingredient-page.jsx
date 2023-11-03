@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
 import {useEffect} from "react";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {
     selectHasErrorIngredients,
     selectIngredientById,
@@ -12,16 +12,26 @@ import styles from "./ingredient-page.module.css";
 import useLoadingAndErrorHandling from "../../hooks/useLoadingAndErrorHandling";
 import LoadingComponent from "../../utils/loading-component";
 import ErrorComponent from "../../utils/error-component";
+import {fetchOrderDetails} from "../../services/orderDetails/orderDetailsSlice";
 
 const IngredientPage = ({title}) => {
     const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingIngredients, selectHasErrorIngredients);
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const {ingredientId} = useParams();
 
     useEffect(() => {
-        dispatch(loadAllIngredients());
-    }, [dispatch]);
+        dispatch(loadAllIngredients())
+            .then(response => {
+                const ingredients = response.payload;
+                const foundIngredient = ingredients.find(ingredient => ingredient._id === ingredientId);
+                if (!foundIngredient) {
+                    navigate("/missing", { replace: true });
+                }
+            })
+    }, [dispatch, ingredientId, navigate]);
 
     const ingredient = useSelector(state => selectIngredientById(state, ingredientId));
 

@@ -84,3 +84,8 @@
 .logout-btn:hover {
     color: #f2f2f3;
 }
+
+.missing-header {
+    color: #0CC;
+    text-align: center;
+}

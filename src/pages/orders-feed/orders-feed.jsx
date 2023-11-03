@@ -2,16 +2,23 @@ import styles from "./orders-feed.module.css";
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
 import {fetchAllOrders} from "../../services/ordersFeed/ordersFeedSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {useCallback, useEffect, useMemo} from "react";
+import {useEffect, useMemo} from "react";
 import {
     selectAllOrders,
     selectTodayTotalOrders,
     selectTotalOrders
 } from "../../services/ordersFeed/selector";
-import {ingredientsDetails} from "../../utils/ingredients-details";
+import {getIngredientsTotalPrice, ingredientsDetails} from "../../utils/ingredients-details";
+import useModal from "../../hooks/useModal";
+import {Link, useLocation} from "react-router-dom";
 
 const OrdersFeed = () => {
     const dispatch = useDispatch();
+    const location = useLocation();
+
+    const {
+        openOrderModal
+    } = useModal();
 
     useEffect(() => {
         dispatch(fetchAllOrders());
@@ -23,19 +30,12 @@ const OrdersFeed = () => {
         totalTodayOrders: selectTodayTotalOrders(state)
     }));
 
-    const totalPrice = useCallback((order) => {
-        if (!order || !order.ingredients) return 0;
-
-        const ingredientsPrices = order.ingredients.map(ingredientId => ingredientsDetails[ingredientId].price);
-        return ingredientsPrices.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    }, []);
-
     const lastTwentyReadyOrdersIds = useMemo(() => {
-        return orders.filter(order => order.status === 'done').map(order => order._id.slice(-6)).slice(-10);
+        return orders.filter(order => order.status === 'done').map(order => order.number).slice(-10);
     }, [orders]);
 
     const lastTwentyInProgressOrdersIds = useMemo(() => {
-        return orders.filter(order => order.status === 'inprogress').map(order => order._id.slice(-6)).slice(-10);
+        return orders.filter(order => order.status === 'inprogress').map(order => order.number).slice(-10);
     }, [orders]);
 
     return (
@@ -45,21 +45,19 @@ const OrdersFeed = () => {
                 <section className={styles[`feed-section`]}>
                     <ul className={`${styles[`orders-list`]} custom-scroll`}>
                         {orders.map(order => (
-                            <li key={order._id} className={styles.order}>
-                                {/*<Link*/}
-                                {/*    key={orderId}*/}
-                                {/*    // Тут мы формируем динамический путь для нашего ингредиента*/}
-                                {/*    to={`/order/${orderId}`}*/}
-                                {/*    // а также сохраняем в свойство background роут,*/}
-                                {/*    // на котором была открыта наша модалка*/}
-                                {/*    state={{background: location}}*/}
-                                {/*    style={{opacity}}*/}
-                                {/*    onClick={() => {*/}
-                                {/*        openOrderModal(orderId)*/}
-                                {/*    }}*/}
-                                {/*>*/}
+                            <Link
+                                key={order.number}
+                                to={`/feed/${order.number}`}
+                                // сохраняем в свойство background роут,
+                                // на котором была открыта наша модалка
+                                state={{background: location}}
+                                onClick={() => {
+                                    openOrderModal(order)
+                                }}
+                            >
+                                <li key={order.number} className={styles.order}>
                                     <div className={styles.date}>
-                                        <p className="text text_type_digits-default">{`#${order._id.slice(-6)}`}</p>
+                                        <p className="text text_type_digits-default">{`#${order.number}`}</p>
                                         <div>
                                             <FormattedDate date={new Date(order.createdAt)}
                                                            className="text text_type_main-default text_color_inactive"/>
@@ -92,16 +90,17 @@ const OrdersFeed = () => {
                                             </span>
 
                                                 </li>
-                                                )}
+                                            )}
                                         </ul>
 
                                         <div className={styles.total}>
-                                            <span className="text text_type_digits-default">{totalPrice(order)}</span>
+                                            <span
+                                                className="text text_type_digits-default">{getIngredientsTotalPrice(order)}</span>
                                             <CurrencyIcon type="primary"/>
                                         </div>
                                     </div>
-                                {/*</Link>*/}
-                            </li>
+                                </li>
+                            </Link>
                         ))}
 
                     </ul>

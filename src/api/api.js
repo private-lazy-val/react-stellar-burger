@@ -9,6 +9,7 @@ const checkResponse = (res) => {
 
 const checkSuccess = (res) => {
     if (res && res.success) {
+        console.log(res)
         return res;
     }
     return Promise.reject(`Response to success check: ${res}`);

@@ -1,3 +1,5 @@
+import {useCallback, useMemo} from "react";
+
 export const ingredientsDetails = {
     "643d69a5c3f7b9001cfa093c": {
         url: "https://code.s3.yandex.net/react/code/bun-02-mobile.png",
@@ -75,3 +77,26 @@ export const ingredientsDetails = {
         price: 4142
     }
 };
+
+export const getIngredientsTotalPrice = (order) => {
+    if (!order || !order.ingredients) return 0;
+
+    const ingredientsPrices = order.ingredients.map(ingredientId => {
+            if (ingredientsDetails[ingredientId]) {
+                return ingredientsDetails[ingredientId].price;
+            } else {
+                return 0;
+            }
+        }
+    );
+    return ingredientsPrices.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+};
+
+export const getIngredientCount = (ingredientId, order) => {
+    if (!order || !order.ingredients) {
+        return 0;
+    }
+    return order.ingredients.reduce((count, currentIngredientId) => {
+        return count + (currentIngredientId === ingredientId ? 1 : 0);
+    }, 0);
+}

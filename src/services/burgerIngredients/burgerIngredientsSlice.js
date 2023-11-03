@@ -1,8 +1,8 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import request from "../../app/api/api";
+import request from "../../api/api";
 
 export const loadAllIngredients = createAsyncThunk(
-    "burgerIngredients/loadIngredients",
+    "burgerIngredients/loadAllIngredients",
     async () => {
         const res = await request('/ingredients'); // GET is used by default
         if (res.data && res.data.length > 0) {

@@ -20,7 +20,8 @@ import {OnlyAuth, OnlyUnAuth} from "./components/protected-routes/protected-rout
 import IngredientPage from "./pages/ingredient-page/ingredient-page";
 import ResetPasswordRoute from "./components/reset-password-route/reset-password-route";
 import OrdersFeed from "./pages/orders-feed/orders-feed";
-import OrderData from "./components/modals/order-data/order-data";
+import Order from "./components/modals/order/order";
+import OrderPage from "./pages/order-page/order-page";
 
 function App() {
     const dispatch = useDispatch();
@@ -61,9 +62,8 @@ function App() {
                     <Route path='ingredients/:ingredientId'
                            element={<IngredientPage title='Детали ингредиента'/>}
                     />
-                    <Route path='feed' element={<OrdersFeed/>}>
-                        {/*<Route path='feed/:id' element={<OrderPage/>}/>*/}
-                    </Route>
+                    <Route path='feed' element={<OrdersFeed/>}/>
+                    <Route path='feed/:orderId' element={<OrderPage/>}/>
 
                     {/*protected routes*/}
                     <Route path='profile'>
@@ -77,7 +77,8 @@ function App() {
                     <Route path='register' element={<OnlyUnAuth component={<Register/>}/>}/>
                     <Route path='login' element={<OnlyUnAuth component={<Login/>}/>}/>
                     <Route path='forgot-password' element={<OnlyUnAuth component={<ForgotPassword/>}/>}/>
-                    <Route path='reset-password' element={<OnlyUnAuth component={<ResetPasswordRoute component={<ResetPassword/>}/>}/>}/>
+                    <Route path='reset-password'
+                           element={<OnlyUnAuth component={<ResetPasswordRoute component={<ResetPassword/>}/>}/>}/>
 
                     {/*catch all*/}
                     <Route path='*' element={<Missing/>}/>
@@ -104,7 +105,7 @@ function App() {
                         }
                     />
                     <Route
-                        path='feed/:id'
+                        path='feed/:orderId'
                         element={
                             <CSSTransition
                                 in={modalType === 'order'}
@@ -114,7 +115,7 @@ function App() {
                                 unmountOnExit
                             >
                                 <Modal ref={nodeRef} closeModal={closeOrderModal}>
-                                    <OrderData/>
+                                    <Order/>
                                 </Modal>
                             </CSSTransition>
                         }

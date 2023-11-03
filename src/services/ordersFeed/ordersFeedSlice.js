@@ -1,8 +1,8 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import request from "../../app/api/api";
+import request from "../../api/api";
 
 export const fetchAllOrders = createAsyncThunk(
-    "ordersFeed/getAllOrders",
+    "ordersFeed/fetchAllOrders",
     async () => {
         return await request('/orders/all');
     }

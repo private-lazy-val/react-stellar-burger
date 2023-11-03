@@ -1,4 +1,4 @@
-import {BASE_URL} from "../app/api/api";
+import {BASE_URL} from "../api/api";
 import {getCookie, setCookie} from "./cookie";
 import {getDefaultHeaders} from "./headers";
 

@@ -41,7 +41,6 @@ const Login = () => {
         dispatch(login({email, password: pwd}))
             .then((action) => {
                 if (action.type === loginFulfilled) {
-
                     setEmail('');
                     setPwd('');
                 }
