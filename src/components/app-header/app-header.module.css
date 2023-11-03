@@ -1,3 +1,8 @@
+.header {
+    position: sticky;
+    top: 0;
+}
+
 .list {
     width: 100%;
     display: flex;
@@ -6,15 +11,15 @@
     white-space: nowrap;
 }
 
-.link {
-    text-decoration: none;
-    display: flex;
-    gap: 8px;
-    color: inherit;
-}
-
 .list-item:last-child {
     margin-left: auto;
+}
+
+.list-item a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--common-transition);
 }
 
 .logo {

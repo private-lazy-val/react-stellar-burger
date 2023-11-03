@@ -1,32 +1,41 @@
 import {Logo, BurgerIcon, ListIcon, ProfileIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./app-header.module.css";
 import React from "react";
+import {NavLink, useLocation} from "react-router-dom";
 
 const AppHeader = React.memo(() => {
+    const location = useLocation();
+    const setActive = ({isActive}) => isActive
+        ? 'text text_type_main-default'
+        : 'text text_type_main-default text_color_inactive';
+
     return (
-        <header className="pb-4 pt-4">
-            <a href="/" className={styles.logo}>
+        <header className={`${styles.header} pb-4 pt-4`}>
+            <NavLink to="/" className={styles.logo}>
                 <Logo/>
-            </a>
+            </NavLink>
             <nav>
                 <ul className={`${styles.list} pl-5 pr-5`}>
                     <li className={styles['list-item']}>
-                        <a href="/" className={styles.link}>
-                            <BurgerIcon type="primary"/>
-                            <p className="text text_type_main-default">Конструктор</p>
-                        </a>
+                        <NavLink to='/'
+                                 className={setActive}>
+                            <BurgerIcon type={location.pathname === '/' ? 'primary' : 'secondary'}/>
+                            <span>Конструктор</span>
+                        </NavLink>
                     </li>
                     <li className={styles['list-item']}>
-                        <a href="/" className={styles.link}>
-                            <ListIcon type="secondary"/>
-                            <p className="text text_type_main-default text_color_inactive">Лента заказов</p>
-                        </a>
+                        <NavLink to='/feed'
+                                 className={setActive}>
+                            <ListIcon type={location.pathname.startsWith('/feed') ? 'primary' : 'secondary'}/>
+                            <span>Лента заказов</span>
+                        </NavLink>
                     </li>
                     <li className={styles['list-item']}>
-                        <a href="/" className={styles.link}>
-                            <ProfileIcon type="secondary"/>
-                            <p className="text text_type_main-default text_color_inactive">Личный кабинет</p>
-                        </a>
+                        <NavLink to='/profile'
+                                 className={setActive}>
+                            <ProfileIcon type={location.pathname.startsWith('/profile') ? 'primary' : 'secondary'}/>
+                            <span>Личный кабинет</span>
+                        </NavLink>
                     </li>
                 </ul>
             </nav>

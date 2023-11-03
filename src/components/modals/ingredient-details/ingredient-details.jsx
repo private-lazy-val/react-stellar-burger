@@ -11,7 +11,7 @@ const IngredientDetails = ({title}) => {
             {ingredient && (
                 <>
                     <h2 className={`${styles.heading} text text_type_main-large`}>{title}</h2>
-                    <img className='mt-3' src={ingredient.image_large} alt={ingredient.name}/>
+                    <img className='mt-3' src={ingredient.image_large} alt={ingredient.name} width="480" height="240"/>
                     <h3 className="text text_type_main-medium mt-4 mb-8">{ingredient.name}</h3>
                     <ul className={styles.list}>
                         <li className={styles.item}>

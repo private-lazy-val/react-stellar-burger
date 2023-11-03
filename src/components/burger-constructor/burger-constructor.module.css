@@ -7,7 +7,6 @@
     display: flex;
     flex-direction: column;
     row-gap: 16px;
-    box-sizing: content-box;
 }
 
 .stub {
@@ -35,6 +34,10 @@
 
 .bun {
     margin-left: 48px;
+}
+
+.bun svg {
+    cursor: default;
 }
 
 .checkout {

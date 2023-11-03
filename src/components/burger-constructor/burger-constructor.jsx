@@ -1,30 +1,38 @@
-import React, {useMemo} from "react";
+import {useMemo} from "react";
 import DroppableIngredientArea from '../droppable-ingredient-area/droppable-ingredient-area';
 import {ConstructorElement, CurrencyIcon, Button} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./burger-constructor.module.css";
-import PropTypes from "prop-types";
 import {useDispatch, useSelector} from "react-redux";
 import {
     addBun,
     addIngredient
 } from "../../services/burgerConstructor/burgerConstructorSlice";
-import {fetchOrderId} from "../../services/orderDetails/orderDetailsSlice";
+import {fetchOrderId} from "../../services/submitOrder/submitOrderSlice";
 import {
     selectBun,
     selectIngredients
 } from "../../services/burgerConstructor/selector";
-import {selectIsLoadingIngredients,
-    selectHasErrorIngredients} from "../../services/burgerIngredients/selector";
+import {
+    selectIsLoadingIngredients,
+    selectHasErrorIngredients
+} from "../../services/burgerIngredients/selector";
 import {useDrop} from "react-dnd";
+import useModal from "../../hooks/useModal";
+import {selectAllOrders, selectTodayTotalOrders, selectTotalOrders} from "../../services/ordersFeed/selector";
 
-const BurgerConstructor = React.memo(({openModal}) => {
-
-    const bun = useSelector(selectBun);
-    const ingredients = useSelector(selectIngredients);
-    const isLoading = useSelector(selectIsLoadingIngredients);
-    const hasError = useSelector(selectHasErrorIngredients);
-
+const BurgerConstructor = () => {
     const dispatch = useDispatch();
+
+    const { bun, ingredients, isLoading, hasError } = useSelector(state => ({
+        bun: selectBun(state),
+        ingredients: selectIngredients(state),
+        isLoading: selectIsLoadingIngredients(state),
+        hasError: selectHasErrorIngredients(state)
+    }));
+
+    const {
+        openSubmitOrderModal,
+    } = useModal();
 
     const totalPrice = useMemo(() => {
         return ingredients.reduce((accumulator, ingredient) => accumulator + ingredient.price, 0) + (bun ? bun.price * 2 : 0);
@@ -57,7 +65,7 @@ const BurgerConstructor = React.memo(({openModal}) => {
                 ingredients: [bun._id, ...ingredients.map(ingredient => ingredient._id), bun._id]
             }
             dispatch(fetchOrderId(newOrder));
-            openModal(newOrder);
+            openSubmitOrderModal(newOrder);
         }
     };
 
@@ -106,16 +114,13 @@ const BurgerConstructor = React.memo(({openModal}) => {
                     <span className="text text_type_digits-medium">{totalPrice}</span>
                     <CurrencyIcon type="primary"/>
                 </div>
-                <Button htmlType="button" type="primary" size="large" onClick={submitOrder} disabled={!bun || ingredients.length < 1}>
+                <Button htmlType="button" type="primary" size="large" onClick={submitOrder}
+                        disabled={!bun || ingredients.length < 1}>
                     Оформить заказ
                 </Button>
             </div>
         </section>
     );
-});
-
-BurgerConstructor.propTypes = {
-    openModal: PropTypes.func.isRequired
 };
 
 export default BurgerConstructor;

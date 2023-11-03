@@ -1,10 +1,10 @@
-export const BASE_URL = "https://norma.nomoreparties.space/api/";
+export const BASE_URL = "https://norma.nomoreparties.space/api";
 
 const checkResponse = (res) => {
     if (res.ok) {
         return res.json();
     }
-    return Promise.reject(`Error fetching ingredients: ${res.status}`);
+    return Promise.reject(`Error fetching data: ${res.status}`);
 };
 
 const checkSuccess = (res) => {

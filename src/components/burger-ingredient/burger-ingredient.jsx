@@ -1,18 +1,25 @@
 import React, {useMemo} from 'react';
 import styles from "./burger-ingredient.module.css";
 import {Counter, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
-import PropTypes from "prop-types";
 import {useDrag} from "react-dnd";
 import ingredientPropType from "../../utils/prop-types";
 import {useSelector} from "react-redux";
 import {makeSelectIngredientCount} from "../../services/burgerConstructor/selector";
+import useModal from "../../hooks/useModal";
+import {Link, useLocation} from "react-router-dom";
 
-const BurgerIngredient = React.memo(({ingredient, openModal}) => {
+const BurgerIngredient = React.memo(({ingredient}) => {
+    const location = useLocation();
+    const ingredientId = ingredient['_id'];
     // This selection function is utilized to keep a stable reference to the created selector
     const selectIngredientCount = useMemo(makeSelectIngredientCount, []);
     // If the parts of the state that this selector depends upon (bun and ingredients) are updated in the Redux store,
     // useSelector will trigger a re-run of the selection function and, if the selected value (count) changes, the component will re-render.
     const count = useSelector(state => selectIngredientCount(state, ingredient._id));
+
+    const {
+        openIngredientModal
+    } = useModal();
 
     const [{opacity}, dragRef] = useDrag({
         type: "ingredient",
@@ -24,12 +31,18 @@ const BurgerIngredient = React.memo(({ingredient, openModal}) => {
     });
 
     return (
-        <li
+        <Link
+            key={ingredientId}
+            // Тут мы формируем динамический путь для нашего ингредиента
+            to={`/ingredients/${ingredientId}`}
+            // а также сохраняем в свойство background роут,
+            // на котором была открыта наша модалка
+            state={{background: location}}
             ref={dragRef}
             className={styles.ingredient}
             style={{opacity}}
             onClick={() => {
-                openModal(ingredient)
+                openIngredientModal(ingredient)
             }}
         >
             {count > 0 && <Counter count={count} size="default" extraClass="m-1"/>}
@@ -39,13 +52,12 @@ const BurgerIngredient = React.memo(({ingredient, openModal}) => {
                 <CurrencyIcon type="primary"/>
             </div>
             <span className="text text_type_main-default">{ingredient.name}</span>
-        </li>
+        </Link>
     );
 });
 
 BurgerIngredient.propTypes = {
-    ingredient: ingredientPropType.isRequired,
-    openModal: PropTypes.func.isRequired
+    ingredient: ingredientPropType.isRequired
 };
 
 export default BurgerIngredient;

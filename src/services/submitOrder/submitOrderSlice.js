@@ -1,10 +1,10 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import request from "../../api/api";
+import request from "../../app/api/api";
 
 export const fetchOrderId = createAsyncThunk(
-    "orderDetails/getOrderId",
+    "submitOrder/getOrderId",
     async (newOrder) => {
-        const endpoint = 'orders';
+        const endpoint = '/orders';
         const options = {
             method: 'POST',
             headers: {
@@ -23,8 +23,8 @@ export const fetchOrderId = createAsyncThunk(
     }
 );
 
-export const orderDetailsSlice = createSlice({
-    name: "orderDetails",
+export const submitOrderSlice = createSlice({
+    name: "submitOrder",
     initialState: {
         number: null,
         isLoading: true,
@@ -49,4 +49,4 @@ export const orderDetailsSlice = createSlice({
     }
 });
 
-export default orderDetailsSlice.reducer;
+export default submitOrderSlice.reducer;

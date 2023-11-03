@@ -7,42 +7,63 @@ import {
     setModalType
 } from '../services/modal/modalSlice';
 import {resetConstructor} from "../services/burgerConstructor/burgerConstructorSlice";
+import {useLocation, useNavigate} from "react-router-dom";
 
 const useModal = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const isModalOpen = useSelector(state => state.modal.isOpen);
     const modalType = useSelector(state => state.modal.modalType);
 
-    const closeIngredientModal = useCallback(() => {
-        dispatch(closeModal());
-        dispatch(setModalType(null));
+    const openIngredientModal = useCallback((ingredient) => {
+        localStorage.setItem('ingredientModalOpen', 'true');
+        localStorage.setItem('ingredientModalData', JSON.stringify(ingredient));
+        dispatch(setModalType('ingredient'));
+        dispatch(showDetails(ingredient));
     }, [dispatch]);
 
-    const closeOrderModal = useCallback(() => {
+    const closeIngredientModal = useCallback(() => {
+        localStorage.removeItem('ingredientModalOpen');
+        localStorage.removeItem('ingredientModalData');
+        dispatch(setModalType(null));
+        navigate(-1);
+    }, [dispatch, navigate]);
+
+    const openSubmitOrderModal = useCallback(() => {
+        dispatch(openModal());
+        dispatch(setModalType('submit-order'));
+    }, [dispatch]);
+
+    const closeSubmitOrderModal = useCallback(() => {
         dispatch(resetConstructor());
         dispatch(closeModal());
         dispatch(setModalType(null));
     }, [dispatch]);
 
-    const openIngredientModal = useCallback((ingredient) => {
-        dispatch(openModal());
-        dispatch(setModalType('ingredient'));
-        dispatch(showDetails(ingredient));
+    const openOrderModal = useCallback((order) => {
+        localStorage.setItem('orderModalOpen', 'true');
+        localStorage.setItem('orderModalData', JSON.stringify(order));
+        dispatch(setModalType('order'));
+        dispatch(showDetails(order));
     }, [dispatch]);
 
-    const openOrderModal = useCallback(() => {
-        dispatch(openModal());
-        dispatch(setModalType('order'));
-    }, [dispatch]);
+    const closeOrderModal = useCallback(() => {
+        localStorage.removeItem('orderModalOpen');
+        localStorage.removeItem('orderModalData');
+        dispatch(setModalType(null));
+        navigate(-1);
+    }, [dispatch, navigate]);
 
     return {
         isModalOpen,
         modalType,
         openIngredientModal,
-        openOrderModal,
         closeIngredientModal,
-        closeOrderModal,
+        openSubmitOrderModal,
+        closeSubmitOrderModal,
+        openOrderModal,
+        closeOrderModal
     };
 };
 

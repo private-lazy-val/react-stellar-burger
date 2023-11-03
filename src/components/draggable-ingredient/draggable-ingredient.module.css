@@ -8,7 +8,3 @@
     opacity: .7;
 }
 
-/*Set default cursor on lock icon located in buns*/
-svg[fill="#8585AD"] {
-    cursor: default;
-}

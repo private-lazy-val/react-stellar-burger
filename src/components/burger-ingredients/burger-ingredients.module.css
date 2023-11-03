@@ -16,7 +16,8 @@
 }
 
 .backdrop, .error {
-    margin: 0 auto;
+    margin-top: 140px;
+    margin-inline: auto;
     text-align: center;
 }
 
