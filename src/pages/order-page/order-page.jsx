@@ -3,13 +3,14 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useEffect} from "react";
 import {fetchOrderDetails} from "../../services/order-details/order-details-slice";
 import {selectHasErrorOrder, selectIsLoadingOrder, selectOrderDetails} from "../../services/order-details/selector";
-import {getIngredientCount, getIngredientsTotalPrice, ingredientsDetails} from "../../utils/ingredients-details";
+import {getIngredientCount, getIngredientsTotalPrice} from "../../utils/ingredients-details";
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
 import useLoadingAndErrorHandling from "../../hooks/use-loading-and-error-handling";
 import LoadingComponent from "../../utils/loading-component";
 import ErrorComponent from "../../utils/error-component";
 import styles from './order-page.module.css';
 import commonStyles from '../../components/modals/order-details/order-details.module.css';
+import {selectIngredientsMap} from "../../services/burger-ingredients/selector";
 
 const OrderPage = () => {
     const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingOrder, selectHasErrorOrder);
@@ -28,6 +29,8 @@ const OrderPage = () => {
                 }
             })
     }, [orderId, dispatch, navigate]);
+
+    const ingredientsMap = useSelector(selectIngredientsMap);
 
     const orderStatus = order?.status === 'done' ? 'Выполнен' : 'В процессе';
 
@@ -49,20 +52,20 @@ const OrderPage = () => {
 
                 <ul className={`${commonStyles[`ingredients-list`]} custom-scroll`}>
                     {order.ingredients.map((ingredientId, index) => (
-                        ingredientsDetails[ingredientId] ? (
+                        ingredientsMap[ingredientId] ? (
                             <li key={index} className={commonStyles.ingredient}>
                                 <div className={commonStyles[`ingredient-name`]}>
                                     <div className={commonStyles[`img-wrapper`]}>
                                         <img className={commonStyles[`ingredient-img`]}
-                                             src={ingredientsDetails[ingredientId].url}
-                                             alt={ingredientsDetails[ingredientId].alt}/>
+                                             src={ingredientsMap[ingredientId].image_mobile}
+                                             alt={ingredientsMap[ingredientId].alt}/>
                                     </div>
-                                    <h3 className="text text_type_main-default">{ingredientsDetails[ingredientId].alt}</h3>
+                                    <h3 className="text text_type_main-default">{ingredientsMap[ingredientId].name}</h3>
                                 </div>
                                 <div className={commonStyles[`ingredient-price`]}>
                                     <span className="text text_type_digits-default">{getIngredientCount(ingredientId, order)}</span>
                                     <span className="text text_type_digits-default">x</span>
-                                    <span className="text text_type_digits-default">{ingredientsDetails[ingredientId].price}</span>
+                                    <span className="text text_type_digits-default">{ingredientsMap[ingredientId].price}</span>
                                     <CurrencyIcon type="primary"/>
                                 </div>
                             </li>
@@ -78,7 +81,7 @@ const OrderPage = () => {
                             className="text text_type_main-default text_color_inactive">&nbsp;i-GMT+3</span>
                     </div>
                     <div className={commonStyles.total}>
-                        <span className="text text_type_digits-default">{getIngredientsTotalPrice(order)}</span>
+                        <span className="text text_type_digits-default">{getIngredientsTotalPrice(order, ingredientsMap)}</span>
                         <CurrencyIcon type="primary"/>
                     </div>
                 </div>

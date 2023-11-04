@@ -5,6 +5,7 @@ import {NavLink, useLocation} from "react-router-dom";
 
 const AppHeader = React.memo(() => {
     const location = useLocation();
+    console.log(location.pathname)
     const setActive = ({isActive}) => isActive
         ? 'text text_type_main-default'
         : 'text text_type_main-default text_color_inactive';
@@ -26,14 +27,16 @@ const AppHeader = React.memo(() => {
                     <li className={styles['list-item']}>
                         <NavLink to='/feed'
                                  className={setActive}>
-                            <ListIcon type={location.pathname.startsWith('/feed') ? 'primary' : 'secondary'}/>
+                            <ListIcon type={location.pathname === '/feed'
+                            || location.pathname.startsWith('/feed/') ? 'primary' : 'secondary'}/>
                             <span>Лента заказов</span>
                         </NavLink>
                     </li>
                     <li className={styles['list-item']}>
                         <NavLink to='/profile'
                                  className={setActive}>
-                            <ProfileIcon type={location.pathname.startsWith('/profile') ? 'primary' : 'secondary'}/>
+                            <ProfileIcon type={location.pathname === '/profile'
+                            || location.pathname.startsWith('/profile/') ? 'primary' : 'secondary'}/>
                             <span>Личный кабинет</span>
                         </NavLink>
                     </li>

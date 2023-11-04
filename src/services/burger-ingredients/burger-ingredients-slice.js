@@ -6,7 +6,18 @@ export const loadAllIngredients = createAsyncThunk(
     async () => {
         const res = await request('/ingredients'); // GET is used by default
         if (res.data && res.data.length > 0) {
-            return res.data;
+            // "map" starts off as an empty object {}
+            // and by the end of the .reduce() execution,
+            // it becomes an object with properties corresponding to each ingredient's _id
+            const ingredientsMap = res.data.reduce((map, ingredient) => {
+                const { _id, ...restOfProperties } = ingredient;
+                map[_id] = restOfProperties;
+                return map;
+            }, {});
+            return {
+                map: ingredientsMap,
+                array: res.data,
+            };
         } else {
             throw new Error('Data format is incorrect or array is empty');
         }
@@ -18,6 +29,7 @@ export const burgerIngredientsSlice = createSlice({
     name: "burgerIngredients",
     initialState: {
         ingredients: [],
+        ingredientsMap: {},
         currentTab: 'Булки',
         isLoading: false,
         hasError: false,
@@ -36,7 +48,8 @@ export const burgerIngredientsSlice = createSlice({
             .addCase(loadAllIngredients.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.hasError = false;
-                state.ingredients = action.payload;
+                state.ingredients = action.payload.array;
+                state.ingredientsMap = action.payload.map;
             })
             .addCase(loadAllIngredients.rejected, (state) => {
                 state.isLoading = false;

@@ -2,10 +2,13 @@ import {useSelector} from "react-redux";
 import {selectOrderDetails} from '../../../services/order-details/selector';
 import styles from './order-details.module.css';
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
-import {getIngredientCount, getIngredientsTotalPrice, ingredientsDetails} from "../../../utils/ingredients-details";
+import {getIngredientCount, getIngredientsTotalPrice} from "../../../utils/ingredients-details";
+import {selectIngredientsMap} from "../../../services/burger-ingredients/selector";
 
 const OrderDetails = () => {
     const order = useSelector(selectOrderDetails);
+
+    const ingredientsMap = useSelector(selectIngredientsMap);
 
     const orderStatus = order.status === 'done' ? 'Выполнен' : 'В процессе';
 
@@ -18,20 +21,20 @@ const OrderDetails = () => {
 
             <ul className={`${styles[`ingredients-list`]} custom-scroll`}>
                 {order.ingredients.map((ingredientId, index) => (
-                    ingredientsDetails[ingredientId] ? (
+                    ingredientsMap[ingredientId] ? (
                         <li key={index} className={styles.ingredient}>
                             <div className={styles[`ingredient-name`]}>
                                 <div className={styles[`img-wrapper`]}>
                                     <img className={styles[`ingredient-img`]}
-                                         src={ingredientsDetails[ingredientId].url}
-                                         alt={ingredientsDetails[ingredientId].alt}/>
+                                         src={ingredientsMap[ingredientId].image_mobile}
+                                         alt={ingredientsMap[ingredientId].alt}/>
                                 </div>
-                                <h3 className="text text_type_main-default">{ingredientsDetails[ingredientId].alt}</h3>
+                                <h3 className="text text_type_main-default">{ingredientsMap[ingredientId].name}</h3>
                             </div>
                             <div className={styles[`ingredient-price`]}>
                                 <span className="text text_type_digits-default">{getIngredientCount(ingredientId, order)}</span>
                                 <span className="text text_type_digits-default">x</span>
-                                <span className="text text_type_digits-default">{ingredientsDetails[ingredientId].price}</span>
+                                <span className="text text_type_digits-default">{ingredientsMap[ingredientId].price}</span>
                                 <CurrencyIcon type="primary"/>
                             </div>
                         </li>
@@ -47,7 +50,7 @@ const OrderDetails = () => {
                         className="text text_type_main-default text_color_inactive">&nbsp;i-GMT+3</span>
                 </div>
                 <div className={styles.total}>
-                    <span className="text text_type_digits-default">{getIngredientsTotalPrice(order)}</span>
+                    <span className="text text_type_digits-default">{getIngredientsTotalPrice(order, ingredientsMap)}</span>
                     <CurrencyIcon type="primary"/>
                 </div>
             </div>

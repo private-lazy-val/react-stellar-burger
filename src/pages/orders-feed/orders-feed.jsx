@@ -8,9 +8,10 @@ import {
     selectTodayTotalOrders,
     selectTotalOrders
 } from "../../services/orders-feed/selector";
-import {getIngredientsTotalPrice, ingredientsDetails} from "../../utils/ingredients-details";
+import {getIngredientsTotalPrice} from "../../utils/ingredients-details";
 import useModal from "../../hooks/use-modal";
 import {Link, useLocation} from "react-router-dom";
+import {selectIngredientsMap} from "../../services/burger-ingredients/selector";
 
 const OrdersFeed = () => {
     const dispatch = useDispatch();
@@ -29,6 +30,8 @@ const OrdersFeed = () => {
         totalOrders: selectTotalOrders(state),
         totalTodayOrders: selectTodayTotalOrders(state)
     }));
+
+    const ingredientsMap = useSelector(selectIngredientsMap);
 
     const lastTenReadyOrdersIds = useMemo(() => {
         return orders.filter(order => order.status === 'done').map(order => order.number).slice(-10);
@@ -71,11 +74,11 @@ const OrdersFeed = () => {
                                     <div className={styles.summary}>
                                         <ul className={styles.ingredients}>
                                             {order.ingredients.slice(0, 5).map((ingredientId, index) => (
-                                                ingredientsDetails[ingredientId] ? (
+                                                ingredientsMap[ingredientId] ? (
                                                     <li key={index} className={styles.ingredient}>
                                                         <img className={styles[`ingredient-img`]}
-                                                             src={ingredientsDetails[ingredientId].url}
-                                                             alt={ingredientsDetails[ingredientId].alt}/>
+                                                             src={ingredientsMap[ingredientId].image_mobile}
+                                                             alt={ingredientsMap[ingredientId].alt}/>
                                                     </li>
                                                 ) : null
                                             ))}
@@ -84,8 +87,8 @@ const OrdersFeed = () => {
                                                 <li className={styles.ingredient}>
                                                     <img
                                                         className={`${styles['ingredient-img']} ${styles['fifth-ingredient-img']}`}
-                                                        src={ingredientsDetails[order.ingredients[5]].url}
-                                                        alt={ingredientsDetails[order.ingredients[5]].alt}/>
+                                                        src={ingredientsMap[order.ingredients[5]].image_mobile}
+                                                        alt={ingredientsMap[order.ingredients[5]].alt}/>
                                                     <span
                                                         className={`${styles[`hidden-ingredient`]} text text_type_main-default`}>
                                                 +{order.ingredients.length - 5}
@@ -96,7 +99,7 @@ const OrdersFeed = () => {
 
                                         <div className={styles.total}>
                                             <span
-                                                className="text text_type_digits-default">{getIngredientsTotalPrice(order)}</span>
+                                                className="text text_type_digits-default">{getIngredientsTotalPrice(order, ingredientsMap)}</span>
                                             <CurrencyIcon type="primary"/>
                                         </div>
                                     </div>
