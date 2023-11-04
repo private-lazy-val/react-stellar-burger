@@ -10,6 +10,7 @@ import {Link, useLocation} from "react-router-dom";
 
 const BurgerIngredient = React.memo(({ingredient}) => {
     const location = useLocation();
+
     const ingredientId = ingredient['_id'];
     // This selection function is utilized to keep a stable reference to the created selector
     const selectIngredientCount = useMemo(makeSelectIngredientCount, []);

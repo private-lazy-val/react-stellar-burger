@@ -3,16 +3,16 @@ import {Button, EmailInput, Input, PasswordInput} from "@ya.praktikum/react-deve
 import React, {useEffect, useState} from "react";
 import styles from '../auth.module.css';
 import {useDispatch, useSelector} from "react-redux";
-import {logout, updateUser} from "../../services/user/action";
+import {updateUser} from "../../services/user/action";
 import {selectErrMsg, selectUser} from "../../services/user/selector";
 import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
 import {updateUserFulfilled} from "../../utils/action-types";
+import {useUserActions} from "../../hooks/useUserActions";
 
 const Profile = () => {
     const dispatch = useDispatch();
-    const setActive = ({isActive}) => isActive
-        ? 'text text_type_main-medium'
-        : 'text text_type_main-medium text_color_inactive';
+
+    const { onLogout, setActive } = useUserActions();
 
     const user = useSelector(selectUser);
     const errMsg = useSelector(selectErrMsg);
@@ -74,17 +74,20 @@ const Profile = () => {
         setPwd('00000');
     }
 
-    const onLogout = () => {
-        dispatch(logout());
-    }
-
     return (
         <main className={styles.profile}>
-            <div aria-label='sidebar'>
+            <div aria-label='side-menu'>
                 <ul className={styles.sidebar}>
-                    <li><NavLink to='/profile' className={setActive}>Профиль</NavLink></li>
+                    <li><NavLink end to='/profile' className={setActive}>Профиль</NavLink></li>
                     <li><NavLink to='/profile/orders' className={setActive}>История заказов</NavLink></li>
-                    <li><button className={`${styles['logout-btn']} text text_type_main-medium text_color_inactive`} type='button' onClick={onLogout}>Выход</button></li>
+                    <li>
+                        <button
+                            className={`${styles['logout-btn']} text text_type_main-medium text_color_inactive`}
+                            type='button'
+                            onClick={onLogout}>
+                            Выход
+                        </button>
+                    </li>
                 </ul>
             </div>
             <form className={styles["profile-form"]} onSubmit={handleUpdate}>

@@ -9,6 +9,7 @@ import useLoadingAndErrorHandling from "../../hooks/useLoadingAndErrorHandling";
 import LoadingComponent from "../../utils/loading-component";
 import ErrorComponent from "../../utils/error-component";
 import styles from './order-page.module.css';
+import commonStyles from '../../components/modals/order-details/order-details.module.css';
 
 const OrderPage = () => {
     const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingOrder, selectHasErrorOrder);
@@ -40,26 +41,28 @@ const OrderPage = () => {
 
     return (
         order && (
-            <div>
-                <p className="text text_type_digits-default">{`#${order.number}`}</p>
+            <div className={styles.order}>
+                <p className={`${commonStyles[`order-number`]} text text_type_digits-default`}>{`#${order.number}`}</p>
                 <h2 className="text text_type_main-medium">{order.name}</h2>
-                <p className={`${styles[`order-status`]} text text_type_main-default`}>{orderStatus}</p>
+                <p className={`${commonStyles[`order-status`]} text text_type_main-default`}>{orderStatus}</p>
                 <p className="text text_type_main-medium">Состав:</p>
 
-                <ul className={`${styles[`ingredients-list`]} custom-scroll`}>
+                <ul className={`${commonStyles[`ingredients-list`]} custom-scroll`}>
                     {order.ingredients.map((ingredientId, index) => (
                         ingredientsDetails[ingredientId] ? (
-                            <li key={index} className={styles.ingredient}>
-                                <div>
-                                    <img className={styles[`ingredient-img`]}
-                                         src={ingredientsDetails[ingredientId].url}
-                                         alt={ingredientsDetails[ingredientId].alt}/>
-                                    <h3>{ingredientsDetails[ingredientId].alt}</h3>
+                            <li key={index} className={commonStyles.ingredient}>
+                                <div className={commonStyles[`ingredient-name`]}>
+                                    <div className={commonStyles[`img-wrapper`]}>
+                                        <img className={commonStyles[`ingredient-img`]}
+                                             src={ingredientsDetails[ingredientId].url}
+                                             alt={ingredientsDetails[ingredientId].alt}/>
+                                    </div>
+                                    <h3 className="text text_type_main-default">{ingredientsDetails[ingredientId].alt}</h3>
                                 </div>
-                                <div>
-                                    <span>{getIngredientCount(ingredientId, order)}</span>
-                                    <span>X</span>
-                                    <span>{ingredientsDetails[ingredientId].price}</span>
+                                <div className={commonStyles[`ingredient-price`]}>
+                                    <span className="text text_type_digits-default">{getIngredientCount(ingredientId, order)}</span>
+                                    <span className="text text_type_digits-default">x</span>
+                                    <span className="text text_type_digits-default">{ingredientsDetails[ingredientId].price}</span>
                                     <CurrencyIcon type="primary"/>
                                 </div>
                             </li>
@@ -67,14 +70,14 @@ const OrderPage = () => {
                     ))}
                 </ul>
 
-                <div>
+                <div className={commonStyles.summary}>
                     <div>
                         <FormattedDate date={new Date(order.createdAt)}
                                        className="text text_type_main-default text_color_inactive"/>
                         <span
                             className="text text_type_main-default text_color_inactive">&nbsp;i-GMT+3</span>
                     </div>
-                    <div className={styles.total}>
+                    <div className={commonStyles.total}>
                         <span className="text text_type_digits-default">{getIngredientsTotalPrice(order)}</span>
                         <CurrencyIcon type="primary"/>
                     </div>

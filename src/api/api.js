@@ -1,7 +1,7 @@
 export const BASE_URL = "https://norma.nomoreparties.space/api";
 
 const checkResponse = (res) => {
-    if (res.ok) {
+    if (res.ok) { // checks HTTP response status
         return res.json();
     }
     return Promise.reject(`Error fetching data: ${res.status}`);
@@ -9,7 +9,6 @@ const checkResponse = (res) => {
 
 const checkSuccess = (res) => {
     if (res && res.success) {
-        console.log(res)
         return res;
     }
     return Promise.reject(`Response to success check: ${res}`);

@@ -1,6 +1,6 @@
-import {BASE_URL} from "../api/api";
-import {getCookie, setCookie} from "./cookie";
-import {getDefaultHeaders} from "./headers";
+import {BASE_URL} from "../../api/api";
+import {getCookie, setCookie} from "../../utils/cookies";
+import {getDefaultHeaders} from "../../utils/headers";
 
 const checkResponse = (res) => {
     return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));

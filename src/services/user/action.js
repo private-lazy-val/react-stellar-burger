@@ -1,7 +1,7 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {setUser, setAuthChecked} from "./userSlice";
-import {api} from "../../utils/api";
-import {deleteCookie, getCookie, setCookie} from "../../utils/cookie";
+import {api} from "./api";
+import {deleteCookie, getCookie, setCookie} from "../../utils/cookies";
 
 export const getUser = () => {
     return (dispatch) => {

@@ -45,17 +45,19 @@ const OrdersFeed = () => {
                 <section className={styles[`feed-section`]}>
                     <ul className={`${styles[`orders-list`]} custom-scroll`}>
                         {orders.map(order => (
-                            <Link
-                                key={order.number}
-                                to={`/feed/${order.number}`}
-                                // сохраняем в свойство background роут,
-                                // на котором была открыта наша модалка
-                                state={{background: location}}
-                                onClick={() => {
-                                    openOrderModal(order)
-                                }}
-                            >
-                                <li key={order.number} className={styles.order}>
+                            <li key={order.number}>
+                                <Link
+                                    key={order.number}
+                                    to={`/feed/${order.number}`}
+                                    // сохраняем в свойство background роут,
+                                    // на котором была открыта наша модалка
+                                    state={{background: location}}
+                                    onClick={() => {
+                                        openOrderModal(order)
+                                    }}
+                                    className={styles.order}
+                                >
+
                                     <div className={styles.date}>
                                         <p className="text text_type_digits-default">{`#${order.number}`}</p>
                                         <div>
@@ -82,13 +84,12 @@ const OrdersFeed = () => {
                                                 <li className={styles.ingredient}>
                                                     <img
                                                         className={`${styles['ingredient-img']} ${styles['fifth-ingredient-img']}`}
-                                                        src={ingredientsDetails[order.ingredients[5].url]}
-                                                        alt="ingredient"/>
+                                                        src={ingredientsDetails[order.ingredients[5]].url}
+                                                        alt={ingredientsDetails[order.ingredients[5]].alt}/>
                                                     <span
                                                         className={`${styles[`hidden-ingredient`]} text text_type_main-default`}>
                                                 +{order.ingredients.length - 5}
                                             </span>
-
                                                 </li>
                                             )}
                                         </ul>
@@ -99,8 +100,8 @@ const OrdersFeed = () => {
                                             <CurrencyIcon type="primary"/>
                                         </div>
                                     </div>
-                                </li>
-                            </Link>
+                                </Link>
+                            </li>
                         ))}
 
                     </ul>

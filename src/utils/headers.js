@@ -1,4 +1,4 @@
-import {getCookie} from "./cookie";
+import {getCookie} from "./cookies";
 
 export const getDefaultHeaders = (isAuthRequired = true) => {
     const headers = {

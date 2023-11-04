@@ -20,9 +20,11 @@ import {OnlyAuth, OnlyUnAuth} from "./components/protected-routes/protected-rout
 import IngredientPage from "./pages/ingredient-page/ingredient-page";
 import ResetPasswordRoute from "./components/reset-password-route/reset-password-route";
 import OrdersFeed from "./pages/orders-feed/orders-feed";
-import Order from "./components/modals/order/order";
+import OrderDetails from "./components/modals/order-details/order-details";
 import OrderPage from "./pages/order-page/order-page";
 import {loadAllIngredients} from "./services/burgerIngredients/burgerIngredientsSlice";
+import UserOrders from "./pages/user-orders/user-orders";
+import UserOrder from "./pages/user-order/user-order";
 
 function App() {
     const dispatch = useDispatch();
@@ -73,9 +75,8 @@ function App() {
                     {/*protected routes*/}
                     <Route path='profile'>
                         <Route index element={<OnlyAuth component={<Profile/>}/>}/>
-                        {/*<Route path='orders' element={<OnlyAuth component={<Orders/>}/>}>*/}
-                        {/*    <Route path=':id' element={<OnlyAuth component={<Order/>}/>}/>*/}
-                        {/*</Route>*/}
+                        <Route path='orders' element={<OnlyAuth component={<UserOrders/>}/>}/>
+                        <Route path='orders/:id' element={<OnlyAuth component={<UserOrder/>}/>}/>
                     </Route>
 
                     {/*auth*/}
@@ -120,7 +121,7 @@ function App() {
                                 unmountOnExit
                             >
                                 <Modal ref={nodeRef} closeModal={closeOrderModal}>
-                                    <Order/>
+                                    <OrderDetails/>
                                 </Modal>
                             </CSSTransition>
                         }
