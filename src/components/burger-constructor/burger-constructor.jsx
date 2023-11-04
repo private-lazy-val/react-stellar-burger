@@ -18,7 +18,6 @@ import {
 } from "../../services/burgerIngredients/selector";
 import {useDrop} from "react-dnd";
 import useModal from "../../hooks/useModal";
-import {selectAllOrders, selectTodayTotalOrders, selectTotalOrders} from "../../services/ordersFeed/selector";
 
 const BurgerConstructor = () => {
     const dispatch = useDispatch();

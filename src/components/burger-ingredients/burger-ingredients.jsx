@@ -1,10 +1,8 @@
-import {useRef, useMemo, useEffect} from "react";
+import {useRef, useMemo} from "react";
 import styles from "./burger-ingredients.module.css";
 import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
-import {useSelector, useDispatch} from 'react-redux';
-import {
-    loadAllIngredients, switchTab
-} from "../../services/burgerIngredients/burgerIngredientsSlice";
+import {useDispatch, useSelector} from 'react-redux';
+import {switchTab} from "../../services/burgerIngredients/burgerIngredientsSlice";
 import {
     selectAllIngredients, selectCurrentTab, selectIsLoadingIngredients,
     selectHasErrorIngredients
@@ -13,22 +11,15 @@ import BurgerIngredient from "../burger-ingredient/burger-ingredient";
 import useLoadingAndErrorHandling from "../../hooks/useLoadingAndErrorHandling";
 import ErrorComponent from "../../utils/error-component";
 import LoadingComponent from "../../utils/loading-component";
-import {selectAllOrders, selectTodayTotalOrders, selectTotalOrders} from "../../services/ordersFeed/selector";
 
 const BurgerIngredients = () => {
-
+    const dispatch = useDispatch();
     const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingIngredients, selectHasErrorIngredients);
 
-    const { allIngredients, currentTab } = useSelector(state => ({
+    const {allIngredients, currentTab} = useSelector(state => ({
         allIngredients: selectAllIngredients(state),
         currentTab: selectCurrentTab(state)
     }));
-
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-            dispatch(loadAllIngredients());
-    }, [dispatch]);
 
     const categorizedItems = useMemo(() => ({
         'Булки': allIngredients.filter(item => item.type === 'bun'),

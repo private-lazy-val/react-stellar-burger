@@ -22,6 +22,7 @@ import ResetPasswordRoute from "./components/reset-password-route/reset-password
 import OrdersFeed from "./pages/orders-feed/orders-feed";
 import Order from "./components/modals/order/order";
 import OrderPage from "./pages/order-page/order-page";
+import {loadAllIngredients} from "./services/burgerIngredients/burgerIngredientsSlice";
 
 function App() {
     const dispatch = useDispatch();
@@ -38,7 +39,11 @@ function App() {
     } = useModal();
 
     useEffect(() => {
+        dispatch(loadAllIngredients());
         dispatch(checkUserAuth());
+    }, [dispatch]);
+
+    useEffect(() => {
         // Check if modal should be opened on load
         if (localStorage.getItem('ingredientModalOpen')) {
             const ingredient = JSON.parse(localStorage.getItem('ingredientModalData'));
@@ -48,7 +53,7 @@ function App() {
             const order = JSON.parse(localStorage.getItem('orderModalData'));
             openOrderModal(order);
         }
-    }, [openIngredientModal, openOrderModal, dispatch]);
+    }, [openIngredientModal, openOrderModal]);
 
     // Used in CSSTransition
     const nodeRef = useRef(null);

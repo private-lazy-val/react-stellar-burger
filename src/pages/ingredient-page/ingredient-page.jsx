@@ -12,8 +12,6 @@ import styles from "./ingredient-page.module.css";
 import useLoadingAndErrorHandling from "../../hooks/useLoadingAndErrorHandling";
 import LoadingComponent from "../../utils/loading-component";
 import ErrorComponent from "../../utils/error-component";
-import {fetchOrderDetails} from "../../services/orderDetails/orderDetailsSlice";
-
 const IngredientPage = ({title}) => {
     const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingIngredients, selectHasErrorIngredients);
 

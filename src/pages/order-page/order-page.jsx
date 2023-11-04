@@ -9,7 +9,6 @@ import useLoadingAndErrorHandling from "../../hooks/useLoadingAndErrorHandling";
 import LoadingComponent from "../../utils/loading-component";
 import ErrorComponent from "../../utils/error-component";
 import styles from './order-page.module.css';
-import {loadAllIngredients} from "../../services/burgerIngredients/burgerIngredientsSlice";
 
 const OrderPage = () => {
     const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingOrder, selectHasErrorOrder);

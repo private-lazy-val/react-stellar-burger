@@ -1,5 +1,3 @@
-import {useCallback, useMemo} from "react";
-
 export const ingredientsDetails = {
     "643d69a5c3f7b9001cfa093c": {
         url: "https://code.s3.yandex.net/react/code/bun-02-mobile.png",
