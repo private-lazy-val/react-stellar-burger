@@ -1,15 +1,15 @@
 import styles from "./orders-feed.module.css";
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
-import {fetchAllOrders} from "../../services/ordersFeed/ordersFeedSlice";
+import {fetchAllOrders} from "../../services/orders-feed/orders-feed-slice";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useMemo} from "react";
 import {
     selectAllOrders,
     selectTodayTotalOrders,
     selectTotalOrders
-} from "../../services/ordersFeed/selector";
+} from "../../services/orders-feed/selector";
 import {getIngredientsTotalPrice, ingredientsDetails} from "../../utils/ingredients-details";
-import useModal from "../../hooks/useModal";
+import useModal from "../../hooks/use-modal";
 import {Link, useLocation} from "react-router-dom";
 
 const OrdersFeed = () => {
@@ -30,11 +30,11 @@ const OrdersFeed = () => {
         totalTodayOrders: selectTodayTotalOrders(state)
     }));
 
-    const lastTwentyReadyOrdersIds = useMemo(() => {
+    const lastTenReadyOrdersIds = useMemo(() => {
         return orders.filter(order => order.status === 'done').map(order => order.number).slice(-10);
     }, [orders]);
 
-    const lastTwentyInProgressOrdersIds = useMemo(() => {
+    const lastTenInProgressOrdersIds = useMemo(() => {
         return orders.filter(order => order.status === 'inprogress').map(order => order.number).slice(-10);
     }, [orders]);
 
@@ -112,7 +112,7 @@ const OrdersFeed = () => {
                         <div className={styles[`orders-ready`]}>
                             <h2 className="text text_type_main-medium">Готовы:</h2>
                             <ul className={styles[`orders-ids-list`]}>
-                                {lastTwentyReadyOrdersIds.map(order =>
+                                {lastTenReadyOrdersIds.map(order =>
                                     <li key={order}
                                         className={`${styles[`order-ready-item`]} text text_type_digits-default`}>{order}</li>
                                 )}
@@ -121,7 +121,7 @@ const OrdersFeed = () => {
                         <div className={styles[`orders-inprogress`]}>
                             <h2 className={`${styles[`header-in-progress`]} text text_type_main-medium`}>В работе:</h2>
                             <ul className={styles[`orders-list`]}>
-                                {lastTwentyInProgressOrdersIds.map(order =>
+                                {lastTenInProgressOrdersIds.map(order =>
                                     <li key={order}
                                         className={`${styles[`order-inprogress-item`]} text text_type_digits-default`}>{order}</li>
                                 )}

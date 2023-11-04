@@ -1,5 +1,5 @@
 import {useSelector} from "react-redux";
-import {selectOrderDetails} from '../../../services/orderDetails/selector';
+import {selectOrderDetails} from '../../../services/order-details/selector';
 import styles from './order-details.module.css';
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
 import {getIngredientCount, getIngredientsTotalPrice, ingredientsDetails} from "../../../utils/ingredients-details";

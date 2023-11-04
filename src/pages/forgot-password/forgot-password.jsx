@@ -1,20 +1,18 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import styles from "../auth.module.css";
 import {Button, EmailInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Link, useNavigate} from "react-router-dom";
 import {forgotPassword} from "../../services/user/action";
 import {useDispatch, useSelector} from "react-redux";
 import {selectErrMsg} from "../../services/user/selector";
-import {resetError} from '../../services/user/userSlice';
+import {resetError} from '../../services/user/user-slice';
 import {EMAIL_REGEX} from "../../utils/input-regex";
 import {forgotPwdFulfilled} from "../../utils/action-types";
+import {useForm} from "../../hooks/use-form";
 
 const ForgotPassword = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    const [email, setEmail] = useState('');
-    const [validEmail, setValidEmail] = useState(false);
 
     const errMsg = useSelector(selectErrMsg);
 
@@ -24,25 +22,27 @@ const ForgotPassword = () => {
         };
     }, [dispatch])
 
-    useEffect(() => {
-        setValidEmail(EMAIL_REGEX.test(email));
-    }, [email])
+    const formValidators = {
+        email: (value) => EMAIL_REGEX.test(value)
+    };
+
+    const {values, validities, handleChange, isFormValid, resetForm} =
+        useForm({email: ''}, formValidators);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(forgotPassword({email}))
-            .then((action) => {
-                if (action.type === forgotPwdFulfilled) {
-                    localStorage.setItem('visitedForgotPassword', 'true');
-                    navigate('/reset-password');
-                    setEmail('');
-                }
-            });
+        if (isFormValid()) {
+            dispatch(forgotPassword({email: values.email}))
+                .then((action) => {
+                    if (action.type === forgotPwdFulfilled) {
+                        localStorage.setItem('visitedForgotPassword', 'true');
+                        navigate('/reset-password');
+                        resetForm();
+                    }
+                });
+        }
     }
-
-    const handleEmailChange = (e) => {
-        setEmail(e.target.value);
-    };
 
     return (
         <main className={styles.main}>
@@ -54,9 +54,9 @@ const ForgotPassword = () => {
                     id="email"
                     name="email"
                     placeholder="Укажите e-mail"
-                    value={email}
-                    onChange={handleEmailChange}
-                    aria-invalid={validEmail ? "false" : "true"}
+                    value={values.email}
+                    onChange={handleChange}
+                    aria-invalid={!validities.email}
                 />
 
                 <Button
@@ -64,7 +64,7 @@ const ForgotPassword = () => {
                     type="primary"
                     size="medium"
                     extraClass={styles.submit}
-                    disabled={!validEmail}
+                    disabled={!validities.email}
                 >
                     Восстановить
                 </Button>

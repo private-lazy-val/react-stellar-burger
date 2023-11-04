@@ -1,13 +1,13 @@
 import {useCallback} from "react";
-import {showIngredientDetails} from "../services/ingredientDetails/ingredientDetailsSlice";
-import {showOrderDetails} from "../services/orderDetails/orderDetailsSlice";
+import {showIngredientDetails} from "../services/ingredient-details/ingredient-details-slice";
+import {showOrderDetails} from "../services/order-details/order-details-slice";
 import {useDispatch, useSelector} from 'react-redux';
 import {
     openModal,
     closeModal,
     setModalType
-} from '../services/modal/modalSlice';
-import {resetConstructor} from "../services/burgerConstructor/burgerConstructorSlice";
+} from '../services/modal/modal-slice';
+import {resetConstructor} from "../services/burger-constructor/burger-constructor-slice";
 import {useNavigate} from "react-router-dom";
 
 const useModal = () => {

@@ -1,33 +1,19 @@
 import styles from "../auth.module.css";
 import {Button, EmailInput, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Link} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {login} from '../../services/user/action';
 import {selectErrMsg} from "../../services/user/selector";
-import {resetError} from '../../services/user/userSlice';
+import {resetError} from '../../services/user/user-slice';
 import {EMAIL_REGEX, PWD_REGEX} from "../../utils/input-regex";
 import {loginFulfilled} from "../../utils/action-types";
+import {useForm} from "../../hooks/use-form";
 
 const Login = () => {
     const dispatch = useDispatch();
 
-    const [email, setEmail] = useState('');
-    const [validEmail, setValidEmail] = useState(false);
-
-    const [pwd, setPwd] = useState('');
-    const [validPwd, setValidPwd] = useState(false);
-
     const errMsg = useSelector(selectErrMsg);
-
-    useEffect(() => {
-        setValidEmail(EMAIL_REGEX.test(email));
-    }, [email])
-
-    useEffect(() => {
-        setValidPwd(PWD_REGEX.test(pwd));
-    }, [pwd])
-
 
     useEffect(() => {
         // This function will be called when the component is unmounted
@@ -36,24 +22,25 @@ const Login = () => {
         };
     }, [dispatch])
 
+    const formValidators = {
+        email: (value) => EMAIL_REGEX.test(value),
+        password: (value) => PWD_REGEX.test(value)
+    };
+
+    const {values, validities, handleChange, isFormValid, resetForm} =
+        useForm({email: '', password: ''}, formValidators);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(login({email, password: pwd}))
-            .then((action) => {
-                if (action.type === loginFulfilled) {
-                    setEmail('');
-                    setPwd('');
-                }
-            });
+        if (isFormValid()) {
+            dispatch(login({email: values.email, password: values.password}))
+                .then((action) => {
+                    if (action.type === loginFulfilled) {
+                        resetForm();
+                    }
+                });
+        }
     }
-
-    const handleEmailChange = (e) => {
-        setEmail(e.target.value);
-    };
-
-    const handlePwdChange = (e) => {
-        setPwd(e.target.value);
-    };
 
     return (
         <main className={styles.main}>
@@ -65,17 +52,17 @@ const Login = () => {
                     id="email"
                     name="email"
                     placeholder="E-mail"
-                    value={email}
-                    onChange={handleEmailChange}
-                    aria-invalid={validEmail ? "false" : "true"}
+                    value={values.email}
+                    onChange={handleChange}
+                    aria-invalid={!validities.email}
                 />
                 <PasswordInput
                     id="password"
                     name='password'
                     placeholder="Пароль"
-                    value={pwd}
-                    onChange={handlePwdChange}
-                    aria-invalid={validPwd ? "false" : "true"}
+                    value={values.password}
+                    onChange={handleChange}
+                    aria-invalid={!validities.password}
                 />
 
                 <Button
@@ -83,7 +70,7 @@ const Login = () => {
                     type="primary"
                     size="medium"
                     extraClass={styles.submit}
-                    disabled={!validPwd || !validEmail}
+                    disabled={!validities.email || !validities.password}
                 >
                     Войти
                 </Button>

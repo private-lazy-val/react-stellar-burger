@@ -1,6 +1,6 @@
 import styles from "../auth.module.css";
 import {NavLink} from "react-router-dom";
-import {useUserActions} from "../../hooks/useUserActions";
+import {useUserActions} from "../../hooks/use-user-actions";
 
 const UserOrders = () => {
     const {onLogout, setActive} = useUserActions();

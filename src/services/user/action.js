@@ -1,5 +1,5 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {setUser, setAuthChecked} from "./userSlice";
+import {setUser, setAuthChecked} from "./user-slice";
 import {api} from "./api";
 import {deleteCookie, getCookie, setCookie} from "../../utils/cookies";
 
@@ -53,8 +53,8 @@ export const checkUserAuth = () => {
         if (getCookie("accessToken")) {
             dispatch(getUser())
                 .catch(() => {
-                    deleteCookie("accessToken");
-                    deleteCookie("refreshToken");
+                    // deleteCookie("accessToken");
+                    // deleteCookie("refreshToken");
                     // use reducers when you have direct, synchronous updates to the state
                     dispatch(setUser(null));
                 })

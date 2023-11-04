@@ -6,18 +6,18 @@ import {useDispatch, useSelector} from "react-redux";
 import {
     addBun,
     addIngredient
-} from "../../services/burgerConstructor/burgerConstructorSlice";
-import {fetchOrderId} from "../../services/submitOrder/submitOrderSlice";
+} from "../../services/burger-constructor/burger-constructor-slice";
+import {fetchOrderId} from "../../services/submit-order/submit-order-slice";
 import {
     selectBun,
     selectIngredients
-} from "../../services/burgerConstructor/selector";
+} from "../../services/burger-constructor/selector";
 import {
     selectIsLoadingIngredients,
     selectHasErrorIngredients
-} from "../../services/burgerIngredients/selector";
+} from "../../services/burger-ingredients/selector";
 import {useDrop} from "react-dnd";
-import useModal from "../../hooks/useModal";
+import useModal from "../../hooks/use-modal";
 
 const BurgerConstructor = () => {
     const dispatch = useDispatch();

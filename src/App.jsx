@@ -13,7 +13,7 @@ import ForgotPassword from "./pages/forgot-password/forgot-password";
 import Profile from "./pages/profile/profile";
 import Missing from "./pages/missing/missing";
 import Modal from "./components/modals/modal/modal"
-import useModal from "./hooks/useModal";
+import useModal from "./hooks/use-modal";
 import {useDispatch} from "react-redux";
 import {checkUserAuth} from "./services/user/action";
 import {OnlyAuth, OnlyUnAuth} from "./components/protected-routes/protected-routes";
@@ -22,7 +22,7 @@ import ResetPasswordRoute from "./components/reset-password-route/reset-password
 import OrdersFeed from "./pages/orders-feed/orders-feed";
 import OrderDetails from "./components/modals/order-details/order-details";
 import OrderPage from "./pages/order-page/order-page";
-import {loadAllIngredients} from "./services/burgerIngredients/burgerIngredientsSlice";
+import {loadAllIngredients} from "./services/burger-ingredients/burger-ingredients-slice";
 import UserOrders from "./pages/user-orders/user-orders";
 import UserOrder from "./pages/user-order/user-order";
 

@@ -1,11 +1,11 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect} from "react";
-import {fetchOrderDetails} from "../../services/orderDetails/orderDetailsSlice";
-import {selectHasErrorOrder, selectIsLoadingOrder, selectOrderDetails} from "../../services/orderDetails/selector";
+import {fetchOrderDetails} from "../../services/order-details/order-details-slice";
+import {selectHasErrorOrder, selectIsLoadingOrder, selectOrderDetails} from "../../services/order-details/selector";
 import {getIngredientCount, getIngredientsTotalPrice, ingredientsDetails} from "../../utils/ingredients-details";
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
-import useLoadingAndErrorHandling from "../../hooks/useLoadingAndErrorHandling";
+import useLoadingAndErrorHandling from "../../hooks/use-loading-and-error-handling";
 import LoadingComponent from "../../utils/loading-component";
 import ErrorComponent from "../../utils/error-component";
 import styles from './order-page.module.css';

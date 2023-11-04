@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./ingredient-details.module.css";
 import {useSelector} from 'react-redux';
-import {selectIngredientDetails} from "../../../services/ingredientDetails/selector";
+import {selectIngredientDetails} from "../../../services/ingredient-details/selector";
 import PropTypes from "prop-types";
 
 const IngredientDetails = ({title}) => {

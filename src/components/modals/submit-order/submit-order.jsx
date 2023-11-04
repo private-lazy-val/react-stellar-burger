@@ -1,13 +1,13 @@
 import React from "react";
 import styles from "./submit-order.module.css";
-import submittedOrderImg from "../../../images/submitted-order.svg";
+import submittedOrderImg from "../../../images/order-submit.svg";
 import {useSelector} from 'react-redux';
 import {
     selectOrderId,
     selectHasErrorOrderId,
     selectIsLoadingOrderId
-} from "../../../services/submitOrder/selector";
-import useLoadingAndErrorHandling from "../../../hooks/useLoadingAndErrorHandling";
+} from "../../../services/submit-order/selector";
+import useLoadingAndErrorHandling from "../../../hooks/use-loading-and-error-handling";
 import LoadingComponent from "../../../utils/loading-component";
 import ErrorComponent from "../../../utils/error-component";
 

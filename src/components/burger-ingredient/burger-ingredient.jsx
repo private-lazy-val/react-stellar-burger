@@ -4,8 +4,8 @@ import {Counter, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-com
 import {useDrag} from "react-dnd";
 import ingredientPropType from "../../utils/prop-types";
 import {useSelector} from "react-redux";
-import {makeSelectIngredientCount} from "../../services/burgerConstructor/selector";
-import useModal from "../../hooks/useModal";
+import {makeSelectIngredientCount} from "../../services/burger-constructor/selector";
+import useModal from "../../hooks/use-modal";
 import {Link, useLocation} from "react-router-dom";
 
 const BurgerIngredient = React.memo(({ingredient}) => {

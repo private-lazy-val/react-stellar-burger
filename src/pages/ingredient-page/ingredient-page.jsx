@@ -6,10 +6,10 @@ import {
     selectHasErrorIngredients,
     selectIngredientById,
     selectIsLoadingIngredients
-} from "../../services/burgerIngredients/selector";
-import {loadAllIngredients} from "../../services/burgerIngredients/burgerIngredientsSlice";
+} from "../../services/burger-ingredients/selector";
+import {loadAllIngredients} from "../../services/burger-ingredients/burger-ingredients-slice";
 import styles from "./ingredient-page.module.css";
-import useLoadingAndErrorHandling from "../../hooks/useLoadingAndErrorHandling";
+import useLoadingAndErrorHandling from "../../hooks/use-loading-and-error-handling";
 import LoadingComponent from "../../utils/loading-component";
 import ErrorComponent from "../../utils/error-component";
 const IngredientPage = ({title}) => {

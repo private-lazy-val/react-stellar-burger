@@ -1,12 +1,10 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import request from "../../api/api";
 
-
 export const fetchOrderDetails = createAsyncThunk(
     "ordersFeed/fetchOrderDetails",
     async (orderNumber) => {
         const res = await request(`/orders/${orderNumber}`);
-        console.log(res)
         return res.orders[0];
     }
 );

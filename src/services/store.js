@@ -1,12 +1,13 @@
 import {configureStore} from "@reduxjs/toolkit";
-import burgerIngredientsReducer from './burgerIngredients/burgerIngredientsSlice';
-import burgerConstructorReducer from './burgerConstructor/burgerConstructorSlice';
-import ingredientDetailsReducer from './ingredientDetails/ingredientDetailsSlice';
-import submitOrderReducer from './submitOrder/submitOrderSlice';
-import modalReducer from './modal/modalSlice';
-import userReducer from '../services/user/userSlice';
-import ordersFeedSliceReducer from "./ordersFeed/ordersFeedSlice";
-import orderDetailsReducer from "./orderDetails/orderDetailsSlice";
+import burgerIngredientsReducer from './burger-ingredients/burger-ingredients-slice';
+import burgerConstructorReducer from './burger-constructor/burger-constructor-slice';
+import ingredientDetailsReducer from './ingredient-details/ingredient-details-slice';
+import submitOrderReducer from './submit-order/submit-order-slice';
+import modalReducer from './modal/modal-slice';
+import userReducer from './user/user-slice';
+import ordersFeedSliceReducer from "./orders-feed/orders-feed-slice";
+import orderDetailsReducer from "./order-details/order-details-slice";
+import userOrdersReducer from "./user-orders/user-orders-slice";
 
 export default configureStore({
     reducer: {
@@ -17,6 +18,7 @@ export default configureStore({
         orderDetails: orderDetailsReducer,
         submitOrder: submitOrderReducer,
         modal: modalReducer,
-        user: userReducer
+        user: userReducer,
+        userOrders: userOrdersReducer
     }
 });
