@@ -70,13 +70,13 @@ function App() {
                            element={<IngredientPage title='Детали ингредиента'/>}
                     />
                     <Route path='feed' element={<OrdersFeed/>}/>
-                    <Route path='feed/:orderId' element={<OrderPage/>}/>
+                    <Route path='feed/:number' element={<OrderPage/>}/>
 
                     {/*protected routes*/}
                     <Route path='profile'>
                         <Route index element={<OnlyAuth component={<Profile/>}/>}/>
                         <Route path='orders' element={<OnlyAuth component={<UserOrders/>}/>}/>
-                        <Route path='orders/:id' element={<OnlyAuth component={<UserOrder/>}/>}/>
+                        <Route path='orders/:number' element={<OnlyAuth component={<UserOrder/>}/>}/>
                     </Route>
 
                     {/*auth*/}
@@ -111,7 +111,7 @@ function App() {
                         }
                     />
                     <Route
-                        path='feed/:orderId'
+                        path='feed/:number'
                         element={
                             <CSSTransition
                                 in={modalType === 'order'}

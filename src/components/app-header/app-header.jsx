@@ -5,7 +5,6 @@ import {NavLink, useLocation} from "react-router-dom";
 
 const AppHeader = React.memo(() => {
     const location = useLocation();
-    console.log(location.pathname)
     const setActive = ({isActive}) => isActive
         ? 'text text_type_main-default'
         : 'text text_type_main-default text_color_inactive';

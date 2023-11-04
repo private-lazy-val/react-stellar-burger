@@ -17,18 +17,18 @@ const OrderPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const {orderId} = useParams();
+    const {number} = useParams();
     const order = useSelector(selectOrderDetails);
 
     useEffect(() => {
-        dispatch(fetchOrderDetails(orderId))
+        dispatch(fetchOrderDetails(number))
             .then(response => {
                 const fetchedOrder = response.payload;
                 if(!fetchedOrder) {
                     navigate("/missing", {replace: true});
                 }
             })
-    }, [orderId, dispatch, navigate]);
+    }, [number, dispatch, navigate]);
 
     const ingredientsMap = useSelector(selectIngredientsMap);
 
