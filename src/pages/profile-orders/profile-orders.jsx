@@ -60,11 +60,11 @@ const ProfileOrders = () => {
                         </button>
                     </li>
                     <div>
-                        <ul>
-                            {orders.map((order) => (
-                                <li>{order.name}</li>
-                            ))}
-                        </ul>
+                        {/*<ul>*/}
+                        {/*    {orders.map((order) => (*/}
+                        {/*        <li>{order.name}</li>*/}
+                        {/*    ))}*/}
+                        {/*</ul>*/}
                     </div>
                 </ul>
             </div>

@@ -29,7 +29,6 @@ import ProfileOrder from "./pages/profile-order/profile-order";
 function App() {
     const dispatch = useDispatch();
     const location = useLocation();
-
     const background = location.state && location.state.background;
     const {
         isModalOpen,
