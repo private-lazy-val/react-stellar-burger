@@ -24,11 +24,11 @@ import OrderDetails from "./components/modals/order-details/order-details";
 import OrderPage from "./pages/order-page/order-page";
 import {loadAllIngredients} from "./services/burger-ingredients/burger-ingredients-slice";
 import ProfileOrders from "./pages/profile-orders/profile-orders";
-import ProfileOrder from "./pages/profile-order/profile-order";
 
 function App() {
     const dispatch = useDispatch();
     const location = useLocation();
+
     const background = location.state && location.state.background;
     const {
         isModalOpen,
@@ -76,7 +76,7 @@ function App() {
                     <Route path='profile'>
                         <Route index element={<OnlyAuth component={<Profile/>}/>}/>
                         <Route path='orders' element={<OnlyAuth component={<ProfileOrders/>}/>}/>
-                        <Route path='orders/:number' element={<OnlyAuth component={<ProfileOrder/>}/>}/>
+                        <Route path='orders/:number' element={<OnlyAuth component={<OrderPage/>}/>}/>
                     </Route>
 
                     {/*auth*/}
@@ -112,6 +112,22 @@ function App() {
                     />
                     <Route
                         path='feed/:number'
+                        element={
+                            <CSSTransition
+                                in={modalType === 'order'}
+                                nodeRef={nodeRef}
+                                timeout={600}
+                                classNames={{...transitions}}
+                                unmountOnExit
+                            >
+                                <Modal ref={nodeRef} closeModal={closeOrderModal}>
+                                    <OrderDetails/>
+                                </Modal>
+                            </CSSTransition>
+                        }
+                    />
+                    <Route
+                        path='/profile/orders/:number'
                         element={
                             <CSSTransition
                                 in={modalType === 'order'}

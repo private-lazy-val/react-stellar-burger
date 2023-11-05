@@ -1,0 +1,10 @@
+.side-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    margin-top: 120px;
+}
+
+.logout-btn:hover {
+    color: #f2f2f3;
+}

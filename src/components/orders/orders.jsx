@@ -5,6 +5,8 @@ import useModal from "../../hooks/use-modal";
 import styles from "./orders.module.css";
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
 import {getIngredientsTotalPrice} from "../../utils/ingredients-details";
+import PropTypes from "prop-types";
+import {getBasePath} from "../../utils/get-base-path";
 
 const Orders = ({orders}) => {
     const location = useLocation();
@@ -21,7 +23,7 @@ const Orders = ({orders}) => {
                     <li key={order.number}>
                         <Link
                             key={order.number}
-                            to={`/feed/${order.number}`}
+                            to={`${getBasePath(location.pathname)}/${order.number}`}
                             // сохраняем в свойство background роут,
                             // на котором была открыта наша модалка
                             state={{background: location}}
@@ -79,6 +81,10 @@ const Orders = ({orders}) => {
             </ul>
         </section>
     );
+};
+
+Orders.propTypes = {
+    orders: PropTypes.array.isRequired
 };
 
 export default Orders;

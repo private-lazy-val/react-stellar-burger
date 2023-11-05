@@ -1,6 +1,4 @@
 import styles from "../auth.module.css";
-import {NavLink} from "react-router-dom";
-import {useUserActions} from "../../hooks/use-user-actions";
 import {useDispatch, useSelector} from "react-redux";
 import {
     connect as connectProfileOrders,
@@ -10,10 +8,12 @@ import {useEffect, useState} from "react";
 import {WS_URL} from "../../api/ws-api";
 import {getCookie} from "../../utils/cookies";
 import {reconnectToWs} from "../../utils/ws-reconnect";
+import ProfileSideMenu from "../../components/profile-side-menu/profile-side-menu";
+import Orders from "../../components/orders/orders";
 
 const ProfileOrders = () => {
     const dispatch = useDispatch();
-    const {onLogout, setActive} = useUserActions();
+
     const [accessToken, setAccessToken] = useState(null);
 
     useEffect(() => {
@@ -47,27 +47,8 @@ const ProfileOrders = () => {
 
     return (
         <main className={styles.profile}>
-            <div aria-label='side-menu'>
-                <ul className={styles.sidebar}>
-                    <li><NavLink end to='/profile' className={setActive}>Профиль</NavLink></li>
-                    <li><NavLink to='/profile/orders' className={setActive}>История заказов</NavLink></li>
-                    <li>
-                        <button
-                            className={`${styles['logout-btn']} text text_type_main-medium text_color_inactive`}
-                            type='button'
-                            onClick={onLogout}>
-                            Выход
-                        </button>
-                    </li>
-                    <div>
-                        {/*<ul>*/}
-                        {/*    {orders.map((order) => (*/}
-                        {/*        <li>{order.name}</li>*/}
-                        {/*    ))}*/}
-                        {/*</ul>*/}
-                    </div>
-                </ul>
-            </div>
+            <ProfileSideMenu/>
+            <Orders orders={orders}/>
         </main>
     );
 };

@@ -9,9 +9,13 @@
 .profile {
     display: flex;
     align-items: flex-start;
-    justify-content: center;
-    gap: 60px;
-    margin-top: 120px;
+    justify-content: flex-start;
+    gap: 170px;
+    max-width: 1240px;
+    width: 100%;
+    margin-inline: auto;
+    position: relative;
+    margin-top: 40px;
 }
 
 .profile-form {
@@ -19,13 +23,11 @@
     flex-direction: column;
     align-items: center;
     gap: 24px;
-    position: relative;
-}
-
-.sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 35px;
+    margin-top: 100px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .form {
@@ -79,10 +81,6 @@
     position: absolute;
     top: -42px;
     z-index: 2;
-}
-
-.logout-btn:hover {
-    color: #f2f2f3;
 }
 
 .missing-header {

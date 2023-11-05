@@ -1,4 +1,3 @@
-import {NavLink} from "react-router-dom";
 import {Button, EmailInput, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from '../auth.module.css';
 import {useDispatch, useSelector} from "react-redux";
@@ -6,13 +5,12 @@ import {updateUser} from "../../services/user/action";
 import {selectErrMsg, selectUser} from "../../services/user/selector";
 import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
 import {updateUserFulfilled} from "../../utils/user-action-types";
-import {useUserActions} from "../../hooks/use-user-actions";
 import {useForm} from "../../hooks/use-form";
 import {useState} from "react";
+import ProfileSideMenu from "../../components/profile-side-menu/profile-side-menu";
 
 const Profile = () => {
     const dispatch = useDispatch();
-    const {onLogout, setActive} = useUserActions();
     const errMsg = useSelector(selectErrMsg);
 
     const user = useSelector(selectUser);
@@ -48,20 +46,7 @@ const Profile = () => {
 
     return (
         <main className={styles.profile}>
-            <div aria-label='side-menu'>
-                <ul className={styles.sidebar}>
-                    <li><NavLink end to='/profile' className={setActive}>Профиль</NavLink></li>
-                    <li><NavLink to='/profile/orders' className={setActive}>История заказов</NavLink></li>
-                    <li>
-                        <button
-                            className={`${styles['logout-btn']} text text_type_main-medium text_color_inactive`}
-                            type='button'
-                            onClick={onLogout}>
-                            Выход
-                        </button>
-                    </li>
-                </ul>
-            </div>
+            <ProfileSideMenu/>
             <form className={styles["profile-form"]} onSubmit={handleUpdate}>
                 {errMsg &&
                     <p className={`${styles.err} text text_type_main-default text_color_error mt-2`}>Oops! Something
@@ -100,19 +85,19 @@ const Profile = () => {
                 {(values.name !== user.name && validities.name)
                 || (values.email !== user.email && validities.email)
                 || (values.password !== '00000' && validities.password) ? (
-                        <div className={styles[`profile-btns`]}>
-                            <Button
-                                htmlType="submit"
-                                type="primary"
-                                size="medium"
-                                extraClass={styles.submit}>
-                                Сохранить
-                            </Button>
-                            <Button htmlType="button" type="secondary" size="large" onClick={resetForm}>
-                                Отмена
-                            </Button>
-                        </div>
-                    ) : null}
+                    <div className={styles[`profile-btns`]}>
+                        <Button
+                            htmlType="submit"
+                            type="primary"
+                            size="medium"
+                            extraClass={styles.submit}>
+                            Сохранить
+                        </Button>
+                        <Button htmlType="button" type="secondary" size="large" onClick={resetForm}>
+                            Отмена
+                        </Button>
+                    </div>
+                ) : null}
             </form>
         </main>
     );
