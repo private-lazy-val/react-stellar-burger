@@ -7,7 +7,7 @@ import {
     addBun,
     addIngredient
 } from "../../services/burger-constructor/burger-constructor-slice";
-import {fetchOrderId} from "../../services/submit-order/submit-order-slice";
+import {createNewOrder} from "../../services/submit-order/submit-order-slice";
 import {
     selectBun,
     selectIngredients
@@ -63,7 +63,7 @@ const BurgerConstructor = () => {
             const newOrder = {
                 ingredients: [bun._id, ...ingredients.map(ingredient => ingredient._id), bun._id]
             }
-            dispatch(fetchOrderId(newOrder));
+            dispatch(createNewOrder(newOrder));
             openSubmitOrderModal(newOrder);
         }
     };

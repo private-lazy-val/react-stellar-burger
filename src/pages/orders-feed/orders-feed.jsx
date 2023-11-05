@@ -1,17 +1,16 @@
 import styles from "./orders-feed.module.css";
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
-import {fetchAllOrders} from "../../services/orders-feed/orders-feed-slice";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useMemo} from "react";
-import {
-    selectAllOrders,
-    selectTodayTotalOrders,
-    selectTotalOrders
-} from "../../services/orders-feed/selector";
 import {getIngredientsTotalPrice} from "../../utils/ingredients-details";
 import useModal from "../../hooks/use-modal";
 import {Link, useLocation} from "react-router-dom";
 import {selectIngredientsMap} from "../../services/burger-ingredients/selector";
+import {
+    connect as connectFeedOrders,
+    disconnect as disconnectFeedOrders
+} from "../../services/orders-feed/actions";
+import {WS_URL} from "../../api/ws-api";
 
 const OrdersFeed = () => {
     const dispatch = useDispatch();
@@ -22,14 +21,16 @@ const OrdersFeed = () => {
     } = useModal();
 
     useEffect(() => {
-        dispatch(fetchAllOrders());
+        console.log('hello')
+            dispatch(connectFeedOrders(`${WS_URL}/orders/all`));
+            return () => {
+                // Disconnect WebSocket when the component unmounts
+                dispatch(disconnectFeedOrders());
+            };
     }, [dispatch]);
 
-    const {orders, totalOrders, totalTodayOrders} = useSelector(state => ({
-        orders: selectAllOrders(state),
-        totalOrders: selectTotalOrders(state),
-        totalTodayOrders: selectTodayTotalOrders(state)
-    }));
+    const {orders, total, totalToday} = useSelector(
+        (state) => state.ordersFeed);
 
     const ingredientsMap = useSelector(selectIngredientsMap);
 
@@ -134,11 +135,11 @@ const OrdersFeed = () => {
 
                     <div>
                         <h2 className="text text_type_main-medium">Выполнено за все время:</h2>
-                        <p className={`${styles[`total-orders`]} text text_type_digits-large`}>{totalOrders}</p>
+                        <p className={`${styles[`total-orders`]} text text_type_digits-large`}>{total}</p>
                     </div>
                     <div>
                         <h2 className="text text_type_main-medium">Выполнено за сегодня:</h2>
-                        <p className={`${styles[`total-orders`]} text text_type_digits-large`}>{totalTodayOrders}</p>
+                        <p className={`${styles[`total-orders`]} text text_type_digits-large`}>{totalToday}</p>
                     </div>
 
                 </section>

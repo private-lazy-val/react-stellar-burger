@@ -1,18 +1,18 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import request from "../../api/api";
+import {fetchWithRefresh} from "../../utils/user-api";
+import {getDefaultHeaders} from "../../utils/headers";
+import {BASE_URL} from "../../api/api";
 
-export const fetchOrderId = createAsyncThunk(
-    "submitOrder/fetchOrderId",
+export const createNewOrder = createAsyncThunk(
+    "submitOrder/createNewOrder",
     async (newOrder) => {
-        const endpoint = '/orders';
+        const endpoint = `${BASE_URL}/orders`;
         const options = {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: getDefaultHeaders(),
             body: JSON.stringify(newOrder)
         };
-        const response = await request(endpoint, options);
+        const response = await fetchWithRefresh(endpoint, options);
 
         if (response.success && response.order.number) {
             return response.order.number;
@@ -33,16 +33,16 @@ export const submitOrderSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchOrderId.pending, (state) => {
+            .addCase(createNewOrder.pending, (state) => {
                 state.isLoading = true;
                 state.hasError = false;
             })
-            .addCase(fetchOrderId.fulfilled, (state, action) => {
+            .addCase(createNewOrder.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.hasError = false;
                 state.number = action.payload;
             })
-            .addCase(fetchOrderId.rejected, (state) => {
+            .addCase(createNewOrder.rejected, (state) => {
                 state.isLoading = false;
                 state.hasError = true;
             })

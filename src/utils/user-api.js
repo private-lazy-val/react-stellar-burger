@@ -1,6 +1,6 @@
-import {BASE_URL} from "../../api/api";
-import {getCookie, setCookie} from "../../utils/cookies";
-import {getDefaultHeaders} from "../../utils/headers";
+import {BASE_URL} from "../api/api";
+import {getCookie, setCookie} from "./cookies";
+import {getDefaultHeaders} from "./headers";
 
 const checkResponse = (res) => {
     return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
@@ -29,7 +29,6 @@ export const fetchWithRefresh = async (url, options) => {
             if (!refreshData.success) {
                 return Promise.reject(refreshData);
             }
-            console.log(refreshData)
             setCookie("refreshToken", refreshData.refreshToken);
             setCookie("accessToken", refreshData.accessToken.replace('Bearer ', ''));
             // Replace the old Authorization header with the new token
@@ -105,7 +104,7 @@ const resetPassword = async (userData) => {
     return await checkResponse(res);
 }
 
-export const api = {
+export const userApi = {
     getUser,
     updateUser,
     login,

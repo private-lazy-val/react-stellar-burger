@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {updateUser} from "../../services/user/action";
 import {selectErrMsg, selectUser} from "../../services/user/selector";
 import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
-import {updateUserFulfilled} from "../../utils/action-types";
+import {updateUserFulfilled} from "../../utils/user-action-types";
 import {useUserActions} from "../../hooks/use-user-actions";
 import {useForm} from "../../hooks/use-form";
 import {useState} from "react";
