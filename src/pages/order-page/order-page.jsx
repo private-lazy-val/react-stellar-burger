@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect} from "react";
 import {fetchOrder} from "../../services/order-details/order-details-slice";
-import {selectHasErrorOrder, selectIsLoadingOrder, selectOrderDetails} from "../../services/order-details/selector";
+import {selectHasErrorOrder, selectIsLoadingOrder, selectOrder} from "../../services/order-details/selector";
 import {getIngredientCount, getIngredientsTotalPrice} from "../../utils/ingredients-details";
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
 import useLoadingAndErrorHandling from "../../hooks/use-loading-and-error-handling";
@@ -14,24 +14,43 @@ import {selectIngredientsMap} from "../../services/burger-ingredients/selector";
 
 const OrderPage = () => {
     const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingOrder, selectHasErrorOrder);
+    const ingredientsMap = useSelector(selectIngredientsMap);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const {number} = useParams();
 
+    let order = useSelector(store => {
+        let order = store.ordersFeed.orders.find(order => order.number === number);
+        if (order) {
+            return order;
+        }
+        order = store.profileOrders.orders.find(order => order.number === number);
+        if (order) {
+            return order;
+        }
+        return store.submitOrder.number;
+    })
+
     useEffect(() => {
-        dispatch(fetchOrder(number))
-            .then(response => {
-                const fetchedOrder = response.payload;
-                if(!fetchedOrder) {
-                    navigate("/missing", {replace: true});
-                }
-            })
-    }, [number, dispatch, navigate]);
+        if (!order) {
+            dispatch(fetchOrder(number))
+                .then(response => {
+                    const fetchedOrder = response.payload;
+                    if (!fetchedOrder) {
+                        navigate("/missing", {replace: true});
+                    }
+                })
+        }
 
-    const order = useSelector(selectOrderDetails);
+    }, [order, number, dispatch, navigate]);
 
-    const ingredientsMap = useSelector(selectIngredientsMap);
+    order = useSelector(selectOrder);
+
+    if(!order) {
+        return null;
+    }
 
     const orderStatus = order?.status === 'done' ? 'Выполнен' : 'В процессе';
 
@@ -64,9 +83,11 @@ const OrderPage = () => {
                                     <h3 className="text text_type_main-default">{ingredientsMap[ingredientId].name}</h3>
                                 </div>
                                 <div className={commonStyles[`ingredient-price`]}>
-                                    <span className="text text_type_digits-default">{getIngredientCount(ingredientId, order)}</span>
+                                    <span
+                                        className="text text_type_digits-default">{getIngredientCount(ingredientId, order)}</span>
                                     <span className="text text_type_digits-default">x</span>
-                                    <span className="text text_type_digits-default">{ingredientsMap[ingredientId].price}</span>
+                                    <span
+                                        className="text text_type_digits-default">{ingredientsMap[ingredientId].price}</span>
                                     <CurrencyIcon type="primary"/>
                                 </div>
                             </li>
@@ -82,7 +103,8 @@ const OrderPage = () => {
                             className="text text_type_main-default text_color_inactive">&nbsp;i-GMT+3</span>
                     </div>
                     <div className={commonStyles.total}>
-                        <span className="text text_type_digits-default">{getIngredientsTotalPrice(order, ingredientsMap)}</span>
+                        <span
+                            className="text text_type_digits-default">{getIngredientsTotalPrice(order, ingredientsMap)}</span>
                         <CurrencyIcon type="primary"/>
                     </div>
                 </div>

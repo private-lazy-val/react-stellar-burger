@@ -7,8 +7,10 @@ import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-
 import {getIngredientsTotalPrice} from "../../utils/ingredients-details";
 import PropTypes from "prop-types";
 import {useBasePath} from "../../hooks/use-base-path";
+import {validateOrder, validateOrderIngredients} from "../../utils/validate-orders-payload";
+import React, {useMemo} from "react";
 
-const Orders = ({orders}) => {
+const Orders = React.memo(({orders}) => {
     const location = useLocation();
 
     const {
@@ -19,10 +21,22 @@ const Orders = ({orders}) => {
 
     const ingredientsMap = useSelector(selectIngredientsMap);
 
+    const validOrders = useMemo(() => {
+        return orders.map(order => {
+            if (validateOrder(order)) {
+                const validIngredientIds = validateOrderIngredients(order, ingredientsMap);
+                if(validIngredientIds.length > 0) {
+                    return {...order, ingredients: validIngredientIds};
+                }
+            }
+            return null;
+        }).filter(order => order !== null); // Filter out the null entries
+    }, [orders, ingredientsMap]);
+
     return (
         <section className={styles[`feed-section`]}>
             <ul className={`${styles[`orders-list`]} custom-scroll`}>
-                {orders.map(order => (
+                {validOrders.map(order => (
                     <li key={order.number}>
                         <Link
                             key={order.number}
@@ -84,7 +98,7 @@ const Orders = ({orders}) => {
             </ul>
         </section>
     );
-};
+});
 
 Orders.propTypes = {
     orders: PropTypes.array.isRequired

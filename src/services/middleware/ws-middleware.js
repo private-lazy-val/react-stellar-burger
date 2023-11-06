@@ -8,10 +8,12 @@ import {WS_URL} from "../../api/ws-api";
 export const wsMiddleware = (wsActions) => {
     return (store) => { // this function is the actual middleware that will be applied to the Redux store
         let socket = null; // the reference to the WebSocket connection
+        let isDisconnect = false;
+        let initialWsUrl = '';
 
         return (next) => async (action) => { // 'next' is a Redux middleware API function used to pass the action to the next middleware in line
             const {dispatch} = store;
-            const {type} = action; // determine the kind of action being handled
+            const {type, payload} = action; // determine the kind of action being handled
             const {
                 wsConnect,
                 wsSendMessage,
@@ -26,6 +28,7 @@ export const wsMiddleware = (wsActions) => {
 // If the dispatched action type matches the wsConnect action, a new WebSocket connection
 // is established with the URL provided in the action payload.
             if (type === wsConnect.type) {
+                initialWsUrl = payload;
                 // Close the existing socket if it exists before creating a new one
                 if (socket) {
                     socket.close();
@@ -37,11 +40,12 @@ export const wsMiddleware = (wsActions) => {
 // when the WebSocket connection is successfully opened.
             if (socket) {
                 socket.onopen = () => dispatch(onOpen());
+
                 socket.onerror = (event) => dispatch(onError('WebSocket error'));
 
                 socket.onmessage = (event) => {
                     const parsedData = JSON.parse(event.data);
-                    if (parsedData.type === 'Invalid or missing token') {
+                    if (parsedData.message === 'Invalid or missing token') {
                         dispatch(wsTokenRefresh());
                     } else if (parsedData.success) {
                         dispatch(onMessage(parsedData));
@@ -50,16 +54,19 @@ export const wsMiddleware = (wsActions) => {
                     }
                 };
 
-                if (socket && wsTokenRefresh && type === wsTokenRefresh.type) {
+                if (wsTokenRefresh && type === wsTokenRefresh.type) {
+                    console.log('refreshing token...')
                     try {
                         const refreshData = await refreshToken();
                         if (refreshData.success) {
+                            console.log('setting tokens...')
                             setCookie("refreshToken", refreshData.refreshToken);
                             setCookie("accessToken", refreshData.accessToken.replace('Bearer ', ''));
 
                             // Reconnect with the new token
                             const newWsUrl = `${WS_URL}/orders?token=${refreshData.accessToken.replace('Bearer ', '')}`;
                             socket.close(); // Close the old socket before opening a new one
+                            console.log('opening new connection...')
                             socket = new WebSocket(newWsUrl);
                             dispatch(wsConnecting());
                         }
@@ -69,9 +76,13 @@ export const wsMiddleware = (wsActions) => {
                     }
                 }
 
-
                 socket.onclose = (event) => {
-                    dispatch(onClose());
+                    if (isDisconnect) {
+                        dispatch(onClose());
+                    } else {
+                        socket = new WebSocket(initialWsUrl);
+                        dispatch(wsConnecting());
+                    }
                 };
 
                 if (wsSendMessage && type === wsSendMessage.type) {
@@ -81,6 +92,7 @@ export const wsMiddleware = (wsActions) => {
                 if (wsDisconnect.type === type) {
                     socket.close(); // This calls the close method on the WebSocket object, which initiates the closing handshake to terminate the connection.
                     socket = null;
+                    isDisconnect = true;
                 }
             }
             // the middleware passes the action to the next middleware in line,
