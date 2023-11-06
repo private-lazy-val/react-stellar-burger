@@ -4,7 +4,7 @@ import {Link, useLocation} from "react-router-dom";
 import useModal from "../../hooks/use-modal";
 import styles from "./orders.module.css";
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
-import {getIngredientsTotalPrice} from "../../utils/ingredients-details";
+import {getIngredientsTotalPrice} from "../../utils/ingredients-info";
 import PropTypes from "prop-types";
 import {useBasePath} from "../../hooks/use-base-path";
 import {validateOrder, validateOrderIngredients} from "../../utils/validate-orders-payload";

@@ -10,6 +10,8 @@ import {getCookie} from "../../utils/cookies";
 import ProfileSideMenu from "../../components/profile-side-menu/profile-side-menu";
 import Orders from "../../components/orders/orders";
 import {validateOrdersPayload} from "../../utils/validate-orders-payload";
+import {selectProfileOrder} from "../../services/profile-orders/selector";
+import {getSortedOrders} from "../../utils/get-sorted-orders";
 
 const ProfileOrders = () => {
     const dispatch = useDispatch();
@@ -35,15 +37,17 @@ const ProfileOrders = () => {
         }
     }, [accessToken, dispatch]);
 
-    const {orders} = useSelector(
-        (state) => state.profileOrders);
+    const orders = useSelector(selectProfileOrder);
 
-    const validOrders = useMemo(() => validateOrdersPayload(orders), [orders]);
+    const validOrders = useMemo(() => {
+        if (!validateOrdersPayload(orders)) return [];
+        return getSortedOrders(orders);
+    }, [orders]);
 
     return (
             <main className={styles.profile}>
                 <ProfileSideMenu/>
-                {validOrders && <Orders orders={orders}/>}
+                {validOrders && <Orders orders={validOrders}/>}
             </main>
     );
 };

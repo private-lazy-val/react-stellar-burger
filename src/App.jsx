@@ -3,7 +3,7 @@ import {Route, Routes, useLocation} from "react-router-dom";
 import transitions from "./components/modals/modal/modal-transitions.module.css";
 import {CSSTransition} from "react-transition-group";
 import SubmitOrder from "./components/modals/submit-order/submit-order";
-import IngredientDetails from "./components/modals/ingredient-details/ingredient-details";
+import IngredientInfo from "./components/modals/ingredient-info/ingredient-info";
 import Layout from "./components/layout/layout";
 import Home from "./pages/home/home";
 import Register from "./pages/register/register";
@@ -20,10 +20,10 @@ import {OnlyAuth, OnlyUnAuth} from "./components/protected-routes/protected-rout
 import IngredientPage from "./pages/ingredient-page/ingredient-page";
 import ResetPasswordRoute from "./components/reset-password-route/reset-password-route";
 import OrdersFeed from "./pages/orders-feed/orders-feed";
-import OrderDetails from "./components/modals/order-details/order-details";
 import OrderPage from "./pages/order-page/order-page";
 import {loadAllIngredients} from "./services/burger-ingredients/burger-ingredients-slice";
 import ProfileOrders from "./pages/profile-orders/profile-orders";
+import OrderInfo from "./components/modals/order-info/order-info";
 
 function App() {
     const dispatch = useDispatch();
@@ -105,7 +105,7 @@ function App() {
                                 unmountOnExit
                             >
                                 <Modal ref={nodeRef} closeModal={closeIngredientModal}>
-                                    <IngredientDetails title='Детали ингредиента'/>
+                                    <IngredientInfo title='Детали ингредиента'/>
                                 </Modal>
                             </CSSTransition>
                         }
@@ -121,7 +121,7 @@ function App() {
                                 unmountOnExit
                             >
                                 <Modal ref={nodeRef} closeModal={closeOrderModal}>
-                                    <OrderDetails/>
+                                    <OrderInfo/>
                                 </Modal>
                             </CSSTransition>
                         }
@@ -137,7 +137,7 @@ function App() {
                                 unmountOnExit
                             >
                                 <Modal ref={nodeRef} closeModal={closeOrderModal}>
-                                    <OrderDetails/>
+                                    <OrderInfo/>
                                 </Modal>
                             </CSSTransition>
                         }

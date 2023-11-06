@@ -9,15 +9,15 @@ export const fetchOrder = createAsyncThunk(
     }
 );
 
-export const orderDetailsSlice = createSlice({
-    name: "orderDetails",
+export const orderInfoSlice = createSlice({
+    name: "orderInfo",
     initialState: {
         order: null,
         isLoading: false,
         hasError: false
     },
     reducers: {
-        showOrderDetails: (state, action) => {
+        showOrderInfo: (state, action) => {
             state.order = action.payload
         }
     },
@@ -42,5 +42,5 @@ export const orderDetailsSlice = createSlice({
     }
 });
 
-export default orderDetailsSlice.reducer;
-export const {showOrderDetails} = orderDetailsSlice.actions;
+export default orderInfoSlice.reducer;
+export const {showOrderInfo} = orderInfoSlice.actions;

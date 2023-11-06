@@ -1,6 +1,6 @@
 import {useCallback} from "react";
-import {showIngredientDetails} from "../services/ingredient-details/ingredient-details-slice";
-import {showOrderDetails} from "../services/order-details/order-details-slice";
+import {showIngredientInfo} from "../services/ingredient-info/ingredient-info-slice";
+import {showOrderInfo} from "../services/order-info/order-info-slice";
 import {useDispatch, useSelector} from 'react-redux';
 import {
     openModal,
@@ -9,19 +9,22 @@ import {
 } from '../services/modal/modal-slice';
 import {resetConstructor} from "../services/burger-constructor/burger-constructor-slice";
 import {useNavigate} from "react-router-dom";
+import {selectIsModalOpen, selectModalType} from '../services/modal/selector';
 
 const useModal = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const isModalOpen = useSelector(state => state.modal.isOpen);
-    const modalType = useSelector(state => state.modal.modalType);
+    const { isModalOpen, modalType } = useSelector(state => ({
+        isModalOpen: selectIsModalOpen(state),
+        modalType: selectModalType(state)
+    }));
 
     const openIngredientModal = useCallback((ingredient) => {
         localStorage.setItem('ingredientModalOpen', 'true');
         localStorage.setItem('ingredientModalData', JSON.stringify(ingredient));
         dispatch(setModalType('ingredient'));
-        dispatch(showIngredientDetails(ingredient));
+        dispatch(showIngredientInfo(ingredient));
     }, [dispatch]);
 
     const closeIngredientModal = useCallback(() => {
@@ -46,7 +49,7 @@ const useModal = () => {
         localStorage.setItem('orderModalOpen', 'true');
         localStorage.setItem('orderModalData', JSON.stringify(order));
         dispatch(setModalType('order'));
-        dispatch(showOrderDetails(order));
+        dispatch(showOrderInfo(order));
     }, [dispatch]);
 
     const closeOrderModal = useCallback(() => {

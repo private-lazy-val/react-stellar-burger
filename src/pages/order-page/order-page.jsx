@@ -1,15 +1,15 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect} from "react";
-import {fetchOrder} from "../../services/order-details/order-details-slice";
-import {selectHasErrorOrder, selectIsLoadingOrder, selectOrder} from "../../services/order-details/selector";
-import {getIngredientCount, getIngredientsTotalPrice} from "../../utils/ingredients-details";
+import {fetchOrder} from "../../services/order-info/order-info-slice";
+import {selectHasErrorOrder, selectIsLoadingOrder, selectOrder} from "../../services/order-info/selector";
+import {getIngredientCount, getIngredientsTotalPrice} from "../../utils/ingredients-info";
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
 import useLoadingAndErrorHandling from "../../hooks/use-loading-and-error-handling";
 import LoadingComponent from "../../utils/loading-component";
 import ErrorComponent from "../../utils/error-component";
 import styles from './order-page.module.css';
-import commonStyles from '../../components/modals/order-details/order-details.module.css';
+import commonStyles from '../../components/modals/order-info/order-info.module.css';
 import {selectIngredientsMap} from "../../services/burger-ingredients/selector";
 
 const OrderPage = () => {
@@ -24,17 +24,21 @@ const OrderPage = () => {
     let order = useSelector(store => {
         let order = store.ordersFeed.orders.find(order => order.number === number);
         if (order) {
+            console.log('found in ordersFeed')
             return order;
         }
         order = store.profileOrders.orders.find(order => order.number === number);
         if (order) {
+            console.log('found in profileOrders')
             return order;
         }
-        return store.submitOrder.number;
+        console.log(store.orderInfo.order)
+        return store.orderInfo.order;
     })
 
     useEffect(() => {
         if (!order) {
+            console.log('dispatch')
             dispatch(fetchOrder(number))
                 .then(response => {
                     const fetchedOrder = response.payload;

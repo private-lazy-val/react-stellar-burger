@@ -5,7 +5,8 @@ import {
     wsOpen,
     wsClose,
     wsError,
-    wsMessage
+    wsMessage,
+    resetOrders
 } from './actions';
 
 const initialState = {
@@ -31,6 +32,9 @@ const profileOrdersReducer = createReducer(initialState, (builder) => {
         })
         .addCase(wsMessage, (state, action) => {
             state.orders = action.payload.orders;
+        })
+        .addCase(resetOrders, state => {
+            state.orders = []; // This will reset the orders to an empty array
         })
 })
 

@@ -8,6 +8,7 @@ import {
 import {WS_URL} from "../../api/ws-api";
 import Orders from "../../components/orders/orders";
 import {validateOrdersPayload} from "../../utils/validate-orders-payload";
+import {getSortedOrders} from "../../utils/get-sorted-orders";
 
 const OrdersFeed = () => {
     const dispatch = useDispatch();
@@ -31,14 +32,17 @@ const OrdersFeed = () => {
         return orders.filter(order => order.status === 'inprogress').map(order => order.number).slice(-10);
     }, [orders]);
 
-    const validOrders = useMemo(() => validateOrdersPayload(orders), [orders]);
+    const validOrders = useMemo(() => {
+        if (!validateOrdersPayload(orders)) return [];
+        return getSortedOrders(orders);
+    }, [orders]);
 
     return (
         <main className={styles.main}>
             <h1 className="text text_type_main-large">Лента заказов</h1>
             <div className={`${styles.content} mt-4`}>
 
-                {validOrders && <Orders orders={orders}/>}
+                {validOrders && <Orders orders={validOrders}/>}
 
                 <section className={styles[`stats-sections`]}>
                     <div className={styles[`orders-statuses`]}>

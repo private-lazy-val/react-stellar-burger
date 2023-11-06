@@ -1,11 +1,13 @@
 import { useDispatch } from 'react-redux';
 import { logout } from '../services/user/action';
+import {resetOrders} from "../services/profile-orders/actions";
 
 export const useUserActions = () => {
     const dispatch = useDispatch();
 
     const onLogout = () => {
         dispatch(logout());
+        dispatch(resetOrders());
     }
 
     const setActive = ({isActive}) => isActive

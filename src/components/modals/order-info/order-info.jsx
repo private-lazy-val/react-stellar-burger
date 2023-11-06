@@ -1,11 +1,11 @@
 import {useSelector} from "react-redux";
-import {selectOrder} from '../../../services/order-details/selector';
-import styles from './order-details.module.css';
+import {selectOrder} from '../../../services/order-info/selector';
+import styles from './order-info.module.css';
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
-import {getIngredientCount, getIngredientsTotalPrice} from "../../../utils/ingredients-details";
+import {getIngredientCount, getIngredientsTotalPrice} from "../../../utils/ingredients-info";
 import {selectIngredientsMap} from "../../../services/burger-ingredients/selector";
 
-const OrderDetails = () => {
+const OrderInfo = () => {
     const order = useSelector(selectOrder);
 
     const ingredientsMap = useSelector(selectIngredientsMap);
@@ -58,4 +58,4 @@ const OrderDetails = () => {
     );
 };
 
-export default OrderDetails;
+export default OrderInfo;

@@ -1,12 +1,12 @@
 import {configureStore} from "@reduxjs/toolkit";
 import burgerIngredientsReducer from './burger-ingredients/burger-ingredients-slice';
 import burgerConstructorReducer from './burger-constructor/burger-constructor-slice';
-import ingredientDetailsReducer from './ingredient-details/ingredient-details-slice';
+import ingredientInfoReducer from './ingredient-info/ingredient-info-slice';
 import submitOrderReducer from './submit-order/submit-order-slice';
 import modalReducer from './modal/modal-slice';
 import userReducer from './user/user-slice';
 import ordersFeedReducer from "./orders-feed/orders-feed-reducer";
-import orderDetailsReducer from "./order-details/order-details-slice";
+import orderInfoReducer from "./order-info/order-info-slice";
 import profileOrdersReducer from "./profile-orders/profile-orders-reducer";
 import {wsMiddleware} from './middleware/ws-middleware';
 import {
@@ -55,10 +55,10 @@ export default configureStore({
     reducer: {
         burgerIngredients: burgerIngredientsReducer,
         burgerConstructor: burgerConstructorReducer,
-        ingredientDetails: ingredientDetailsReducer,
+        ingredientInfo: ingredientInfoReducer,
         ordersFeed: ordersFeedReducer,
         profileOrders: profileOrdersReducer,
-        orderDetails: orderDetailsReducer,
+        orderInfo: orderInfoReducer,
         submitOrder: submitOrderReducer,
         modal: modalReducer,
         user: userReducer

@@ -1,6 +1,7 @@
 .feed-section {
     max-width: 600px;
     width: 100%;
+    align-self: center;
 }
 
 .orders-list {

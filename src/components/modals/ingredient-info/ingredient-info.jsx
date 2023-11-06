@@ -1,11 +1,11 @@
 import React from "react";
-import styles from "./ingredient-details.module.css";
+import styles from "./ingredient-info.module.css";
 import {useSelector} from 'react-redux';
-import {selectIngredientDetails} from "../../../services/ingredient-details/selector";
+import {selectIngredientInfo} from "../../../services/ingredient-info/selector";
 import PropTypes from "prop-types";
 
-const IngredientDetails = ({title}) => {
-    const ingredient = useSelector(selectIngredientDetails);
+const IngredientInfo = ({title}) => {
+    const ingredient = useSelector(selectIngredientInfo);
     return (
         <div className={`${styles.container} mb-15`}>
             {ingredient && (
@@ -39,8 +39,8 @@ const IngredientDetails = ({title}) => {
     );
 };
 
-IngredientDetails.propTypes = {
+IngredientInfo.propTypes = {
     title: PropTypes.string.isRequired,
 };
 
-export default IngredientDetails;
+export default IngredientInfo;

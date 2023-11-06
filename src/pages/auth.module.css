@@ -8,9 +8,7 @@
 
 .profile {
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 170px;
+    gap: 150px;
     max-width: 1240px;
     width: 100%;
     margin-inline: auto;
