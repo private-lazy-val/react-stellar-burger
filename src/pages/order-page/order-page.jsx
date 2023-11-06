@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect} from "react";
-import {fetchOrderDetails} from "../../services/order-details/order-details-slice";
+import {fetchOrder} from "../../services/order-details/order-details-slice";
 import {selectHasErrorOrder, selectIsLoadingOrder, selectOrderDetails} from "../../services/order-details/selector";
 import {getIngredientCount, getIngredientsTotalPrice} from "../../utils/ingredients-details";
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
@@ -18,10 +18,9 @@ const OrderPage = () => {
     const navigate = useNavigate();
 
     const {number} = useParams();
-    const order = useSelector(selectOrderDetails);
 
     useEffect(() => {
-        dispatch(fetchOrderDetails(number))
+        dispatch(fetchOrder(number))
             .then(response => {
                 const fetchedOrder = response.payload;
                 if(!fetchedOrder) {
@@ -29,6 +28,8 @@ const OrderPage = () => {
                 }
             })
     }, [number, dispatch, navigate]);
+
+    const order = useSelector(selectOrderDetails);
 
     const ingredientsMap = useSelector(selectIngredientsMap);
 

@@ -6,3 +6,4 @@ export const wsOpen = createAction('PROFILE_ORDERS_WS_OPEN');
 export const wsClose = createAction('PROFILE_ORDERS_WS_CLOSE');
 export const wsMessage = createAction('PROFILE_ORDERS_WS_MESSAGE');
 export const wsError = createAction('PROFILE_ORDERS_WS_ERROR');
+export const wsTokenRefresh = createAction('WS_TOKEN_REFRESH');

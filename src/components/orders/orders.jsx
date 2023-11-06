@@ -6,7 +6,7 @@ import styles from "./orders.module.css";
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
 import {getIngredientsTotalPrice} from "../../utils/ingredients-details";
 import PropTypes from "prop-types";
-import {getBasePath} from "../../utils/get-base-path";
+import {useBasePath} from "../../hooks/use-base-path";
 
 const Orders = ({orders}) => {
     const location = useLocation();
@@ -15,7 +15,10 @@ const Orders = ({orders}) => {
         openOrderModal
     } = useModal();
 
+    const basePath = useBasePath();
+
     const ingredientsMap = useSelector(selectIngredientsMap);
+
     return (
         <section className={styles[`feed-section`]}>
             <ul className={`${styles[`orders-list`]} custom-scroll`}>
@@ -23,7 +26,7 @@ const Orders = ({orders}) => {
                     <li key={order.number}>
                         <Link
                             key={order.number}
-                            to={`${getBasePath(location.pathname)}/${order.number}`}
+                            to={`${basePath}/${order.number}`}
                             // сохраняем в свойство background роут,
                             // на котором была открыта наша модалка
                             state={{background: location}}

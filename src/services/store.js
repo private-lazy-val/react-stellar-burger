@@ -16,7 +16,8 @@ import {
     wsOpen as profileOrdersWsOpen,
     wsClose as profileOrdersWsClose,
     wsMessage as profileOrdersWsMessage,
-    wsError as profileOrdersWsError
+    wsError as profileOrdersWsError,
+    wsTokenRefresh as profileOrdersWsTokenRefresh
 } from "./profile-orders/actions";
 import {
     connect as ordersFeedWsConnect,
@@ -37,6 +38,7 @@ const profileOrdersMiddleware = wsMiddleware({
     onClose: profileOrdersWsClose,
     onError: profileOrdersWsError,
     onMessage: profileOrdersWsMessage,
+    wsTokenRefresh: profileOrdersWsTokenRefresh
 })
 
 const ordersFeedMiddleware = wsMiddleware({

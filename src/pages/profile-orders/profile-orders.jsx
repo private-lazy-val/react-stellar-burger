@@ -7,7 +7,6 @@ import {
 import {useEffect, useState} from "react";
 import {WS_URL} from "../../api/ws-api";
 import {getCookie} from "../../utils/cookies";
-import {reconnectToWs} from "../../utils/ws-reconnect";
 import ProfileSideMenu from "../../components/profile-side-menu/profile-side-menu";
 import Orders from "../../components/orders/orders";
 
@@ -35,15 +34,8 @@ const ProfileOrders = () => {
         }
     }, [accessToken, dispatch]);
 
-    const {orders, connectingError} = useSelector(
+    const {orders} = useSelector(
         (state) => state.profileOrders);
-
-    useEffect(() => {
-        // Listen for JWT expired error to reconnect
-        if (connectingError === 'Invalid or missing token') {
-            reconnectToWs(setAccessToken);
-        }
-    }, [connectingError]);
 
     return (
         <main className={styles.profile}>
