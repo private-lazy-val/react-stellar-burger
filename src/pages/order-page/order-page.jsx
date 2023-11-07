@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
-import {useNavigate, useParams} from "react-router-dom";
-import {useEffect} from "react";
+import {useParams} from "react-router-dom";
+import {useEffect, useState} from "react";
 import {fetchOrder} from "../../services/order-info/order-info-slice";
 import {selectHasErrorOrder, selectIsLoadingOrder, selectOrder} from "../../services/order-info/selector";
 import {getIngredientCount, getIngredientsTotalPrice} from "../../utils/ingredients-info";
@@ -14,47 +14,27 @@ import {selectIngredientsMap} from "../../services/burger-ingredients/selector";
 
 const OrderPage = () => {
     const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingOrder, selectHasErrorOrder);
+    const [error, setError] = useState(null);
+
+    const {number} = useParams();
     const ingredientsMap = useSelector(selectIngredientsMap);
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-
-    const {number} = useParams();
-
-    let order = useSelector(store => {
-        let order = store.ordersFeed.orders.find(order => order.number === number);
-        if (order) {
-            console.log('found in ordersFeed')
-            return order;
-        }
-        order = store.profileOrders.orders.find(order => order.number === number);
-        if (order) {
-            console.log('found in profileOrders')
-            return order;
-        }
-        console.log(store.orderInfo.order)
-        return store.orderInfo.order;
-    })
 
     useEffect(() => {
-        if (!order) {
-            console.log('dispatch')
-            dispatch(fetchOrder(number))
-                .then(response => {
-                    const fetchedOrder = response.payload;
-                    if (!fetchedOrder) {
-                        navigate("/missing", {replace: true});
-                    }
-                })
-        }
+        dispatch(fetchOrder(number))
+            .unwrap()
+            .then(fetchedOrder => {
+                if (!fetchedOrder) {
+                    setError("Order with this number doesn't exist.");
+                }
+            })
+            .catch(err => {
+                setError("An error occurred while fetching the order.");
+            })
+    }, [number, dispatch]);
 
-    }, [order, number, dispatch, navigate]);
-
-    order = useSelector(selectOrder);
-
-    if(!order) {
-        return null;
-    }
+    const order = useSelector(selectOrder);
 
     const orderStatus = order?.status === 'done' ? 'Выполнен' : 'В процессе';
 
@@ -64,6 +44,10 @@ const OrderPage = () => {
 
     if (!isLoading && hasError) {
         return <div className={styles.error}><ErrorComponent/></div>;
+    }
+
+    if (error) {
+        return <h2 className={`${styles[`not-found`]} text text_type_digits-medium mb-2`}>{error}</h2>;
     }
 
     return (
@@ -113,7 +97,8 @@ const OrderPage = () => {
                     </div>
                 </div>
             </div>
-        ));
+        )
+    );
 };
 
 export default OrderPage;

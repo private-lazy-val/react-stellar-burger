@@ -1,37 +1,26 @@
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import PropTypes from "prop-types";
-import {useEffect} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {useMemo} from "react";
+import {useParams} from "react-router-dom";
 import {
-    selectHasErrorIngredients,
-    selectIngredientById,
+    selectHasErrorIngredients, selectIngredientsMap,
     selectIsLoadingIngredients
 } from "../../services/burger-ingredients/selector";
-import {loadAllIngredients} from "../../services/burger-ingredients/burger-ingredients-slice";
 import styles from "./ingredient-page.module.css";
 import useLoadingAndErrorHandling from "../../hooks/use-loading-and-error-handling";
 import LoadingComponent from "../../utils/loading-component";
 import ErrorComponent from "../../utils/error-component";
+
 const IngredientPage = ({title}) => {
     const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingIngredients, selectHasErrorIngredients);
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-
     const {ingredientId} = useParams();
+    const allIngredients = useSelector(selectIngredientsMap);
 
-    useEffect(() => {
-        dispatch(loadAllIngredients())
-            .then(response => {
-                const ingredients = response.payload;
-                const foundIngredient = ingredients.find(ingredient => ingredient._id === ingredientId);
-                if (!foundIngredient) {
-                    navigate("/missing", { replace: true });
-                }
-            })
-    }, [dispatch, ingredientId, navigate]);
+    // 'isLoaded' is used to track if the ingredients have been loaded
+    const isLoaded = useMemo(() => Object.keys(allIngredients).length > 0, [allIngredients]);
 
-    const ingredient = useSelector(state => selectIngredientById(state, ingredientId));
+    const ingredient = allIngredients[ingredientId];
 
     if (isLoading) {
         return <div className={styles.backdrop}><LoadingComponent/></div>;
@@ -41,34 +30,43 @@ const IngredientPage = ({title}) => {
         return <div className={styles.error}><ErrorComponent/></div>;
     }
 
+    if (isLoaded && !ingredient) {
+        return <h2 className={`${styles[`not-found`]} text text_type_digits-medium mb-2`}>
+            Ingredient with this ID doesn't exist
+        </h2>;
+    }
+
+    if (!isLoaded) {
+        return <div className={styles.backdrop}><LoadingComponent/></div>;
+    }
+
     return (
-            ingredient && (
-                <main className={styles.wrapper}>
-                    <h1 className="text text_type_main-large">{title}</h1>
-                    <img className='mt-3' src={ingredient.image_large} alt={ingredient.name}/>
-                    <h2 className="text text_type_main-medium mt-4 mb-8">{ingredient.name}</h2>
-                    <ul className={styles.list}>
-                        <li className={styles.item}>
-                            <span className="text text_type_main-default text_color_inactive">Калории,ккал</span>
-                            <span
-                                className="text text_type_digits-default text_color_inactive">{ingredient.calories}</span>
-                        </li>
-                        <li className={styles.item}>
-                            <span className="text text_type_main-default text_color_inactive">Белки, г</span>
-                            <span
-                                className="text text_type_digits-default text_color_inactive">{ingredient.proteins}</span>
-                        </li>
-                        <li className={styles.item}>
-                            <span className="text text_type_main-default text_color_inactive">Жиры, г</span>
-                            <span className="text text_type_digits-default text_color_inactive">{ingredient.fat}</span>
-                        </li>
-                        <li className={styles.item}>
-                            <span className="text text_type_main-default text_color_inactive">Углеводы, г</span>
-                            <span
-                                className="text text_type_digits-default text_color_inactive">{ingredient.carbohydrates}</span>
-                        </li>
-                    </ul>
-                </main>)
+        <main className={styles.wrapper}>
+            <h1 className="text text_type_main-large">{title}</h1>
+            <img className='mt-3' src={ingredient.image_large} alt={ingredient.name}/>
+            <h2 className="text text_type_main-medium mt-4 mb-8">{ingredient.name}</h2>
+            <ul className={styles.list}>
+                <li className={styles.item}>
+                    <span className="text text_type_main-default text_color_inactive">Калории,ккал</span>
+                    <span
+                        className="text text_type_digits-default text_color_inactive">{ingredient.calories}</span>
+                </li>
+                <li className={styles.item}>
+                    <span className="text text_type_main-default text_color_inactive">Белки, г</span>
+                    <span
+                        className="text text_type_digits-default text_color_inactive">{ingredient.proteins}</span>
+                </li>
+                <li className={styles.item}>
+                    <span className="text text_type_main-default text_color_inactive">Жиры, г</span>
+                    <span className="text text_type_digits-default text_color_inactive">{ingredient.fat}</span>
+                </li>
+                <li className={styles.item}>
+                    <span className="text text_type_main-default text_color_inactive">Углеводы, г</span>
+                    <span
+                        className="text text_type_digits-default text_color_inactive">{ingredient.carbohydrates}</span>
+                </li>
+            </ul>
+        </main>
     );
 };
 

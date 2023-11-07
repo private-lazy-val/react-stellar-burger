@@ -21,3 +21,10 @@
     row-gap: 8px;
     width: 112px;
 }
+
+.not-found {
+    margin-top: 140px;
+    margin-inline: auto;
+    text-align: center;
+    color: #0CC;
+}

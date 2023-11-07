@@ -31,7 +31,6 @@ function App() {
 
     const background = location.state && location.state.background;
     const {
-        isModalOpen,
         modalType,
         openIngredientModal,
         closeIngredientModal,
@@ -48,14 +47,13 @@ function App() {
     useEffect(() => {
         // Check if modal should be opened on load
         if (localStorage.getItem('ingredientModalOpen')) {
-            const ingredient = JSON.parse(localStorage.getItem('ingredientModalData'));
-            openIngredientModal(ingredient);
+            openIngredientModal();
         }
         if (localStorage.getItem('orderModalOpen')) {
-            const order = JSON.parse(localStorage.getItem('orderModalData'));
-            openOrderModal(order);
+            openOrderModal();
         }
     }, [openIngredientModal, openOrderModal]);
+
 
     // Used in CSSTransition
     const nodeRef = useRef(null);
@@ -147,7 +145,7 @@ function App() {
 
 
             <CSSTransition
-                in={isModalOpen && modalType === 'submit-order'}
+                in={modalType === 'submit-order'}
                 nodeRef={nodeRef}
                 timeout={600}
                 classNames={{...transitions}}

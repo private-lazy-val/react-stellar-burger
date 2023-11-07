@@ -10,7 +10,7 @@ import {getCookie} from "../../utils/cookies";
 import ProfileSideMenu from "../../components/profile-side-menu/profile-side-menu";
 import Orders from "../../components/orders/orders";
 import {validateOrdersPayload} from "../../utils/validate-orders-payload";
-import {selectProfileOrder} from "../../services/profile-orders/selector";
+import {selectProfileOrders} from "../../services/profile-orders/selector";
 import {getSortedOrders} from "../../utils/get-sorted-orders";
 
 const ProfileOrders = () => {
@@ -37,7 +37,7 @@ const ProfileOrders = () => {
         }
     }, [accessToken, dispatch]);
 
-    const orders = useSelector(selectProfileOrder);
+    const orders = useSelector(selectProfileOrders);
 
     const validOrders = useMemo(() => {
         if (!validateOrdersPayload(orders)) return [];

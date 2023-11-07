@@ -79,3 +79,10 @@
     align-items: center;
     gap: 8px;
 }
+
+.backdrop {
+    margin-top: 140px;
+    margin-inline: auto;
+    text-align: center;
+    color: #0CC;
+}

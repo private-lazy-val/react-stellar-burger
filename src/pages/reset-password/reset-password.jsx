@@ -7,7 +7,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/user-slice';
 import {PWD_REGEX, TOKEN_REGEX} from "../../utils/input-regex";
-import {resetPwdFulfilled} from "../../utils/user-action-types";
 import {useForm} from "../../hooks/use-form";
 
 const ResetPassword = () => {
@@ -34,12 +33,11 @@ const ResetPassword = () => {
         e.preventDefault();
         if (isFormValid()) {
             dispatch(resetPassword({password: values.password, token: values.token}))
-                .then((action) => {
-                    if (action.type === resetPwdFulfilled) {
+                .unwrap()
+                .then(() => {
                         localStorage.removeItem('visitedForgotPassword');
                         navigate('/login');
                         resetForm();
-                    }
                 });
         }
     }

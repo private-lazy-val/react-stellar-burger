@@ -1,16 +1,10 @@
 import {createReducer} from '@reduxjs/toolkit';
 import {websocketStatus} from '../../utils/ws-status';
-import {
-    wsConnecting,
-    wsOpen,
-    wsClose,
-    wsError,
-    wsMessage,
-    resetOrders
-} from './actions';
+import {resetOrders, wsClose, wsConnecting, wsError, wsMessage, wsOpen} from './actions';
 
 const initialState = {
     status: websocketStatus.OFFLINE,
+    ordersMap: null,
     orders: [],
     connectingError: ''
 }
@@ -31,10 +25,17 @@ const profileOrdersReducer = createReducer(initialState, (builder) => {
             state.connectingError = action.payload;
         })
         .addCase(wsMessage, (state, action) => {
+            state.ordersMap = action.payload.orders.reduce((acc, order) => {
+                // Use order.number as the key, and spread the rest of the order properties as the value
+                const {number, ...orderWithoutNumber} = order;
+                acc[number] = orderWithoutNumber;
+                return acc;
+            }, {});
             state.orders = action.payload.orders;
         })
         .addCase(resetOrders, state => {
             state.orders = []; // This will reset the orders to an empty array
+            state.orders = null;
         })
 })
 

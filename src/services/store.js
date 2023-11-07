@@ -1,7 +1,6 @@
 import {configureStore} from "@reduxjs/toolkit";
 import burgerIngredientsReducer from './burger-ingredients/burger-ingredients-slice';
 import burgerConstructorReducer from './burger-constructor/burger-constructor-slice';
-import ingredientInfoReducer from './ingredient-info/ingredient-info-slice';
 import submitOrderReducer from './submit-order/submit-order-slice';
 import modalReducer from './modal/modal-slice';
 import userReducer from './user/user-slice';
@@ -55,7 +54,6 @@ export default configureStore({
     reducer: {
         burgerIngredients: burgerIngredientsReducer,
         burgerConstructor: burgerConstructorReducer,
-        ingredientInfo: ingredientInfoReducer,
         ordersFeed: ordersFeedReducer,
         profileOrders: profileOrdersReducer,
         orderInfo: orderInfoReducer,

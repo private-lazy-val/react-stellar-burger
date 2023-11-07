@@ -1,11 +1,20 @@
-import React from "react";
+import React, {useMemo} from "react";
 import styles from "./ingredient-info.module.css";
 import {useSelector} from 'react-redux';
-import {selectIngredientInfo} from "../../../services/ingredient-info/selector";
 import PropTypes from "prop-types";
+import {useParams} from "react-router-dom";
+import {selectIngredientsMap} from "../../../services/burger-ingredients/selector";
 
-const IngredientInfo = ({title}) => {
-    const ingredient = useSelector(selectIngredientInfo);
+const IngredientInfo = React.memo(({title}) => {
+    const {ingredientId} = useParams();
+    const allIngredients = useSelector(selectIngredientsMap);
+
+    const ingredient = useMemo(() => {
+        return allIngredients.hasOwnProperty(ingredientId)
+            ? allIngredients[ingredientId]
+            : <h2 className={`${styles[`not-found`]} text text_type_digits-medium mb-2`}>Ingredient with this ID doesn't exist</h2>;
+    }, [allIngredients, ingredientId]);
+
     return (
         <div className={`${styles.container} mb-15`}>
             {ingredient && (
@@ -37,7 +46,7 @@ const IngredientInfo = ({title}) => {
                 </>)}
         </div>
     );
-};
+});
 
 IngredientInfo.propTypes = {
     title: PropTypes.string.isRequired,

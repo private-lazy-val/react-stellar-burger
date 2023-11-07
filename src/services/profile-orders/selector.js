@@ -1,1 +1,1 @@
-export const selectProfileOrder = (state) => state.profileOrders.orders;
+export const selectProfileOrders = (state) => state.profileOrders.orders;

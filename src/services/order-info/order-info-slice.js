@@ -16,11 +16,7 @@ export const orderInfoSlice = createSlice({
         isLoading: false,
         hasError: false
     },
-    reducers: {
-        showOrderInfo: (state, action) => {
-            state.order = action.payload
-        }
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchOrder.pending, (state, action) => {
@@ -43,4 +39,3 @@ export const orderInfoSlice = createSlice({
 });
 
 export default orderInfoSlice.reducer;
-export const {showOrderInfo} = orderInfoSlice.actions;

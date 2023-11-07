@@ -4,7 +4,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {updateUser} from "../../services/user/action";
 import {selectErrMsg, selectUser} from "../../services/user/selector";
 import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
-import {updateUserFulfilled} from "../../utils/user-action-types";
 import {useForm} from "../../hooks/use-form";
 import {useState} from "react";
 import ProfileSideMenu from "../../components/profile-side-menu/profile-side-menu";
@@ -34,12 +33,11 @@ const Profile = () => {
         e.preventDefault();
         if (isFormValid) {
             dispatch(updateUser({name: values.name, email: values.email, password: values.password}))
-                .then((action) => {
-                    if (action.type === updateUserFulfilled) {
+                .unwrap()
+                .then(() => {
                         setName(user.name);
                         setEmail(user.email);
                         setPassword('000000');
-                    }
                 });
         }
     }
@@ -85,7 +83,7 @@ const Profile = () => {
                 {(values.name !== user.name && validities.name)
                 || (values.email !== user.email && validities.email)
                 || (values.password !== '00000' && validities.password) ? (
-                    <div className={styles[`profile-btns`]}>
+                    <div>
                         <Button
                             htmlType="submit"
                             type="primary"

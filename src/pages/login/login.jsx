@@ -7,7 +7,6 @@ import {login} from '../../services/user/action';
 import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/user-slice';
 import {EMAIL_REGEX, PWD_REGEX} from "../../utils/input-regex";
-import {loginFulfilled} from "../../utils/user-action-types";
 import {useForm} from "../../hooks/use-form";
 
 const Login = () => {
@@ -34,10 +33,9 @@ const Login = () => {
         e.preventDefault();
         if (isFormValid()) {
             dispatch(login({email: values.email, password: values.password}))
-                .then((action) => {
-                    if (action.type === loginFulfilled) {
+                .unwrap() // no need to check if (action.type === loginFulfilled) {
+                .then(() => {
                         resetForm();
-                    }
                 });
         }
     }

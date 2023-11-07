@@ -11,6 +11,7 @@ import {
 const initialState = {
     status: websocketStatus.OFFLINE,
     orders: [],
+    ordersMap: null,
     total: 0,
     totalToday: 0,
     connectingError: ''
@@ -32,6 +33,12 @@ const ordersFeedReducer = createReducer(initialState, (builder) => {
             state.connectingError = action.payload;
         })
         .addCase(wsMessage, (state, action) => {
+            state.ordersMap = action.payload.orders.reduce((acc, order) => {
+                // Use order.number as the key, and spread the rest of the order properties as the value
+                const {number, ...orderWithoutNumber} = order;
+                acc[number] = orderWithoutNumber;
+                return acc;
+            }, {});
             state.orders = action.payload.orders;
             state.total = action.payload.total;
             state.totalToday = action.payload.totalToday;
