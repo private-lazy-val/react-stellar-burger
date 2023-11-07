@@ -6,23 +6,6 @@
     margin-top: 180px;
 }
 
-.profile {
-    display: flex;
-    gap: 170px;
-    max-width: 1240px;
-    width: 100%;
-    margin-inline: auto;
-    margin-top: 60px;
-}
-
-.profile-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 24px;
-    margin-top: 120px;
-}
-
 .form {
     display: flex;
     flex-direction: column;
@@ -32,12 +15,12 @@
     position: relative;
 }
 
-.submit {
-    width: fit-content;
+.question {
+    margin-bottom: 16px;
 }
 
-.action {
-    margin-bottom: 16px;
+.submit-btn {
+    width: fit-content;
 }
 
 .link {
@@ -45,33 +28,8 @@
     margin-left: 8px;
 }
 
-/*fix bug in yandex library*/
-.input input {
-    color: #8585AD;
-}
-
-.input input:focus {
-    color: #fff;
-}
-
-.input svg {
-    cursor: pointer !important;
-    color: #fff;
-}
-
 .backdrop, .error {
     margin-top: 180px;
     margin-inline: auto;
-    text-align: center;
-}
-
-.err {
-    position: absolute;
-    top: -42px;
-    z-index: 2;
-}
-
-.missing-header {
-    color: #0CC;
     text-align: center;
 }

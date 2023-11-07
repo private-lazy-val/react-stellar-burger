@@ -1,5 +1,6 @@
 import {Button, EmailInput, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
-import styles from '../auth.module.css';
+import commonStyles from '../auth.module.css';
+import styles from './profile.module.css';
 import {useDispatch, useSelector} from "react-redux";
 import {updateUser} from "../../services/user/action";
 import {selectErrMsg, selectUser} from "../../services/user/selector";
@@ -16,7 +17,7 @@ const Profile = () => {
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('000000');
+    const [password, setPassword] = useState('******');
 
     const formValidators = {
         name: (value) => NAME_REGEX.test(value),
@@ -26,7 +27,7 @@ const Profile = () => {
 
     const {values, validities, handleChange, isFormValid, resetForm} =
         useForm(
-            {name: user?.name || '', email: user?.email || '', password: '000000'}, formValidators);
+            {name: user?.name || '', email: user?.email || '', password: '******'}, formValidators);
 
 
     const handleUpdate = async (e) => {
@@ -35,10 +36,11 @@ const Profile = () => {
             dispatch(updateUser({name: values.name, email: values.email, password: values.password}))
                 .unwrap()
                 .then(() => {
-                        setName(user.name);
-                        setEmail(user.email);
-                        setPassword('000000');
-                });
+                    setName(user.name);
+                    setEmail(user.email);
+                    setPassword('******');
+                })
+                .catch(err => console.error(err))
         }
     }
 
@@ -47,7 +49,8 @@ const Profile = () => {
             <ProfileSideMenu/>
             <form className={styles["profile-form"]} onSubmit={handleUpdate}>
                 {errMsg &&
-                    <p className={`${styles.err} text text_type_main-default text_color_error mt-2`}>Oops! Something
+                    <p className={`${styles[`profile-error`]} text text_type_main-default text_color_error mt-2`}>Oops!
+                        Something
                         went wrong...</p>}
                 <Input
                     type="text"
@@ -88,7 +91,7 @@ const Profile = () => {
                             htmlType="submit"
                             type="primary"
                             size="medium"
-                            extraClass={styles.submit}>
+                            extraClass={commonStyles[`submit-btn`]}>
                             Сохранить
                         </Button>
                         <Button htmlType="button" type="secondary" size="large" onClick={resetForm}>

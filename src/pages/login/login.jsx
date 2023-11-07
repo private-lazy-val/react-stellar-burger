@@ -1,4 +1,4 @@
-import styles from "../auth.module.css";
+import commonStyles from "../auth.module.css";
 import {Button, EmailInput, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Link} from "react-router-dom";
 import {useEffect} from "react";
@@ -35,16 +35,17 @@ const Login = () => {
             dispatch(login({email: values.email, password: values.password}))
                 .unwrap() // no need to check if (action.type === loginFulfilled) {
                 .then(() => {
-                        resetForm();
-                });
+                    resetForm();
+                })
+                .catch(err => console.error(err))
         }
     }
 
     return (
-        <main className={styles.main}>
+        <main className={commonStyles.main}>
             <h1 className="text text_type_main-medium">Вход</h1>
             {errMsg && <p className="text text_type_main-default text_color_error mt-2">{errMsg}</p>}
-            <form className={styles.form} onSubmit={handleSubmit}>
+            <form className={commonStyles.form} onSubmit={handleSubmit}>
                 <EmailInput
                     type="email"
                     id="email"
@@ -67,30 +68,26 @@ const Login = () => {
                     htmlType="submit"
                     type="primary"
                     size="medium"
-                    extraClass={styles.submit}
+                    extraClass={commonStyles[`submit-btn`]}
                     disabled={!validities.email || !validities.password}
                 >
                     Войти
                 </Button>
             </form>
 
-            <p className={`${styles.action} text text_type_main-default text_color_inactive`}>
+            <p className={`${commonStyles.question} text text_type_main-default text_color_inactive`}>
                 Вы – новый пользователь?
-                <span className="line">
-                    <Link to="/register" className={styles.link}>
-                        Зарегистрироваться
-                    </Link>
-                </span>
+                <Link to="/register" className={commonStyles.link}>
+                    Зарегистрироваться
+                </Link>
             </p>
 
             <p className="text text_type_main-default text_color_inactive">
                 Забыли пароль?
-                <span className="line">
-                    <Link to="/forgot-password"
-                          className={styles.link}>
-                        Восстановить пароль
-                    </Link>
-                </span>
+                <Link to="/forgot-password"
+                      className={commonStyles.link}>
+                    Восстановить пароль
+                </Link>
             </p>
         </main>
     );

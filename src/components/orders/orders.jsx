@@ -45,7 +45,7 @@ const Orders = React.memo(({orders}) => {
                             // на котором была открыта наша модалка
                             state={{background: location}}
                             onClick={() => {
-                                openOrderModal(order)
+                                openOrderModal()
                             }}
                             className={styles.order}
                         >

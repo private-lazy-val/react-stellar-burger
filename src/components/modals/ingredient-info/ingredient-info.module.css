@@ -22,9 +22,8 @@
     width: 112px;
 }
 
-.not-found {
-    margin-top: 140px;
-    margin-inline: auto;
+.backdrop {
+    margin: 0 50px 50px 30px;
     text-align: center;
     color: #0CC;
 }

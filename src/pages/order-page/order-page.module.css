@@ -1,10 +1,4 @@
-.backdrop, .error {
-    margin-top: 180px;
-    margin-inline: auto;
-    text-align: center;
-}
-
-.order {
+.container {
     margin: 50px auto 0;
     display: flex;
     flex-direction: column;
@@ -14,6 +8,13 @@
 }
 
 .not-found {
+    margin-top: 180px;
+    margin-inline: auto;
+    text-align: center;
+    color: #0CC;
+}
+
+.backdrop, .error {
     margin-top: 180px;
     margin-inline: auto;
     text-align: center;

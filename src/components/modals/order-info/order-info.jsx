@@ -2,33 +2,40 @@ import {useDispatch, useSelector} from "react-redux";
 import styles from './order-info.module.css';
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
 import {getIngredientCount, getIngredientsTotalPrice} from "../../../utils/ingredients-info";
-import {selectIngredientsMap} from "../../../services/burger-ingredients/selector";
+import {
+    selectIngredientsMap
+} from "../../../services/burger-ingredients/selector";
 import {useParams} from "react-router-dom";
 import {fetchOrder} from "../../../services/order-info/order-info-slice";
-import {useEffect, useMemo} from "react";
+import {useEffect} from "react";
 import LoadingComponent from "../../../utils/loading-component";
+import {selectOrderError, selectOrderStatus} from "../../../services/order-info/selector";
+import ItemNotFound from "../../item-not-found/item-not-found";
 
 const OrderInfo = () => {
     const dispatch = useDispatch();
     const {number} = useParams();
-    const allIngredients = useSelector(selectIngredientsMap);
 
-    // 'isLoaded' is used to track if the ingredients have been loaded
-    const isLoaded = useMemo(() => Object.keys(allIngredients).length > 0, [allIngredients]);
+    const {allIngredients, orderFetchStatus, orderFetchError} = useSelector(state => ({
+        allIngredients: selectIngredientsMap(state),
+        orderFetchStatus: selectOrderStatus(state),
+        orderFetchError: selectOrderError(state)
+    }));
 
     let order = useSelector(state => {
         // Check in allOrdersMap
-        console.log(state.ordersFeed)
         let order = state.ordersFeed.ordersMap?.[number];
         if (order) {
+            console.log('ordersFeed')
             return order;
         }
         // Check in profileOrders
         order = state.profileOrders.ordersMap?.[number];
-        console.log(state.profileOrders)
         if (order) {
+            console.log('profileOrders')
             return order;
         }
+        console.log('orderInfo')
         // Finally, check in the current order details
         return state.orderInfo.order && state.orderInfo.order?.number === number
             ? state.orderInfo.order
@@ -36,21 +43,22 @@ const OrderInfo = () => {
     })
 
     useEffect(() => {
-        if (isLoaded && order === undefined) {
+        if (!order) {
             dispatch(fetchOrder(number))
         }
-    }, [number, dispatch, order, isLoaded]);
+    }, [number, dispatch, order, orderFetchStatus]);
 
-    if (!isLoaded || !order) {
-        // Render loading state or null if the data isn't ready
-        return <div className={styles.backdrop}><LoadingComponent/></div>;
-    }
+    const orderStatus = order?.status === 'done' ? 'Выполнен' : 'В процессе';
 
-    const orderStatus = order.status === 'done' ? 'Выполнен' : 'В процессе';
+    let content;
 
-    return (
-        order && (
-            <div className={styles.order}>
+    if (orderFetchStatus === 'loading') {
+        content = <div className={styles.backdrop}><LoadingComponent/></div>
+    } else if (orderFetchStatus === 'failed') {
+        content = <div className={`${styles.backdrop} text text_type_digits-medium mb-2`}>{orderFetchError}</div>
+    } else if ((orderFetchStatus === 'succeeded' && order) || order) {
+        content = (
+            <>
                 <p className={`${styles[`order-number`]} text text_type_digits-default`}>{`#${number}`}</p>
                 <h2 className="text text_type_main-medium">{order.name}</h2>
                 <p className={`${styles[`order-status`]} text text_type_main-default`}>{orderStatus}</p>
@@ -94,8 +102,14 @@ const OrderInfo = () => {
                         <CurrencyIcon type="primary"/>
                     </div>
                 </div>
-            </div>
+            </>
         )
+    }
+
+    return (
+        <div className={styles.container}>
+            {content}
+        </div>
     );
 };
 

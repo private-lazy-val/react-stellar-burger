@@ -13,26 +13,26 @@ export const orderInfoSlice = createSlice({
     name: "orderInfo",
     initialState: {
         order: null,
-        isLoading: false,
-        hasError: false
+        status: 'idle',
+        error: null
     },
     reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchOrder.pending, (state, action) => {
                 state.order = action.payload;
-                state.isLoading = true;
-                state.hasError = false;
+                state.status = 'loading';
+                state.error = null;
             })
             .addCase(fetchOrder.fulfilled, (state, action) => {
                 state.order = action.payload;
-                state.isLoading = false;
-                state.hasError = false;
+                state.status = 'succeeded';
+                state.error = null;
             })
             .addCase(fetchOrder.rejected, (state, action) => {
                 state.order = null;
-                state.isLoading = false;
-                state.hasError = true;
+                state.status = 'failed';
+                state.error = action.error.message;
             })
 
     }

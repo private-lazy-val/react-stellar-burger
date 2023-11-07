@@ -31,6 +31,7 @@ export const useForm = (initialValues, validators) => {
 
     return {
         values,
+        setValues,
         validities,
         handleChange,
         isFormValid,

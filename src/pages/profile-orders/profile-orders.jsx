@@ -1,4 +1,4 @@
-import styles from "../auth.module.css";
+import profileStyles from "../profile/profile.module.css";
 import {useDispatch, useSelector} from "react-redux";
 import {
     connect as connectProfileOrders,
@@ -45,7 +45,7 @@ const ProfileOrders = () => {
     }, [orders]);
 
     return (
-            <main className={styles.profile}>
+            <main className={profileStyles.profile}>
                 <ProfileSideMenu/>
                 {validOrders && <Orders orders={validOrders}/>}
             </main>

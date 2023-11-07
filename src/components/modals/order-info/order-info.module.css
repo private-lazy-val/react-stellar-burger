@@ -1,4 +1,4 @@
-.order {
+.container {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -81,8 +81,7 @@
 }
 
 .backdrop {
-    margin-top: 140px;
-    margin-inline: auto;
+    margin: 0 50px 50px 30px;
     text-align: center;
     color: #0CC;
 }

@@ -31,8 +31,8 @@ export const burgerIngredientsSlice = createSlice({
         ingredients: [],
         ingredientsMap: {},
         currentTab: 'Булки',
-        isLoading: false,
-        hasError: false,
+        status: 'idle',
+        error: null,
     },
     reducers: {
         switchTab: (state, action) => {
@@ -42,18 +42,18 @@ export const burgerIngredientsSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(loadAllIngredients.pending, (state) => {
-                state.isLoading = true;
-                state.hasError = false;
+                state.status = 'loading';
+                state.error = null;
             })
             .addCase(loadAllIngredients.fulfilled, (state, action) => {
-                state.isLoading = false;
-                state.hasError = false;
+                state.status = 'succeeded';
+                state.error = null;
                 state.ingredients = action.payload.array;
                 state.ingredientsMap = action.payload.map;
             })
-            .addCase(loadAllIngredients.rejected, (state) => {
-                state.isLoading = false;
-                state.hasError = true;
+            .addCase(loadAllIngredients.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
             })
     }
 });

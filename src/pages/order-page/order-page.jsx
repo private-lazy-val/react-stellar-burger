@@ -1,58 +1,43 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {fetchOrder} from "../../services/order-info/order-info-slice";
-import {selectHasErrorOrder, selectIsLoadingOrder, selectOrder} from "../../services/order-info/selector";
+import {selectOrderStatus, selectOrder, selectOrderError} from "../../services/order-info/selector";
 import {getIngredientCount, getIngredientsTotalPrice} from "../../utils/ingredients-info";
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
-import useLoadingAndErrorHandling from "../../hooks/use-loading-and-error-handling";
 import LoadingComponent from "../../utils/loading-component";
-import ErrorComponent from "../../utils/error-component";
 import styles from './order-page.module.css';
 import commonStyles from '../../components/modals/order-info/order-info.module.css';
 import {selectIngredientsMap} from "../../services/burger-ingredients/selector";
+import ItemNotFound from "../../components/item-not-found/item-not-found";
 
 const OrderPage = () => {
-    const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingOrder, selectHasErrorOrder);
-    const [error, setError] = useState(null);
+    const dispatch = useDispatch();
 
     const {number} = useParams();
-    const ingredientsMap = useSelector(selectIngredientsMap);
-
-    const dispatch = useDispatch();
+    const {allIngredients, orderFetchStatus, orderFetchError} = useSelector(state => ({
+        allIngredients: selectIngredientsMap(state),
+        orderFetchStatus: selectOrderStatus(state),
+        orderFetchError: selectOrderError(state)
+    }));
 
     useEffect(() => {
         dispatch(fetchOrder(number))
-            .unwrap()
-            .then(fetchedOrder => {
-                if (!fetchedOrder) {
-                    setError("Order with this number doesn't exist.");
-                }
-            })
-            .catch(err => {
-                setError("An error occurred while fetching the order.");
-            })
     }, [number, dispatch]);
 
     const order = useSelector(selectOrder);
 
     const orderStatus = order?.status === 'done' ? 'Выполнен' : 'В процессе';
 
-    if (isLoading) {
-        return <div className={styles.backdrop}><LoadingComponent/></div>;
-    }
+    let content;
 
-    if (!isLoading && hasError) {
-        return <div className={styles.error}><ErrorComponent/></div>;
-    }
-
-    if (error) {
-        return <h2 className={`${styles[`not-found`]} text text_type_digits-medium mb-2`}>{error}</h2>;
-    }
-
-    return (
-        order && (
-            <div className={styles.order}>
+    if (orderFetchStatus === 'loading') {
+        content = <div className={styles.backdrop}><LoadingComponent/></div>
+    } else if (orderFetchStatus === 'failed') {
+        content = <div className={`${styles.backdrop} text text_type_digits-medium mb-2`}>{orderFetchError}</div>
+    } else if (orderFetchStatus === 'succeeded' && order) {
+        content = (
+            <>
                 <p className={`${commonStyles[`order-number`]} text text_type_digits-default`}>{`#${order.number}`}</p>
                 <h2 className="text text_type_main-medium">{order.name}</h2>
                 <p className={`${commonStyles[`order-status`]} text text_type_main-default`}>{orderStatus}</p>
@@ -60,22 +45,22 @@ const OrderPage = () => {
 
                 <ul className={`${commonStyles[`ingredients-list`]} custom-scroll`}>
                     {order.ingredients.map((ingredientId, index) => (
-                        ingredientsMap[ingredientId] ? (
+                        allIngredients[ingredientId] ? (
                             <li key={index} className={commonStyles.ingredient}>
                                 <div className={commonStyles[`ingredient-name`]}>
                                     <div className={commonStyles[`img-wrapper`]}>
                                         <img className={commonStyles[`ingredient-img`]}
-                                             src={ingredientsMap[ingredientId].image_mobile}
-                                             alt={ingredientsMap[ingredientId].alt}/>
+                                             src={allIngredients[ingredientId].image_mobile}
+                                             alt={allIngredients[ingredientId].alt}/>
                                     </div>
-                                    <h3 className="text text_type_main-default">{ingredientsMap[ingredientId].name}</h3>
+                                    <h3 className="text text_type_main-default">{allIngredients[ingredientId].name}</h3>
                                 </div>
                                 <div className={commonStyles[`ingredient-price`]}>
                                     <span
                                         className="text text_type_digits-default">{getIngredientCount(ingredientId, order)}</span>
                                     <span className="text text_type_digits-default">x</span>
                                     <span
-                                        className="text text_type_digits-default">{ingredientsMap[ingredientId].price}</span>
+                                        className="text text_type_digits-default">{allIngredients[ingredientId].price}</span>
                                     <CurrencyIcon type="primary"/>
                                 </div>
                             </li>
@@ -92,12 +77,23 @@ const OrderPage = () => {
                     </div>
                     <div className={commonStyles.total}>
                         <span
-                            className="text text_type_digits-default">{getIngredientsTotalPrice(order, ingredientsMap)}</span>
+                            className="text text_type_digits-default">{getIngredientsTotalPrice(order, allIngredients)}</span>
                         <CurrencyIcon type="primary"/>
                     </div>
                 </div>
-            </div>
+            </>
         )
+    }
+
+    if (!order && orderFetchStatus === 'succeeded') {
+        return <div className={styles.backdrop}><ItemNotFound/></div>
+    }
+
+    return (
+        <div className={styles.container}>
+            {content}
+        </div>
+
     );
 };
 

@@ -1,5 +1,5 @@
 import {useEffect} from "react";
-import styles from "../auth.module.css";
+import commonStyles from "../auth.module.css";
 import {Button, EmailInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Link, useNavigate} from "react-router-dom";
 import {forgotPassword} from "../../services/user/action";
@@ -38,15 +38,16 @@ const ForgotPassword = () => {
                     localStorage.setItem('visitedForgotPassword', 'true');
                     navigate('/reset-password');
                     resetForm();
-                });
+                })
+                .catch(err => console.error(err))
         }
     }
 
     return (
-        <main className={styles.main}>
+        <main className={commonStyles.main}>
             <h1 className="text text_type_main-medium">Восстановление пароля</h1>
             {errMsg && <p className="text text_type_main-default text_color_error mt-2">{errMsg}</p>}
-            <form className={styles.form} onSubmit={handleSubmit}>
+            <form className={commonStyles.form} onSubmit={handleSubmit}>
                 <EmailInput
                     type="email"
                     id="email"
@@ -61,20 +62,18 @@ const ForgotPassword = () => {
                     htmlType="submit"
                     type="primary"
                     size="medium"
-                    extraClass={styles.submit}
+                    extraClass={commonStyles[`submit-btn`]}
                     disabled={!validities.email}
                 >
                     Восстановить
                 </Button>
             </form>
 
-            <p className={`${styles.action} text text_type_main-default text_color_inactive`}>
+            <p className={`${commonStyles.question} text text_type_main-default text_color_inactive`}>
                 Вспомнили пароль?
-                <span className="line">
-                    <Link to="/login" className={styles.link}>
+                    <Link to="/login" className={commonStyles.link}>
                         Войти
                     </Link>
-                </span>
             </p>
         </main>
     );

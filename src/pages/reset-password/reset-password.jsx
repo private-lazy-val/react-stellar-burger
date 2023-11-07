@@ -1,4 +1,4 @@
-import styles from "../auth.module.css";
+import commonStyles from "../auth.module.css";
 import {Button, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Link, useNavigate} from "react-router-dom";
 import {useEffect} from "react";
@@ -35,18 +35,19 @@ const ResetPassword = () => {
             dispatch(resetPassword({password: values.password, token: values.token}))
                 .unwrap()
                 .then(() => {
-                        localStorage.removeItem('visitedForgotPassword');
-                        navigate('/login');
-                        resetForm();
-                });
+                    localStorage.removeItem('visitedForgotPassword');
+                    navigate('/login');
+                    resetForm();
+                })
+                .catch(err => console.error(err))
         }
     }
 
     return (
-        <main className={styles.main}>
+        <main className={commonStyles.main}>
             <h1 className="text text_type_main-medium">Восстановление пароля</h1>
             {errMsg && <p className="text text_type_main-default text_color_error mt-2">{errMsg}</p>}
-            <form className={styles.form} onSubmit={handleSubmit}>
+            <form className={commonStyles.form} onSubmit={handleSubmit}>
                 <PasswordInput
                     id="password"
                     name='password'
@@ -70,20 +71,18 @@ const ResetPassword = () => {
                     htmlType="submit"
                     type="primary"
                     size="medium"
-                    extraClass={styles.submit}
+                    extraClass={commonStyles[`submit-btn`]}
                     disabled={!validities.password || !validities.token}
                 >
                     Сохранить
                 </Button>
             </form>
 
-            <p className={`${styles.action} text text_type_main-default text_color_inactive`}>
+            <p className={`${commonStyles.question} text text_type_main-default text_color_inactive`}>
                 Вспомнили пароль?
-                <span className="line">
-                    <Link to="/login" className={styles.link}>
-                        Войти
-                    </Link>
-                </span>
+                <Link to="/login" className={commonStyles.link}>
+                    Войти
+                </Link>
             </p>
         </main>
     );

@@ -1,8 +1,4 @@
-.main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 180px;
-    /*text-align: center;*/
+.header {
+    color: #0CC;
+    text-align: center;
 }

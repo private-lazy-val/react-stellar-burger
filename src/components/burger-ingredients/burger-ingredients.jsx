@@ -4,21 +4,19 @@ import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useDispatch, useSelector} from 'react-redux';
 import {switchTab} from "../../services/burger-ingredients/burger-ingredients-slice";
 import {
-    selectAllIngredients, selectCurrentTab, selectIsLoadingIngredients,
-    selectHasErrorIngredients
+    selectAllIngredients, selectCurrentTab, selectIngredientsStatus
 } from "../../services/burger-ingredients/selector";
 import BurgerIngredient from "../burger-ingredient/burger-ingredient";
-import useLoadingAndErrorHandling from "../../hooks/use-loading-and-error-handling";
 import ErrorComponent from "../../utils/error-component";
 import LoadingComponent from "../../utils/loading-component";
 
 const BurgerIngredients = () => {
     const dispatch = useDispatch();
-    const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingIngredients, selectHasErrorIngredients);
 
-    const {allIngredients, currentTab} = useSelector(state => ({
+    const {allIngredients, currentTab, ingredientsFetchStatus} = useSelector(state => ({
         allIngredients: selectAllIngredients(state),
-        currentTab: selectCurrentTab(state)
+        currentTab: selectCurrentTab(state),
+        ingredientsFetchStatus: selectIngredientsStatus(state)
     }));
 
     const categorizedItems = useMemo(() => ({
@@ -56,11 +54,11 @@ const BurgerIngredients = () => {
         }
     };
 
-    if (isLoading) {
+    if (ingredientsFetchStatus === 'loading') {
         return <div className={styles.backdrop}><LoadingComponent/></div>;
     }
 
-    if (!isLoading && hasError) {
+    if (ingredientsFetchStatus === 'failed') {
         return <div className={styles.error}><ErrorComponent/></div>;
     }
 

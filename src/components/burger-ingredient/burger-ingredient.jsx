@@ -43,7 +43,7 @@ const BurgerIngredient = React.memo(({ingredient}) => {
             className={styles.ingredient}
             style={{opacity}}
             onClick={() => {
-                openIngredientModal(ingredient)
+                openIngredientModal()
             }}
         >
             {count > 0 && <Counter count={count} size="default" extraClass="m-1"/>}
