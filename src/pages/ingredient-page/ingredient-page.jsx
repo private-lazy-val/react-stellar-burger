@@ -2,8 +2,8 @@ import {useSelector} from "react-redux";
 import React from "react";
 import {useParams} from "react-router-dom";
 import {
+    getIngredients,
     selectIngredientsError,
-    selectIngredientsMap,
     selectIngredientsStatus
 } from "../../services/burger-ingredients/selector";
 import styles from "./ingredient-page.module.css";
@@ -14,15 +14,17 @@ import IngredientInfo from "../../components/modals/ingredient-info/ingredient-i
 
 const IngredientPage = () => {
     const {ingredientId} = useParams();
-    const {allIngredients, ingredientsFetchStatus, ingredientsFetchError} = useSelector(state => ({
-        allIngredients: selectIngredientsMap(state),
-        ingredientsFetchStatus: selectIngredientsStatus(state),
-        ingredientsFetchError: selectIngredientsError(state)
-    }));
+    const { allIngredients, ingredientsFetchStatus, ingredientsFetchError } = useSelector(state => {
+        const { allIngredients } = getIngredients(state);
+        return {
+            allIngredients,
+            ingredientsFetchStatus: selectIngredientsStatus(state),
+            ingredientsFetchError: selectIngredientsError(state)
+        };
+    });
 
     const isLoading = ingredientsFetchStatus === 'loading';
     const showLoader = useDelayedLoader(isLoading, 300);
-
 
     const ingredient = allIngredients[ingredientId] || null;
 

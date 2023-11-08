@@ -6,6 +6,10 @@
     margin-bottom: 120px;
 }
 
+.logout-btn {
+    transition: var(--common-transition);
+}
+
 .logout-btn:hover {
     color: #f2f2f3;
 }

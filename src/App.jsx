@@ -28,7 +28,6 @@ import OrderInfo from "./components/modals/order-info/order-info";
 function App() {
     const dispatch = useDispatch();
     const location = useLocation();
-    console.log('aa')
 
     const background = location.state && location.state.background;
     const {

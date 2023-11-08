@@ -12,7 +12,7 @@ import OrderInfo from "../../components/modals/order-info/order-info";
 const OrderPage = () => {
     const dispatch = useDispatch();
     const {number} = useParams();
-
+    
     const {orderFetchStatus, orderFetchError} = useSelector(state => ({
         orderFetchStatus: selectOrderStatus(state),
         orderFetchError: selectOrderError(state)

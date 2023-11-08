@@ -12,6 +12,7 @@ import Orders from "../../components/orders/orders";
 import {validateOrdersPayload} from "../../utils/validate-orders-payload";
 import {selectProfileOrders} from "../../services/profile-orders/selector";
 import {getSortedOrders} from "../../utils/get-sorted-orders";
+import styles from './profile-orders.module.css';
 
 const ProfileOrders = () => {
     const dispatch = useDispatch();
@@ -35,10 +36,18 @@ const ProfileOrders = () => {
         return getSortedOrders(orders);
     }, [orders]);
 
+    let content;
+
+    if(validOrders.length === 0) {
+        content = <h1 className={`${styles[`empty-feed`]} text_type_digits-medium`}>You haven't placed any orders yet</h1>
+    } else {
+        content = <Orders orders={validOrders} />
+    }
+
     return (
             <main className={profileStyles.profile}>
                 <ProfileSideMenu/>
-                {validOrders && <Orders orders={validOrders}/>}
+                {content}
             </main>
     );
 };

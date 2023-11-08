@@ -1,12 +1,14 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {setUser, setAuthChecked} from "./user-slice";
+import {setUser, setAuthChecked, setUserLoading} from "./user-slice";
 import {userApi} from "../../utils/user-api";
 import {deleteCookie, getCookie, setCookie} from "../../utils/cookies";
 
 export const getUser = () => {
     return (dispatch) => {
+        dispatch(setUserLoading(true));
         return userApi.getUser().then((res) => {
             dispatch(setUser(res.user));
+            dispatch(setUserLoading(false));
         });
     };
 };

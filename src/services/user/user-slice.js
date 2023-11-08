@@ -4,6 +4,7 @@ import {login, register, logout, forgotPassword, resetPassword, updateUser} from
 const initialState = {
     user: null,
     isAuthChecked: false,
+    isLoading: false,
     errMsg: null
 };
 
@@ -14,7 +15,11 @@ export const userSlice = createSlice({
         setAuthChecked: (state, action) => {
             state.isAuthChecked = action.payload;
         },
+        setUserLoading: (state, action) => {
+            state.isLoading = action.payload;
+        },
         setUser: (state, action) => {
+            state.isLoading = false;
             state.user = action.payload;
         },
         resetError: (state) => {
@@ -56,6 +61,6 @@ export const userSlice = createSlice({
     }
 });
 
-export const {setAuthChecked, setUser, resetError} = userSlice.actions;
+export const {setAuthChecked, setUserLoading, setUser, resetError} = userSlice.actions;
 
 export default userSlice.reducer;

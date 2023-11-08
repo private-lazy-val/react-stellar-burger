@@ -5,18 +5,21 @@ import PropTypes from "prop-types";
 import {useParams} from "react-router-dom";
 import {
     selectIngredientsError,
-    selectIngredientsMap,
+    getIngredients,
     selectIngredientsStatus
 } from "../../../services/burger-ingredients/selector";
 import LoadingComponent from "../../../utils/loading-component";
 
 const IngredientInfo = React.memo(({title}) => {
     const {ingredientId} = useParams();
-    const {allIngredients, ingredientsFetchStatus, ingredientsFetchError} = useSelector(state => ({
-        allIngredients: selectIngredientsMap(state),
-        ingredientsFetchStatus: selectIngredientsStatus(state),
-        ingredientsFetchError: selectIngredientsError(state)
-    }));
+    const { allIngredients, ingredientsFetchStatus, ingredientsFetchError } = useSelector(state => {
+        const { allIngredients } = getIngredients(state);
+        return {
+            allIngredients,
+            ingredientsFetchStatus: selectIngredientsStatus(state),
+            ingredientsFetchError: selectIngredientsError(state)
+        };
+    });
 
     const ingredient = allIngredients[ingredientId] || null;
 

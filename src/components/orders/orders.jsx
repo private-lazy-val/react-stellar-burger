@@ -1,5 +1,5 @@
 import {useSelector} from "react-redux";
-import {selectIngredientsMap} from "../../services/burger-ingredients/selector";
+import {getIngredients} from "../../services/burger-ingredients/selector";
 import {Link, useLocation} from "react-router-dom";
 import useModal from "../../hooks/use-modal";
 import styles from "./orders.module.css";
@@ -19,19 +19,19 @@ const Orders = React.memo(({orders}) => {
 
     const basePath = useBasePath();
 
-    const ingredientsMap = useSelector(selectIngredientsMap);
+    const {allIngredients} = useSelector(getIngredients);
 
     const validOrders = useMemo(() => {
         return orders.map(order => {
             if (validateOrder(order)) {
-                const validIngredientIds = validateOrderIngredients(order, ingredientsMap);
+                const validIngredientIds = validateOrderIngredients(order, allIngredients);
                 if(validIngredientIds.length > 0) {
                     return {...order, ingredients: validIngredientIds};
                 }
             }
             return null;
         }).filter(order => order !== null); // Filter out the null entries
-    }, [orders, ingredientsMap]);
+    }, [orders, allIngredients]);
 
     return (
         <section className={styles[`feed-section`]}>
@@ -63,11 +63,11 @@ const Orders = React.memo(({orders}) => {
                             <div className={styles.summary}>
                                 <ul className={styles.ingredients}>
                                     {order.ingredients.slice(0, 5).map((ingredientId, index) => (
-                                        ingredientsMap[ingredientId] ? (
+                                        allIngredients[ingredientId] ? (
                                             <li key={index} className={styles.ingredient}>
                                                 <img className={styles[`ingredient-img`]}
-                                                     src={ingredientsMap[ingredientId].image_mobile}
-                                                     alt={ingredientsMap[ingredientId].alt}/>
+                                                     src={allIngredients[ingredientId].image_mobile}
+                                                     alt={allIngredients[ingredientId].alt}/>
                                             </li>
                                         ) : null
                                     ))}
@@ -76,8 +76,8 @@ const Orders = React.memo(({orders}) => {
                                         <li className={styles.ingredient}>
                                             <img
                                                 className={`${styles['ingredient-img']} ${styles['fifth-ingredient-img']}`}
-                                                src={ingredientsMap[order.ingredients[5]].image_mobile}
-                                                alt={ingredientsMap[order.ingredients[5]].alt}/>
+                                                src={allIngredients[order.ingredients[5]].image_mobile}
+                                                alt={allIngredients[order.ingredients[5]].alt}/>
                                             <span
                                                 className={`${styles[`hidden-ingredient`]} text text_type_main-default`}>
                                                 +{order.ingredients.length - 5}
@@ -88,7 +88,7 @@ const Orders = React.memo(({orders}) => {
 
                                 <div className={styles.total}>
                                             <span
-                                                className="text text_type_digits-default">{getIngredientsTotalPrice(order, ingredientsMap)}</span>
+                                                className="text text_type_digits-default">{getIngredientsTotalPrice(order, allIngredients)}</span>
                                     <CurrencyIcon type="primary"/>
                                 </div>
                             </div>

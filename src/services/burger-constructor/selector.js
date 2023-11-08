@@ -12,7 +12,6 @@ export const makeSelectIngredientCount = () => createSelector(
         if (!Array.isArray(ingredients)) {
             return 0; // or handle it accordingly
         }
-
         let count = ingredients.filter((ing) => ing._id === ingredientId).length;
         if (bun?._id === ingredientId) {
             count += 2;
