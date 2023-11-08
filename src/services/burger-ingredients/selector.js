@@ -9,7 +9,6 @@ export const selectIngredientsError = (state) => state.burgerIngredients.error;
 export const getIngredients = createSelector(
     (state) => state.burgerIngredients.ingredientsMap,
     (ingredientsMap) => {
-        console.log("ingredients");
         return { allIngredients: ingredientsMap };
     }
 )

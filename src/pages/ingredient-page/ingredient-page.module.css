@@ -5,16 +5,7 @@
     align-items: center;
 }
 
-.list {
-    display: flex;
-    column-gap: 22px;
-}
-
-.item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    row-gap: 8px;
-    width: 112px;
+.wrapper h2 {
+    margin-inline: auto;
 }
 

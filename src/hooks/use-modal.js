@@ -11,9 +11,7 @@ const useModal = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const {modalType} = useSelector(state => ({
-        modalType: selectModalType(state)
-    }));
+    const modalType = useSelector(selectModalType);
 
     const openIngredientModal = useCallback(() => {
         localStorage.setItem('ingredientModalOpen', 'true');

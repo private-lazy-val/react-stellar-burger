@@ -1,5 +1,4 @@
 import {useSelector} from "react-redux";
-import PropTypes from "prop-types";
 import React from "react";
 import {useParams} from "react-router-dom";
 import {
@@ -11,8 +10,9 @@ import styles from "./ingredient-page.module.css";
 import LoadingComponent from "../../utils/loading-component";
 import ItemNotFound from "../../utils/item-not-found";
 import {useDelayedLoader} from "../../hooks/use-delayed-loader";
+import IngredientInfo from "../../components/modals/ingredient-info/ingredient-info";
 
-const IngredientPage = React.memo(({title}) => {
+const IngredientPage = () => {
     const {ingredientId} = useParams();
     const {allIngredients, ingredientsFetchStatus, ingredientsFetchError} = useSelector(state => ({
         allIngredients: selectIngredientsMap(state),
@@ -34,32 +34,7 @@ const IngredientPage = React.memo(({title}) => {
         content = <div className="page-backdrop text_type_digits-medium">{ingredientsFetchError}</div>
     } else if (ingredientsFetchStatus === 'succeeded' && ingredient) {
         content = (
-            <>
-                <h1 className="text text_type_main-large">{title}</h1>
-                <img className='mt-3' src={ingredient.image_large} alt={ingredient.name}/>
-                <h2 className="text text_type_main-medium mt-4 mb-8">{ingredient.name}</h2>
-                <ul className={styles.list}>
-                    <li className={styles.item}>
-                        <span className="text text_type_main-default text_color_inactive">Калории,ккал</span>
-                        <span
-                            className="text text_type_digits-default text_color_inactive">{ingredient.calories}</span>
-                    </li>
-                    <li className={styles.item}>
-                        <span className="text text_type_main-default text_color_inactive">Белки, г</span>
-                        <span
-                            className="text text_type_digits-default text_color_inactive">{ingredient.proteins}</span>
-                    </li>
-                    <li className={styles.item}>
-                        <span className="text text_type_main-default text_color_inactive">Жиры, г</span>
-                        <span className="text text_type_digits-default text_color_inactive">{ingredient.fat}</span>
-                    </li>
-                    <li className={styles.item}>
-                        <span className="text text_type_main-default text_color_inactive">Углеводы, г</span>
-                        <span
-                            className="text text_type_digits-default text_color_inactive">{ingredient.carbohydrates}</span>
-                    </li>
-                </ul>
-            </>
+            <IngredientInfo title="Детали ингредиента"/>
         )
     }
 
@@ -72,10 +47,6 @@ const IngredientPage = React.memo(({title}) => {
             {content}
         </main>
     );
-});
-
-IngredientPage.propTypes = {
-    title: PropTypes.string.isRequired,
 };
 
 export default IngredientPage;

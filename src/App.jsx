@@ -14,7 +14,7 @@ import Profile from "./pages/profile/profile";
 import Missing from "./pages/missing/missing";
 import Modal from "./components/modals/modal/modal"
 import useModal from "./hooks/use-modal";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {checkUserAuth} from "./services/user/action";
 import {OnlyAuth, OnlyUnAuth} from "./components/protected-routes/protected-routes";
 import IngredientPage from "./pages/ingredient-page/ingredient-page";
@@ -24,7 +24,6 @@ import OrderPage from "./pages/order-page/order-page";
 import {loadAllIngredients} from "./services/burger-ingredients/burger-ingredients-slice";
 import ProfileOrders from "./pages/profile-orders/profile-orders";
 import OrderInfo from "./components/modals/order-info/order-info";
-import {selectIngredientsStatus} from "./services/burger-ingredients/selector";
 
 function App() {
     const dispatch = useDispatch();
@@ -56,15 +55,10 @@ function App() {
         }
     }, []);
 
-    const ingredientsFetchStatus = useSelector(selectIngredientsStatus);
-    console.log(ingredientsFetchStatus)
-
     // Used in CSSTransition
     const nodeRef = useRef(null);
 
     return (
-        <>
-            {ingredientsFetchStatus === 'succeeded' && (
                 <>
                     {/*If background is not set, then the Routes component will render based on the current location*/}
                     <Routes location={background || location}>
@@ -163,8 +157,6 @@ function App() {
                         </Modal>
                     </CSSTransition>
                 </>
-            )}
-        </>
     );
 }
 
