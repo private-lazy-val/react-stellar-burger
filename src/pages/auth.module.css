@@ -28,8 +28,3 @@
     margin-left: 8px;
 }
 
-.backdrop, .error {
-    margin-top: 180px;
-    margin-inline: auto;
-    text-align: center;
-}

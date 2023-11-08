@@ -51,3 +51,16 @@ button {
     border: none;
     cursor: pointer;
 }
+
+.modal-backdrop {
+    margin: 0 50px 50px 30px;
+    text-align: center;
+    color: #0CC;
+}
+
+.page-backdrop {
+    margin-top: 180px;
+    margin-inline: auto;
+    text-align: center;
+    color: #0CC;
+}

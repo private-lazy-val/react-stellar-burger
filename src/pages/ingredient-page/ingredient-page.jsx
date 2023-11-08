@@ -9,7 +9,8 @@ import {
 } from "../../services/burger-ingredients/selector";
 import styles from "./ingredient-page.module.css";
 import LoadingComponent from "../../utils/loading-component";
-import ItemNotFound from "../../components/item-not-found/item-not-found";
+import ItemNotFound from "../../utils/item-not-found";
+import {useDelayedLoader} from "../../hooks/use-delayed-loader";
 
 const IngredientPage = React.memo(({title}) => {
     const {ingredientId} = useParams();
@@ -19,14 +20,18 @@ const IngredientPage = React.memo(({title}) => {
         ingredientsFetchError: selectIngredientsError(state)
     }));
 
+    const isLoading = ingredientsFetchStatus === 'loading';
+    const showLoader = useDelayedLoader(isLoading, 300);
+
+
     const ingredient = allIngredients[ingredientId] || null;
 
     let content;
 
-    if (ingredientsFetchStatus === 'loading') {
-        content = <div className={styles.backdrop}><LoadingComponent/></div>
-    } else if (ingredientsFetchStatus === 'failed') {
-        content = <div className={`${styles.backdrop} text text_type_digits-medium mb-2`}>{ingredientsFetchError}</div>
+    if (showLoader) {
+        content = <div className="page-backdrop"><LoadingComponent/></div>
+    } else if (ingredientsFetchStatus === 'failed' && !showLoader) {
+        content = <div className="page-backdrop text_type_digits-medium">{ingredientsFetchError}</div>
     } else if (ingredientsFetchStatus === 'succeeded' && ingredient) {
         content = (
             <>
@@ -59,7 +64,7 @@ const IngredientPage = React.memo(({title}) => {
     }
 
     if (!ingredient && ingredientsFetchStatus === 'succeeded') {
-        return <div className={styles.backdrop}><ItemNotFound/></div>
+        content = <div className="page-backdrop"><ItemNotFound/></div>
     }
 
     return (

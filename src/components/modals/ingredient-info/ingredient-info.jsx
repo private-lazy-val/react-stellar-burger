@@ -17,19 +17,18 @@ const IngredientInfo = React.memo(({title}) => {
         ingredientsFetchStatus: selectIngredientsStatus(state),
         ingredientsFetchError: selectIngredientsError(state)
     }));
-    console.log(ingredientsFetchStatus)
 
     const ingredient = allIngredients[ingredientId] || null;
 
     let content;
 
     if (ingredientsFetchStatus === 'loading') {
-        content = <div className={styles.backdrop}><LoadingComponent/></div>
-    } else if (ingredientsFetchStatus === 'failed') {
-        content = <div className={`${styles.backdrop} text text_type_digits-medium mb-2`}>{ingredientsFetchError}</div>
+        content = <div className="modal-backdrop"><LoadingComponent/></div>
+    } else if (ingredientsFetchStatus === 'failed' && ingredientsFetchStatus !== 'loading') {
+        content = <div className="modal-backdrop text_type_digits-medium">{ingredientsFetchError}</div>
     } else if (ingredientsFetchStatus === 'succeeded' && ingredient) {
         content = (
-        <>
+            <div className={`${styles.container} mb-15`}>
             <h2 className={`${styles.heading} text text_type_main-large`}>{title}</h2>
             <img className='mt-3' src={ingredient.image_large} alt={ingredient.name} width="480" height="240"/>
             <h3 className="text text_type_main-medium mt-4 mb-8">{ingredient.name}</h3>
@@ -54,14 +53,14 @@ const IngredientInfo = React.memo(({title}) => {
                         className="text text_type_digits-default text_color_inactive">{ingredient.carbohydrates}</span>
                 </li>
             </ul>
-        </>
+            </div>
         )
     }
 
     return (
-        <div className={`${styles.container} mb-15`}>
+        <>
             {content}
-        </div>
+        </>
     );
 });
 

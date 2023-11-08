@@ -4,9 +4,7 @@ export const burgerConstructorSlice = createSlice({
     name: "burgerConstructor",
     initialState: {
         bun: null,
-        ingredients: [],
-        isLoading: false,
-        hasError: false,
+        ingredients: []
     },
     reducers: {
         addBun: {

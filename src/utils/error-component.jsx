@@ -6,8 +6,8 @@ const ErrorComponent = () => {
     const goBack = () => navigate(-1);
     return (
         <>
-            <h1 className="text text_type_digits-medium mb-2" style={{'color': '#0CC'}}>An error occurred</h1>
-            <p className="text text_type_digits-medium" style={{'color': '#0CC'}}>Please try again later</p>
+            <h1 className="text text_type_digits-medium">An error occurred</h1>
+            <p className="text text_type_digits-medium">Please try again later</p>
             <Button htmlType="button" type="secondary" size="large" onClick={goBack}>
                 Go Back
             </Button>

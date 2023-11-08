@@ -9,7 +9,8 @@ import LoadingComponent from "../../utils/loading-component";
 import styles from './order-page.module.css';
 import commonStyles from '../../components/modals/order-info/order-info.module.css';
 import {selectIngredientsMap} from "../../services/burger-ingredients/selector";
-import ItemNotFound from "../../components/item-not-found/item-not-found";
+import ItemNotFound from "../../utils/item-not-found";
+import {useDelayedLoader} from "../../hooks/use-delayed-loader";
 
 const OrderPage = () => {
     const dispatch = useDispatch();
@@ -21,6 +22,9 @@ const OrderPage = () => {
         orderFetchError: selectOrderError(state)
     }));
 
+    const isLoading = orderFetchStatus === 'loading';
+    const showLoader = useDelayedLoader(isLoading, 300);
+
     useEffect(() => {
         dispatch(fetchOrder(number))
     }, [number, dispatch]);
@@ -31,10 +35,10 @@ const OrderPage = () => {
 
     let content;
 
-    if (orderFetchStatus === 'loading') {
-        content = <div className={styles.backdrop}><LoadingComponent/></div>
-    } else if (orderFetchStatus === 'failed') {
-        content = <div className={`${styles.backdrop} text text_type_digits-medium mb-2`}>{orderFetchError}</div>
+    if (showLoader) {
+        content = <div className="page-backdrop"><LoadingComponent/></div>
+    } else if (orderFetchStatus === 'failed' && !showLoader) {
+        content = <div className="page-backdrop text_type_digits-medium">{orderFetchError}</div>
     } else if (orderFetchStatus === 'succeeded' && order) {
         content = (
             <>
@@ -86,7 +90,7 @@ const OrderPage = () => {
     }
 
     if (!order && orderFetchStatus === 'succeeded') {
-        return <div className={styles.backdrop}><ItemNotFound/></div>
+        content = <div className='page-backdrop'><ItemNotFound/></div>
     }
 
     return (

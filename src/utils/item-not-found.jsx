@@ -1,4 +1,3 @@
-import styles from './item-not-found.module.css';
 import {useLocation} from "react-router-dom";
 const ItemNotFound = () => {
     const location = useLocation();
@@ -13,7 +12,7 @@ const ItemNotFound = () => {
     }
 
     return (
-        <h2 className={`${styles[`not-found`]} text text_type_digits-medium mb-2`}>{message}</h2>
+        <h1 className="text_type_digits-medium">{message}</h1>
     );
 };
 

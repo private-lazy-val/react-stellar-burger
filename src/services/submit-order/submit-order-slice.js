@@ -27,24 +27,24 @@ export const submitOrderSlice = createSlice({
     name: "submitOrder",
     initialState: {
         number: null,
-        isLoading: true,
-        hasError: false,
+        status: 'idle',
+        error: null,
     },
     reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(createNewOrder.pending, (state) => {
-                state.isLoading = true;
-                state.hasError = false;
+                state.status = 'loading';
+                state.error = null;
             })
             .addCase(createNewOrder.fulfilled, (state, action) => {
-                state.isLoading = false;
-                state.hasError = false;
+                state.status = 'succeeded';
+                state.error = null;
                 state.number = action.payload;
             })
-            .addCase(createNewOrder.rejected, (state) => {
-                state.isLoading = false;
-                state.hasError = true;
+            .addCase(createNewOrder.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
             })
     }
 });

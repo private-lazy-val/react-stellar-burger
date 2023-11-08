@@ -10,7 +10,6 @@ import {fetchOrder} from "../../../services/order-info/order-info-slice";
 import {useEffect} from "react";
 import LoadingComponent from "../../../utils/loading-component";
 import {selectOrderError, selectOrderStatus} from "../../../services/order-info/selector";
-import ItemNotFound from "../../item-not-found/item-not-found";
 
 const OrderInfo = () => {
     const dispatch = useDispatch();
@@ -35,8 +34,8 @@ const OrderInfo = () => {
             console.log('profileOrders')
             return order;
         }
-        console.log('orderInfo')
         // Finally, check in the current order details
+        console.log('orderInfo')
         return state.orderInfo.order && state.orderInfo.order?.number === number
             ? state.orderInfo.order
             : undefined;
@@ -44,21 +43,22 @@ const OrderInfo = () => {
 
     useEffect(() => {
         if (!order) {
+            console.log('fetchOrder')
             dispatch(fetchOrder(number))
         }
-    }, [number, dispatch, order, orderFetchStatus]);
+    }, [number, dispatch, order]);
 
     const orderStatus = order?.status === 'done' ? 'Выполнен' : 'В процессе';
 
     let content;
 
     if (orderFetchStatus === 'loading') {
-        content = <div className={styles.backdrop}><LoadingComponent/></div>
-    } else if (orderFetchStatus === 'failed') {
-        content = <div className={`${styles.backdrop} text text_type_digits-medium mb-2`}>{orderFetchError}</div>
+        content = <div className="modal-backdrop"><LoadingComponent/></div>
+    } else if (orderFetchStatus === 'failed' && orderFetchStatus !== 'loading') {
+        content = <div className="modal-backdrop text_type_digits-medium">{orderFetchError}</div>
     } else if ((orderFetchStatus === 'succeeded' && order) || order) {
         content = (
-            <>
+            <div className={styles.container}>
                 <p className={`${styles[`order-number`]} text text_type_digits-default`}>{`#${number}`}</p>
                 <h2 className="text text_type_main-medium">{order.name}</h2>
                 <p className={`${styles[`order-status`]} text text_type_main-default`}>{orderStatus}</p>
@@ -102,14 +102,14 @@ const OrderInfo = () => {
                         <CurrencyIcon type="primary"/>
                     </div>
                 </div>
-            </>
+            </div>
         )
     }
 
     return (
-        <div className={styles.container}>
+        <>
             {content}
-        </div>
+        </>
     );
 };
 

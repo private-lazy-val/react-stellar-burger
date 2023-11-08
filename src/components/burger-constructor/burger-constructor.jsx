@@ -19,10 +19,10 @@ import {selectIngredientsStatus} from "../../services/burger-ingredients/selecto
 const BurgerConstructor = () => {
     const dispatch = useDispatch();
 
-    const {bun, ingredients, status} = useSelector(state => ({
+    const {bun, ingredients, ingredientsFetchStatus} = useSelector(state => ({
         bun: selectBun(state),
         ingredients: selectIngredients(state),
-        status: selectIngredientsStatus(state)
+        ingredientsFetchStatus: selectIngredientsStatus(state)
     }));
 
     const {
@@ -64,7 +64,7 @@ const BurgerConstructor = () => {
         }
     };
 
-    if (status !== 'succeeded') {
+    if (ingredientsFetchStatus !== 'succeeded') {
         return <></>;
     }
 
