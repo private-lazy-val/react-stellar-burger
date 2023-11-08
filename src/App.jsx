@@ -14,7 +14,7 @@ import Profile from "./pages/profile/profile";
 import Missing from "./pages/missing/missing";
 import Modal from "./components/modals/modal/modal"
 import useModal from "./hooks/use-modal";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {checkUserAuth} from "./services/user/action";
 import {OnlyAuth, OnlyUnAuth} from "./components/protected-routes/protected-routes";
 import IngredientPage from "./pages/ingredient-page/ingredient-page";
@@ -24,10 +24,12 @@ import OrderPage from "./pages/order-page/order-page";
 import {loadAllIngredients} from "./services/burger-ingredients/burger-ingredients-slice";
 import ProfileOrders from "./pages/profile-orders/profile-orders";
 import OrderInfo from "./components/modals/order-info/order-info";
+import {selectIngredientsStatus} from "./services/burger-ingredients/selector";
 
 function App() {
     const dispatch = useDispatch();
     const location = useLocation();
+    console.log('aa')
 
     const background = location.state && location.state.background;
     const {
@@ -52,109 +54,116 @@ function App() {
         if (localStorage.getItem('orderModalOpen')) {
             openOrderModal();
         }
-    }, [openIngredientModal, openOrderModal]);
+    }, []);
 
+    const ingredientsFetchStatus = useSelector(selectIngredientsStatus);
+    console.log(ingredientsFetchStatus)
 
     // Used in CSSTransition
     const nodeRef = useRef(null);
 
     return (
         <>
-            {/*If background is not set, then the Routes component will render based on the current location*/}
-            <Routes location={background || location}>
-                <Route path='/' element={<Layout/>}>
-                    <Route index element={<Home/>}/>
-                    <Route path='ingredients/:ingredientId'
-                           element={<IngredientPage title='Детали ингредиента'/>}
-                    />
-                    <Route path='feed' element={<OrdersFeed/>}/>
-                    <Route path='feed/:number' element={<OrderPage/>}/>
+            {ingredientsFetchStatus === 'succeeded' && (
+                <>
+                    {/*If background is not set, then the Routes component will render based on the current location*/}
+                    <Routes location={background || location}>
+                        <Route path='/' element={<Layout/>}>
+                            <Route index element={<Home/>}/>
+                            <Route path='ingredients/:ingredientId'
+                                   element={<IngredientPage title='Детали ингредиента'/>}
+                            />
+                            <Route path='feed' element={<OrdersFeed/>}/>
+                            <Route path='feed/:number' element={<OrderPage/>}/>
 
-                    {/*protected routes*/}
-                    <Route path='profile'>
-                        <Route index element={<OnlyAuth component={<Profile/>}/>}/>
-                        <Route path='orders' element={<OnlyAuth component={<ProfileOrders/>}/>}/>
-                        <Route path='orders/:number' element={<OnlyAuth component={<OrderPage/>}/>}/>
-                    </Route>
+                            {/*protected routes*/}
+                            <Route path='profile'>
+                                <Route index element={<OnlyAuth component={<Profile/>}/>}/>
+                                <Route path='orders' element={<OnlyAuth component={<ProfileOrders/>}/>}/>
+                                <Route path='orders/:number' element={<OnlyAuth component={<OrderPage/>}/>}/>
+                            </Route>
 
-                    {/*auth*/}
-                    <Route path='register' element={<OnlyUnAuth component={<Register/>}/>}/>
-                    <Route path='login' element={<OnlyUnAuth component={<Login/>}/>}/>
-                    <Route path='forgot-password' element={<OnlyUnAuth component={<ForgotPassword/>}/>}/>
-                    <Route path='reset-password'
-                           element={<OnlyUnAuth component={<ResetPasswordRoute component={<ResetPassword/>}/>}/>}/>
+                            {/*auth*/}
+                            <Route path='register' element={<OnlyUnAuth component={<Register/>}/>}/>
+                            <Route path='login' element={<OnlyUnAuth component={<Login/>}/>}/>
+                            <Route path='forgot-password' element={<OnlyUnAuth component={<ForgotPassword/>}/>}/>
+                            <Route path='reset-password'
+                                   element={<OnlyUnAuth
+                                       component={<ResetPasswordRoute component={<ResetPassword/>}/>}/>}/>
 
-                    {/*catch all*/}
-                    <Route path='*' element={<Missing/>}/>
-                </Route>
-            </Routes>
+                            {/*catch all*/}
+                            <Route path='*' element={<Missing/>}/>
+                        </Route>
+                    </Routes>
 
-            {/*If background exists, the Routes component will use background as its location*/}
-            {background && (
-                <Routes>
-                    <Route
-                        path='/ingredients/:ingredientId'
-                        element={
-                            <CSSTransition
-                                in={modalType === 'ingredient'}
-                                nodeRef={nodeRef}
-                                timeout={600}
-                                classNames={{...transitions}}
-                                unmountOnExit
-                            >
-                                <Modal ref={nodeRef} closeModal={closeIngredientModal}>
-                                    <IngredientInfo title='Детали ингредиента'/>
-                                </Modal>
-                            </CSSTransition>
-                        }
-                    />
-                    <Route
-                        path='feed/:number'
-                        element={
-                            <CSSTransition
-                                in={modalType === 'order'}
-                                nodeRef={nodeRef}
-                                timeout={600}
-                                classNames={{...transitions}}
-                                unmountOnExit
-                            >
-                                <Modal ref={nodeRef} closeModal={closeOrderModal}>
-                                    <OrderInfo/>
-                                </Modal>
-                            </CSSTransition>
-                        }
-                    />
-                    <Route
-                        path='/profile/orders/:number'
-                        element={
-                            <CSSTransition
-                                in={modalType === 'order'}
-                                nodeRef={nodeRef}
-                                timeout={600}
-                                classNames={{...transitions}}
-                                unmountOnExit
-                            >
-                                <Modal ref={nodeRef} closeModal={closeOrderModal}>
-                                    <OrderInfo/>
-                                </Modal>
-                            </CSSTransition>
-                        }
-                    />
-                </Routes>
+                    {/*If background exists, the Routes component will use background as its location*/}
+                    {background && (
+                        <Routes>
+                            <Route
+                                path='/ingredients/:ingredientId'
+                                element={
+                                    <CSSTransition
+                                        in={modalType === 'ingredient'}
+                                        nodeRef={nodeRef}
+                                        timeout={600}
+                                        classNames={{...transitions}}
+                                        unmountOnExit
+                                    >
+                                        <Modal ref={nodeRef} closeModal={closeIngredientModal}>
+                                            <IngredientInfo title='Детали ингредиента'/>
+                                        </Modal>
+                                    </CSSTransition>
+                                }
+                            />
+                            <Route
+                                path='feed/:number'
+                                element={
+                                    <CSSTransition
+                                        in={modalType === 'order'}
+                                        nodeRef={nodeRef}
+                                        timeout={600}
+                                        classNames={{...transitions}}
+                                        unmountOnExit
+                                    >
+                                        <Modal ref={nodeRef} closeModal={closeOrderModal}>
+                                            <OrderInfo/>
+                                        </Modal>
+                                    </CSSTransition>
+                                }
+                            />
+                            <Route
+                                path='/profile/orders/:number'
+                                element={
+                                    <CSSTransition
+                                        in={modalType === 'order'}
+                                        nodeRef={nodeRef}
+                                        timeout={600}
+                                        classNames={{...transitions}}
+                                        unmountOnExit
+                                    >
+                                        <Modal ref={nodeRef} closeModal={closeOrderModal}>
+                                            <OrderInfo/>
+                                        </Modal>
+                                    </CSSTransition>
+                                }
+                            />
+                        </Routes>
+                    )}
+
+
+                    <CSSTransition
+                        in={modalType === 'submit-order'}
+                        nodeRef={nodeRef}
+                        timeout={600}
+                        classNames={{...transitions}}
+                        unmountOnExit
+                    >
+                        <Modal ref={nodeRef} closeModal={closeSubmitOrderModal}>
+                            <SubmitOrder/>
+                        </Modal>
+                    </CSSTransition>
+                </>
             )}
-
-
-            <CSSTransition
-                in={modalType === 'submit-order'}
-                nodeRef={nodeRef}
-                timeout={600}
-                classNames={{...transitions}}
-                unmountOnExit
-            >
-                <Modal ref={nodeRef} closeModal={closeSubmitOrderModal}>
-                    <SubmitOrder/>
-                </Modal>
-            </CSSTransition>
         </>
     );
 }

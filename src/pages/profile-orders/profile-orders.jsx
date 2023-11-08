@@ -4,7 +4,7 @@ import {
     connect as connectProfileOrders,
     disconnect as disconnectProfileOrders
 } from "../../services/profile-orders/actions";
-import {useEffect, useMemo, useState} from "react";
+import {useEffect, useMemo} from "react";
 import {WS_URL} from "../../api/ws-api";
 import {getCookie} from "../../utils/cookies";
 import ProfileSideMenu from "../../components/profile-side-menu/profile-side-menu";
@@ -15,16 +15,7 @@ import {getSortedOrders} from "../../utils/get-sorted-orders";
 
 const ProfileOrders = () => {
     const dispatch = useDispatch();
-
-    const [accessToken, setAccessToken] = useState(null);
-
-    useEffect(() => {
-        // Attempt to get the access token from the cookie
-        const token = getCookie('accessToken');
-        if (token) {
-            setAccessToken(token);
-        }
-    }, []);
+    const accessToken = getCookie('accessToken');
 
     useEffect(() => {
         // If accessToken state gets updated and is not null, connect to WebSocket

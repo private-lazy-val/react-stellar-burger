@@ -3,60 +3,49 @@ import styles from './order-info.module.css';
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
 import {getIngredientCount, getIngredientsTotalPrice} from "../../../utils/ingredients-info";
 import {
+    getIngredients,
     selectIngredientsMap
 } from "../../../services/burger-ingredients/selector";
 import {useParams} from "react-router-dom";
 import {fetchOrder} from "../../../services/order-info/order-info-slice";
 import {useEffect} from "react";
 import LoadingComponent from "../../../utils/loading-component";
-import {selectOrderError, selectOrderStatus} from "../../../services/order-info/selector";
+import {getOrder, selectOrderError, selectOrderStatus} from "../../../services/order-info/selector";
 
 const OrderInfo = () => {
     const dispatch = useDispatch();
     const {number} = useParams();
 
-    const {allIngredients, orderFetchStatus, orderFetchError} = useSelector(state => ({
-        allIngredients: selectIngredientsMap(state),
-        orderFetchStatus: selectOrderStatus(state),
-        orderFetchError: selectOrderError(state)
-    }));
+    // const {allIngredients, orderFetchStatus, orderFetchError} = useSelector(state => ({
+    //     allIngredients: selectIngredientsMap(state),
+    //     orderFetchStatus: selectOrderStatus(state),
+    //     orderFetchError: selectOrderError(state)
+    // }));
 
-    let order = useSelector(state => {
-        // Check in allOrdersMap
-        let order = state.ordersFeed.ordersMap?.[number];
-        if (order) {
-            console.log('ordersFeed')
-            return order;
-        }
-        // Check in profileOrders
-        order = state.profileOrders.ordersMap?.[number];
-        if (order) {
-            console.log('profileOrders')
-            return order;
-        }
-        // Finally, check in the current order details
-        console.log('orderInfo')
-        return state.orderInfo.order && state.orderInfo.order?.number === number
-            ? state.orderInfo.order
-            : undefined;
-    })
+    const {allIngredients} = useSelector(getIngredients);
+
+    let order = useSelector(getOrder(number));
 
     useEffect(() => {
         if (!order) {
             console.log('fetchOrder')
             dispatch(fetchOrder(number))
         }
-    }, [number, dispatch, order]);
+    }, [dispatch]);
+
+    if (!order) {
+        return null;
+    }
 
     const orderStatus = order?.status === 'done' ? 'Выполнен' : 'В процессе';
 
     let content;
 
-    if (orderFetchStatus === 'loading') {
-        content = <div className="modal-backdrop"><LoadingComponent/></div>
-    } else if (orderFetchStatus === 'failed' && orderFetchStatus !== 'loading') {
-        content = <div className="modal-backdrop text_type_digits-medium">{orderFetchError}</div>
-    } else if ((orderFetchStatus === 'succeeded' && order) || order) {
+    // if (orderFetchStatus === 'loading') {
+    //     content = <div className="modal-backdrop"><LoadingComponent/></div>
+    // } else if (orderFetchStatus === 'failed' && orderFetchStatus !== 'loading') {
+    //     content = <div className="modal-backdrop text_type_digits-medium">{orderFetchError}</div>
+    // } else if ((orderFetchStatus === 'succeeded' && order) || order) {
         content = (
             <div className={styles.container}>
                 <p className={`${styles[`order-number`]} text text_type_digits-default`}>{`#${number}`}</p>
@@ -104,7 +93,7 @@ const OrderInfo = () => {
                 </div>
             </div>
         )
-    }
+    // }
 
     return (
         <>
