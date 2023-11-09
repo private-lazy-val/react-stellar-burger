@@ -1,9 +1,14 @@
 export const getIngredientsTotalPrice = (ingredientCount, ingredientsMap) => {
     if (Object.keys(ingredientCount).length === 0) return 0;
 
-    return Object.entries(ingredientCount).reduce((s, [ingredientId, count]) => {
-        return s + count * ingredientsMap[ingredientId].price
-    }, 0)
+    return Object.entries(ingredientCount).reduce((sum, [ingredientId, count]) => {
+        const ingredient = ingredientsMap[ingredientId];
+        if (ingredient) {
+            return sum + count * ingredient.price;
+        } else {
+            return sum;
+        }
+    }, 0);
 };
 
 export const getCount = (arr) => {

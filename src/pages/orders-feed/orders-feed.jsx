@@ -10,12 +10,6 @@ import Orders from "../../components/orders/orders";
 import {validateOrdersPayload} from "../../utils/validate-orders-payload";
 import {getSortedOrders} from "../../utils/get-sorted-orders";
 import {
-    selectProfileConnectingError,
-    selectProfileisInitialDataLoaded,
-    selectProfileOrders,
-    selectProfileStatus
-} from "../../services/profile-orders/selector";
-import {
     selectOrdersFeedConnectingError,
     selectOrdersFeedisInitialDataLoaded,
     selectOrdersFeedOrders, selectOrdersFeedStatus,
