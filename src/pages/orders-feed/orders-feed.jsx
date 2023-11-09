@@ -59,7 +59,7 @@ const OrdersFeed = () => {
             {(connectingError && status === websocketStatus.OFFLINE)
                 && <h1 className='page-backdrop text_type_digits-medium'>Connection lost. Please try again later.</h1>}
             {(status === websocketStatus.ONLINE && validOrders.length === 0 && isInitialDataLoaded)
-                && <h1 className={`${styles[`empty-feed`]} text_type_digits-medium`}>Orders feed is empty</h1>}
+                && <h1 className='page-backdrop text_type_digits-medium'>Orders feed is empty</h1>}
             {(status === websocketStatus.ONLINE && validOrders.length > 0)
                 &&
                 <>
