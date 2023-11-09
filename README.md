@@ -28,6 +28,8 @@ The following technologies were used to develop this project:
 
 - React
 - Redux Toolkit
+- React Router v6
+- Websocket middleware
 - Custom hooks
 - Drag and Drop
 - HTML5 / CSS / JS
