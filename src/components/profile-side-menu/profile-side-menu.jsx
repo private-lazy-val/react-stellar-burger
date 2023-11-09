@@ -6,7 +6,7 @@ const ProfileSideMenu = () => {
     const {onLogout, setActive} = useUserActions();
 
     return (
-        <ul className={styles[`side-menu`]} aria-label='side-menu'>
+        <ul className={styles[`side-menu`]} aria-label='Навигация'>
             <li><NavLink end to='/profile' className={setActive}>Профиль</NavLink></li>
             <li><NavLink to='/profile/orders' className={setActive}>История заказов</NavLink></li>
             <li>

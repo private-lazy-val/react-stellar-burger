@@ -6,7 +6,8 @@ const initialState = {
     status: websocketStatus.OFFLINE,
     ordersMap: null,
     orders: [],
-    connectingError: ''
+    connectingError: '',
+    isInitialDataLoaded: false
 }
 
 const profileOrdersReducer = createReducer(initialState, (builder) => {
@@ -32,6 +33,7 @@ const profileOrdersReducer = createReducer(initialState, (builder) => {
                 return acc;
             }, {});
             state.orders = action.payload.orders;
+            state.isInitialDataLoaded = true;
         })
         .addCase(resetOrders, state => {
             state.orders = []; // This will reset the orders to an empty array

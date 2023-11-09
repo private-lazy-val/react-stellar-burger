@@ -7,7 +7,7 @@ import {
 } from "../../../services/burger-ingredients/selector";
 import {useParams} from "react-router-dom";
 import {fetchOrder} from "../../../services/order-info/order-info-slice";
-import {useEffect} from "react";
+import {useEffect, useMemo} from "react";
 import LoadingComponent from "../../../utils/loading-component";
 import {getOrder, selectOrderError, selectOrderStatus} from "../../../services/order-info/selector";
 
@@ -24,7 +24,7 @@ const OrderInfo = () => {
         }
     });
 
-    let order = useSelector(getOrder(number));
+    const order = useSelector(getOrder(number));
 
     useEffect(() => {
         if (!order) {
@@ -33,6 +33,8 @@ const OrderInfo = () => {
     }, [dispatch]);
 
     const orderStatus = order?.status === 'done' ? 'Выполнен' : 'В процессе';
+
+    const ingredientCount = useMemo(() => getIngredientCount(order), [order]);
 
     let content;
 
@@ -49,28 +51,30 @@ const OrderInfo = () => {
                 <p className="text text_type_main-medium">Состав:</p>
 
                 <ul className={`${styles[`ingredients-list`]} custom-scroll`}>
-                    {order.ingredients.map((ingredientId, index) => (
-                        allIngredients[ingredientId] && (
-                            <li key={index} className={styles.ingredient}>
-                                <div className={styles[`ingredient-name`]}>
-                                    <div className={styles[`img-wrapper`]}>
-                                        <img className={styles[`ingredient-img`]}
-                                             src={allIngredients[ingredientId].image_mobile}
-                                             alt={allIngredients[ingredientId].alt}/>
+                    {
+                        Object.entries(ingredientCount)
+                            .filter(([ingredientId, _]) => ingredientId in allIngredients)
+                            .map(([ingredientId, count]) => (
+                                <li key={ingredientId} className={styles.ingredient}>
+                                    <div className={styles[`ingredient-name`]}>
+                                        <div className={styles[`img-wrapper`]}>
+                                            <img className={styles[`ingredient-img`]}
+                                                 src={allIngredients[ingredientId].image_mobile}
+                                                 alt={allIngredients[ingredientId].alt}/>
+                                        </div>
+                                        <h3 className="text text_type_main-default">{allIngredients[ingredientId].name}</h3>
                                     </div>
-                                    <h3 className="text text_type_main-default">{allIngredients[ingredientId].name}</h3>
-                                </div>
-                                <div className={styles[`ingredient-price`]}>
+                                    <div className={styles[`ingredient-price`]}>
                                 <span
-                                    className="text text_type_digits-default">{getIngredientCount(ingredientId, order)}</span>
-                                    <span className="text text_type_digits-default">x</span>
-                                    <span
-                                        className="text text_type_digits-default">{allIngredients[ingredientId].price}</span>
-                                    <CurrencyIcon type="primary"/>
-                                </div>
-                            </li>
-                        )
-                    ))}
+                                    className="text text_type_digits-default">{count}</span>
+                                        <span className="text text_type_digits-default">x</span>
+                                        <span
+                                            className="text text_type_digits-default">{allIngredients[ingredientId].price}</span>
+                                        <CurrencyIcon type="primary"/>
+                                    </div>
+                                </li>
+
+                            ))}
                 </ul>
 
                 <div className={styles.summary}>
@@ -82,7 +86,7 @@ const OrderInfo = () => {
                     </div>
                     <div className={styles.total}>
                     <span
-                        className="text text_type_digits-default">{getIngredientsTotalPrice(order, allIngredients)}</span>
+                        className="text text_type_digits-default">{getIngredientsTotalPrice(ingredientCount, allIngredients)}</span>
                         <CurrencyIcon type="primary"/>
                     </div>
                 </div>

@@ -5,7 +5,6 @@ export const validateOrdersPayload = (orders) => {
 export const validateOrder = (order) => {
     // Check each order in the array
     return !(order === null || !Array.isArray(order.ingredients) || order.ingredients.length === 0);
-
 }
 
 export const validateOrderIngredients = (order, ingredientsMap) => {

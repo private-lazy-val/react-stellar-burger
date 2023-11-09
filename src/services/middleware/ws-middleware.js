@@ -8,7 +8,8 @@ import {WS_URL} from "../../api/ws-api";
 export const wsMiddleware = (wsActions) => {
     return (store) => { // this function is the actual middleware that will be applied to the Redux store
         let socket = null; // the reference to the WebSocket connection
-        let isDisconnect = false;
+        let isDisconnect = false; // the socket is closed intentionally
+        let reconnectDelay = 1000;
         let initialWsUrl = '';
 
         return (next) => async (action) => { // 'next' is a Redux middleware API function used to pass the action to the next middleware in line
@@ -77,11 +78,20 @@ export const wsMiddleware = (wsActions) => {
                 }
 
                 socket.onclose = (event) => {
-                    if (isDisconnect) {
-                        dispatch(onClose());
+                    // if the socket is not closed intentionally
+                    if (!isDisconnect) {
+                        // attempt to reconnect with an exponential fixed timeout delay
+                        setTimeout(() => {
+                            console.log('Attempting to reconnect to WebSocket...');
+                            socket = new WebSocket(initialWsUrl);
+                            dispatch(wsConnecting());
+
+                            // Increase the delay for the next reconnect attempt
+                            reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+                        }, reconnectDelay);
                     } else {
-                        socket = new WebSocket(initialWsUrl);
-                        dispatch(wsConnecting());
+                        dispatch(onClose());
+                        reconnectDelay = 1000; // Reset the delay if the disconnection was intentional
                     }
                 };
 

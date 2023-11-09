@@ -14,7 +14,8 @@ const initialState = {
     ordersMap: null,
     total: 0,
     totalToday: 0,
-    connectingError: ''
+    connectingError: '',
+    isInitialDataLoaded: false
 }
 
 const ordersFeedReducer = createReducer(initialState, (builder) => {
@@ -42,6 +43,7 @@ const ordersFeedReducer = createReducer(initialState, (builder) => {
             state.orders = action.payload.orders;
             state.total = action.payload.total;
             state.totalToday = action.payload.totalToday;
+            state.isInitialDataLoaded = true;
         })
 })
 

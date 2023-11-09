@@ -4,7 +4,7 @@ import {Link, useLocation} from "react-router-dom";
 import useModal from "../../hooks/use-modal";
 import styles from "./orders.module.css";
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
-import {getIngredientsTotalPrice} from "../../utils/ingredients-info";
+import {getIngredientsTotalPrice, getIngredientCount, getUnique} from "../../utils/ingredients-info";
 import PropTypes from "prop-types";
 import {useBasePath} from "../../hooks/use-base-path";
 import {validateOrder, validateOrderIngredients} from "../../utils/validate-orders-payload";
@@ -21,12 +21,15 @@ const Orders = React.memo(({orders}) => {
 
     const {allIngredients} = useSelector(getIngredients);
 
-    const validOrders = useMemo(() => {
+    const validOrdersWithTotalPriceAndUniqueIngredients = useMemo(() => {
         return orders.map(order => {
             if (validateOrder(order)) {
                 const validIngredientIds = validateOrderIngredients(order, allIngredients);
                 if(validIngredientIds.length > 0) {
-                    return {...order, ingredients: validIngredientIds};
+                    const uniqueIngredients = getUnique(validIngredientIds);
+                    const ingredientCount = getIngredientCount(order);
+                    const totalPrice = getIngredientsTotalPrice(ingredientCount, allIngredients);
+                    return { ...order, ingredients: uniqueIngredients, total: totalPrice };
                 }
             }
             return null;
@@ -36,7 +39,7 @@ const Orders = React.memo(({orders}) => {
     return (
         <section className={styles[`feed-section`]}>
             <ul className={`${styles[`orders-list`]} custom-scroll`}>
-                {validOrders.map(order => (
+                {validOrdersWithTotalPriceAndUniqueIngredients.map(order => (
                     <li key={order.number}>
                         <Link
                             key={order.number}
@@ -62,14 +65,13 @@ const Orders = React.memo(({orders}) => {
                             <h3 className="text text_type_main-medium">{order.name}</h3>
                             <div className={styles.summary}>
                                 <ul className={styles.ingredients}>
-                                    {order.ingredients.slice(0, 5).map((ingredientId, index) => (
-                                        allIngredients[ingredientId] ? (
+                                    {order.ingredients
+                                        .slice(0, 5).map((ingredientId, index) => (
                                             <li key={index} className={styles.ingredient}>
                                                 <img className={styles[`ingredient-img`]}
                                                      src={allIngredients[ingredientId].image_mobile}
                                                      alt={allIngredients[ingredientId].alt}/>
                                             </li>
-                                        ) : null
                                     ))}
 
                                     {order.ingredients.length > 5 && (
@@ -88,7 +90,7 @@ const Orders = React.memo(({orders}) => {
 
                                 <div className={styles.total}>
                                             <span
-                                                className="text text_type_digits-default">{getIngredientsTotalPrice(order, allIngredients)}</span>
+                                                className="text text_type_digits-default">{order.total}</span>
                                     <CurrencyIcon type="primary"/>
                                 </div>
                             </div>
