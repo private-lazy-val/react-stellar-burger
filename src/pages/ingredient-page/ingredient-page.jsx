@@ -1,71 +1,54 @@
-import {useDispatch, useSelector} from "react-redux";
-import PropTypes from "prop-types";
-import {useEffect} from "react";
+import {useSelector} from "react-redux";
+import React from "react";
 import {useParams} from "react-router-dom";
 import {
-    selectHasErrorIngredients,
-    selectIngredientById,
-    selectIsLoadingIngredients
-} from "../../services/burgerIngredients/selector";
-import {loadAllIngredients} from "../../services/burgerIngredients/burgerIngredientsSlice";
+    getIngredients,
+    selectIngredientsError,
+    selectIngredientsStatus
+} from "../../services/burger-ingredients/selector";
 import styles from "./ingredient-page.module.css";
-import useLoadingAndErrorHandling from "../../hooks/useLoadingAndErrorHandling";
 import LoadingComponent from "../../utils/loading-component";
-import ErrorComponent from "../../utils/error-component";
+import ItemNotFound from "../../utils/item-not-found";
+import {useDelayedLoader} from "../../hooks/use-delayed-loader";
+import IngredientInfo from "../../components/modals/ingredient-info/ingredient-info";
 
-const IngredientPage = ({title}) => {
-    const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingIngredients, selectHasErrorIngredients);
-
-    const dispatch = useDispatch();
+const IngredientPage = () => {
     const {ingredientId} = useParams();
+    const { allIngredients, ingredientsFetchStatus, ingredientsFetchError } = useSelector(state => {
+        const { allIngredients } = getIngredients(state);
+        return {
+            allIngredients,
+            ingredientsFetchStatus: selectIngredientsStatus(state),
+            ingredientsFetchError: selectIngredientsError(state)
+        };
+    });
 
-    useEffect(() => {
-        dispatch(loadAllIngredients());
-    }, [dispatch]);
+    const isLoading = ingredientsFetchStatus === 'loading';
+    const showLoader = useDelayedLoader(isLoading, 300);
 
-    const ingredient = useSelector(state => selectIngredientById(state, ingredientId));
+    const ingredient = allIngredients[ingredientId] || null;
 
-    if (isLoading) {
-        return <div className={styles.backdrop}><LoadingComponent/></div>;
+    let content;
+
+    if (showLoader) {
+        content = <div className="page-backdrop"><LoadingComponent/></div>
+    } else if (ingredientsFetchStatus === 'failed' && !showLoader) {
+        content = <div className="page-backdrop text_type_digits-medium">{ingredientsFetchError}</div>
+    } else if (ingredientsFetchStatus === 'succeeded' && ingredient) {
+        content = (
+            <IngredientInfo title="Детали ингредиента"/>
+        )
     }
 
-    if (!isLoading && hasError) {
-        return <div className={styles.error}><ErrorComponent/></div>;
+    if (!ingredient && ingredientsFetchStatus === 'succeeded') {
+        content = <div className="page-backdrop"><ItemNotFound/></div>
     }
 
     return (
-            ingredient && (
-                <main className={styles.wrapper}>
-                    <h1 className="text text_type_main-large">{title}</h1>
-                    <img className='mt-3' src={ingredient.image_large} alt={ingredient.name}/>
-                    <h2 className="text text_type_main-medium mt-4 mb-8">{ingredient.name}</h2>
-                    <ul className={styles.list}>
-                        <li className={styles.item}>
-                            <span className="text text_type_main-default text_color_inactive">Калории,ккал</span>
-                            <span
-                                className="text text_type_digits-default text_color_inactive">{ingredient.calories}</span>
-                        </li>
-                        <li className={styles.item}>
-                            <span className="text text_type_main-default text_color_inactive">Белки, г</span>
-                            <span
-                                className="text text_type_digits-default text_color_inactive">{ingredient.proteins}</span>
-                        </li>
-                        <li className={styles.item}>
-                            <span className="text text_type_main-default text_color_inactive">Жиры, г</span>
-                            <span className="text text_type_digits-default text_color_inactive">{ingredient.fat}</span>
-                        </li>
-                        <li className={styles.item}>
-                            <span className="text text_type_main-default text_color_inactive">Углеводы, г</span>
-                            <span
-                                className="text text_type_digits-default text_color_inactive">{ingredient.carbohydrates}</span>
-                        </li>
-                    </ul>
-                </main>)
+        <main className={styles.wrapper}>
+            {content}
+        </main>
     );
-};
-
-IngredientPage.propTypes = {
-    title: PropTypes.string.isRequired,
 };
 
 export default IngredientPage;

@@ -1,0 +1,15 @@
+.side-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    margin-top: 120px;
+    margin-bottom: 120px;
+}
+
+.logout-btn {
+    transition: var(--common-transition);
+}
+
+.logout-btn:hover {
+    color: #f2f2f3;
+}

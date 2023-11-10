@@ -1,34 +1,28 @@
-import {useRef, useMemo, useEffect} from "react";
+import React, {useRef, useMemo} from "react";
 import styles from "./burger-ingredients.module.css";
 import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {switchTab} from "../../services/burger-ingredients/burger-ingredients-slice";
 import {
-    loadAllIngredients, switchTab
-} from "../../services/burgerIngredients/burgerIngredientsSlice";
-import {
-    selectAllIngredients, selectCurrentTab, selectIsLoadingIngredients,
-    selectHasErrorIngredients
-} from "../../services/burgerIngredients/selector";
+    selectAllIngredients, selectCurrentTab, selectIngredientsError, selectIngredientsStatus
+} from "../../services/burger-ingredients/selector";
 import BurgerIngredient from "../burger-ingredient/burger-ingredient";
-import useLoadingAndErrorHandling from "../../hooks/useLoadingAndErrorHandling";
-import ErrorComponent from "../../utils/error-component";
 import LoadingComponent from "../../utils/loading-component";
-import {selectAllOrders, selectTodayTotalOrders, selectTotalOrders} from "../../services/ordersFeed/selector";
+import ItemNotFound from "../../utils/item-not-found";
+import {useDelayedLoader} from '../../hooks/use-delayed-loader';
 
 const BurgerIngredients = () => {
-
-    const {isLoading, hasError} = useLoadingAndErrorHandling(selectIsLoadingIngredients, selectHasErrorIngredients);
-
-    const { allIngredients, currentTab } = useSelector(state => ({
-        allIngredients: selectAllIngredients(state),
-        currentTab: selectCurrentTab(state)
-    }));
-
     const dispatch = useDispatch();
 
-    useEffect(() => {
-            dispatch(loadAllIngredients());
-    }, [dispatch]);
+    const {allIngredients, currentTab, ingredientsFetchStatus, ingredientsFetchError} = useSelector(state => ({
+        allIngredients: selectAllIngredients(state),
+        currentTab: selectCurrentTab(state),
+        ingredientsFetchStatus: selectIngredientsStatus(state),
+        ingredientsFetchError: selectIngredientsError(state)
+    }));
+
+    const isLoading = ingredientsFetchStatus === 'loading';
+    const showLoader = useDelayedLoader(isLoading, 300);
 
     const categorizedItems = useMemo(() => ({
         'Булки': allIngredients.filter(item => item.type === 'bun'),
@@ -65,39 +59,49 @@ const BurgerIngredients = () => {
         }
     };
 
-    if (isLoading) {
-        return <div className={styles.backdrop}><LoadingComponent/></div>;
+    let content;
+
+    if (showLoader) {
+        content = <div className="page-backdrop"><LoadingComponent/></div>;
+    } else if (ingredientsFetchStatus === 'failed' && !showLoader) {
+        content = <div className="page-backdrop text_type_digits-medium">{ingredientsFetchError}</div>;
+    } else if (ingredientsFetchStatus === 'succeeded' && categorizedItems) {
+        content = (
+            <section className={styles.section}>
+                <h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
+                <div className={styles.tabs}>
+                    {Object.keys(categorizedItems).map(category => (
+                        <Tab key={category} value={category} active={currentTab === category}
+                             onClick={() => handleTabClick(category)}>
+                            {category}
+                        </Tab>
+                    ))}
+                </div>
+
+                <ul className={`${styles['create-burger']} custom-scroll`} onScroll={handleScroll}>
+                    {Object.entries(categorizedItems).map(([category, ingredients]) => (
+                        <li key={category} ref={refs[category]}>
+                            <h2 className="text text_type_main-medium mt-10">{category}</h2>
+                            <ul className={`${styles.ingredients} mt-6 ml-4`}>
+                                {ingredients.map((ingredient) => (
+                                    <BurgerIngredient key={ingredient._id} ingredient={ingredient}/>
+                                ))}
+                            </ul>
+                        </li>
+                    ))}
+                </ul>
+            </section>
+        )
     }
 
-    if (!isLoading && hasError) {
-        return <div className={styles.error}><ErrorComponent/></div>;
+    if (!allIngredients && ingredientsFetchStatus === 'succeeded') {
+        content = <div className='page-backdrop'><ItemNotFound/></div>
     }
 
     return (
-        <section className={styles.section}>
-            <h1 className="text text_type_main-large mb-5">Соберите бургер</h1>
-            <div className={styles.tabs}>
-                {Object.keys(categorizedItems).map(category => (
-                    <Tab key={category} value={category} active={currentTab === category}
-                         onClick={() => handleTabClick(category)}>
-                        {category}
-                    </Tab>
-                ))}
-            </div>
-
-            <ul className={`${styles['create-burger']} custom-scroll`} onScroll={handleScroll}>
-                {Object.entries(categorizedItems).map(([category, ingredients]) => (
-                    <li key={category} ref={refs[category]}>
-                        <h2 className="text text_type_main-medium mt-10">{category}</h2>
-                        <ul className={`${styles.ingredients} mt-6 ml-4`}>
-                            {ingredients.map((ingredient) => (
-                                <BurgerIngredient key={ingredient._id} ingredient={ingredient}/>
-                            ))}
-                        </ul>
-                    </li>
-                ))}
-            </ul>
-        </section>
+        <>
+            {content}
+        </>
     );
 };
 export default BurgerIngredients;

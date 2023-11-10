@@ -1,12 +1,14 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {setUser, setAuthChecked} from "./userSlice";
-import {api} from "../../utils/api";
-import {deleteCookie, getCookie, setCookie} from "../../utils/cookie";
+import {setUser, setAuthChecked, setUserLoading} from "./user-slice";
+import {userApi} from "../../utils/user-api";
+import {deleteCookie, getCookie, setCookie} from "../../utils/cookies";
 
 export const getUser = () => {
     return (dispatch) => {
-        return api.getUser().then((res) => {
+        dispatch(setUserLoading(true));
+        return userApi.getUser().then((res) => {
             dispatch(setUser(res.user));
+            dispatch(setUserLoading(false));
         });
     };
 };
@@ -14,7 +16,7 @@ export const getUser = () => {
 export const updateUser = createAsyncThunk(
     "user/updateUser",
     async (userData) => {
-        const res = await api.updateUser(userData);
+        const res = await userApi.updateUser(userData);
         if (!res.success) {
             throw new Error(res.message || "User update failed");
         }
@@ -25,7 +27,7 @@ export const updateUser = createAsyncThunk(
 export const login = createAsyncThunk(
     "user/login",
     async (userData) => {
-        const res = await api.login(userData);
+        const res = await userApi.login(userData);
         if (!res.success) {
             throw new Error(res.message || "Login failed");
         }
@@ -38,7 +40,7 @@ export const login = createAsyncThunk(
 export const register = createAsyncThunk(
     "user/register",
     async (userData) => {
-        const res = await api.register(userData);
+        const res = await userApi.register(userData);
         if (!res.success) {
             throw new Error(res.message || "Registration failed");
         }
@@ -53,8 +55,8 @@ export const checkUserAuth = () => {
         if (getCookie("accessToken")) {
             dispatch(getUser())
                 .catch(() => {
-                    deleteCookie("accessToken");
-                    deleteCookie("refreshToken");
+                    // deleteCookie("accessToken");
+                    // deleteCookie("refreshToken");
                     // use reducers when you have direct, synchronous updates to the state
                     dispatch(setUser(null));
                 })
@@ -68,7 +70,7 @@ export const checkUserAuth = () => {
 export const logout = createAsyncThunk(
     "user/logout",
     async () => {
-        await api.logout(getCookie("refreshToken"));
+        await userApi.logout(getCookie("refreshToken"));
         deleteCookie("accessToken");
         deleteCookie("refreshToken");
     }
@@ -77,7 +79,7 @@ export const logout = createAsyncThunk(
 export const forgotPassword = createAsyncThunk(
     "user/forgotPassword",
     async (email) => {
-        const res = await api.forgotPassword(email);
+        const res = await userApi.forgotPassword(email);
         if (!res.success) {
             throw new Error(res.message || "Password reset failed");
         }
@@ -88,7 +90,7 @@ export const forgotPassword = createAsyncThunk(
 export const resetPassword = createAsyncThunk(
     "user/resetPassword",
     async (userData) => {
-        const res = await api.resetPassword(userData);
+        const res = await userApi.resetPassword(userData);
         if (!res.success) {
             throw new Error(res.message || "Password reset failed");
         }

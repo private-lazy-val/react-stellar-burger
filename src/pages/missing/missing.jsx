@@ -1,15 +1,17 @@
 import {useNavigate} from "react-router-dom";
 import {Button} from "@ya.praktikum/react-developer-burger-ui-components";
-import styles from '../auth.module.css';
+import commonStyles from '../auth.module.css';
+import styles from './missing.module.css';
+
 
 const Missing = () => {
     const navigate = useNavigate();
     const goBack = () => navigate(-1);
     return (
-        <main className={styles.main}>
-            <h1 className={`text text_type_main-medium`}>Well, that's disappointing!</h1>
+        <main className={commonStyles.main}>
+            <h1 className={`${styles.header} text text_type_digits-medium`}>Whoops! This is not <br/> what you were looking for</h1>
             <Button htmlType="button" type="secondary" size="large" onClick={goBack}>
-                Go back
+                Go Back
             </Button>
         </main>
     );

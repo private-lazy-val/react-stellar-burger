@@ -1,145 +1,107 @@
 import styles from "./orders-feed.module.css";
-import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
-import {fetchAllOrders} from "../../services/ordersFeed/ordersFeedSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {useCallback, useEffect, useMemo} from "react";
+import {useEffect, useMemo} from "react";
 import {
-    selectAllOrders,
-    selectTodayTotalOrders,
-    selectTotalOrders
-} from "../../services/ordersFeed/selector";
-import {ingredientsDetails} from "../../utils/ingredients-details";
+    connect as connectFeedOrders,
+    disconnect as disconnectFeedOrders
+} from "../../services/orders-feed/actions";
+import {WS_URL} from "../../api/ws-api";
+import Orders from "../../components/orders/orders";
+import {validateOrdersPayload} from "../../utils/validate-orders-payload";
+import {getSortedOrders} from "../../utils/get-sorted-orders";
+import {
+    selectOrdersFeedConnectingError,
+    selectOrdersFeedisInitialDataLoaded,
+    selectOrdersFeedOrders, selectOrdersFeedStatus,
+    selectOrdersFeedTotal,
+    selectOrdersFeedTotalToday
+} from "../../services/orders-feed/selector";
+import {websocketStatus} from "../../utils/ws-status";
+import LoadingComponent from "../../utils/loading-component";
 
 const OrdersFeed = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(fetchAllOrders());
+        dispatch(connectFeedOrders(`${WS_URL}/orders/all`));
+        return () => {
+            // Disconnect WebSocket when the component unmounts
+            dispatch(disconnectFeedOrders());
+        };
     }, [dispatch]);
 
-    const {orders, totalOrders, totalTodayOrders} = useSelector(state => ({
-        orders: selectAllOrders(state),
-        totalOrders: selectTotalOrders(state),
-        totalTodayOrders: selectTodayTotalOrders(state)
+    const {orders, total, totalToday, status, isInitialDataLoaded, connectingError} = useSelector(state => ({
+        orders: selectOrdersFeedOrders(state),
+        total: selectOrdersFeedTotal(state),
+        totalToday: selectOrdersFeedTotalToday(state),
+        status: selectOrdersFeedStatus(state),
+        isInitialDataLoaded: selectOrdersFeedisInitialDataLoaded(state),
+        connectingError: selectOrdersFeedConnectingError(state)
     }));
 
-    const totalPrice = useCallback((order) => {
-        if (!order || !order.ingredients) return 0;
-
-        const ingredientsPrices = order.ingredients.map(ingredientId => ingredientsDetails[ingredientId].price);
-        return ingredientsPrices.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    }, []);
-
-    const lastTwentyReadyOrdersIds = useMemo(() => {
-        return orders.filter(order => order.status === 'done').map(order => order._id.slice(-6)).slice(-10);
+    const lastTenReadyOrdersIds = useMemo(() => {
+        return orders.filter(order => order.status === 'done').map(order => order.number).slice(-10);
     }, [orders]);
 
-    const lastTwentyInProgressOrdersIds = useMemo(() => {
-        return orders.filter(order => order.status === 'inprogress').map(order => order._id.slice(-6)).slice(-10);
+    const lastTenInProgressOrdersIds = useMemo(() => {
+        return orders.filter(order => order.status === 'inprogress').map(order => order.number).slice(-10);
+    }, [orders]);
+
+    const validOrders = useMemo(() => {
+        if (!validateOrdersPayload(orders)) return [];
+        return getSortedOrders(orders);
     }, [orders]);
 
     return (
         <main className={styles.main}>
-            <h1 className="text text_type_main-large">Лента заказов</h1>
-            <div className={`${styles.content} mt-4`}>
-                <section className={styles[`feed-section`]}>
-                    <ul className={`${styles[`orders-list`]} custom-scroll`}>
-                        {orders.map(order => (
-                            <li key={order._id} className={styles.order}>
-                                {/*<Link*/}
-                                {/*    key={orderId}*/}
-                                {/*    // Тут мы формируем динамический путь для нашего ингредиента*/}
-                                {/*    to={`/order/${orderId}`}*/}
-                                {/*    // а также сохраняем в свойство background роут,*/}
-                                {/*    // на котором была открыта наша модалка*/}
-                                {/*    state={{background: location}}*/}
-                                {/*    style={{opacity}}*/}
-                                {/*    onClick={() => {*/}
-                                {/*        openOrderModal(orderId)*/}
-                                {/*    }}*/}
-                                {/*>*/}
-                                    <div className={styles.date}>
-                                        <p className="text text_type_digits-default">{`#${order._id.slice(-6)}`}</p>
-                                        <div>
-                                            <FormattedDate date={new Date(order.createdAt)}
-                                                           className="text text_type_main-default text_color_inactive"/>
-                                            <span
-                                                className="text text_type_main-default text_color_inactive">&nbsp;i-GMT+3</span>
-                                        </div>
-                                    </div>
-                                    <h3 className="text text_type_main-medium">{order.name}</h3>
-                                    <div className={styles.summary}>
-                                        <ul className={styles.ingredients}>
-                                            {order.ingredients.slice(0, 5).map((ingredientId, index) => (
-                                                ingredientsDetails[ingredientId] ? (
-                                                    <li key={index} className={styles.ingredient}>
-                                                        <img className={styles[`ingredient-img`]}
-                                                             src={ingredientsDetails[ingredientId].url}
-                                                             alt={ingredientsDetails[ingredientId].alt}/>
-                                                    </li>
-                                                ) : null
-                                            ))}
+            {(status === websocketStatus.CONNECTING || (status === websocketStatus.ONLINE && !isInitialDataLoaded))
+                && <div className='page-backdrop'><LoadingComponent/></div>}
+            {(connectingError && status === websocketStatus.OFFLINE)
+                && <h1 className='page-backdrop text_type_digits-medium'>Connection lost. Please try again later.</h1>}
+            {(status === websocketStatus.ONLINE && validOrders.length === 0 && isInitialDataLoaded)
+                && <h1 className='page-backdrop text_type_digits-medium'>Orders feed is empty</h1>}
+            {(status === websocketStatus.ONLINE && validOrders.length > 0)
+                &&
+                <>
+                    <h1 className="text text_type_main-large">Лента заказов</h1>
+                    <div className={`${styles.content} mt-4`}>
+                        <Orders orders={validOrders}/>
+                        <section className={styles[`stats-sections`]}>
+                            <div className={styles[`orders-statuses`]}>
+                                <div className={styles[`orders-ready`]}>
+                                    <h2 className="text text_type_main-medium">Готовы:</h2>
+                                    <ul className={styles[`orders-ids-list`]}>
+                                        {lastTenReadyOrdersIds.map(order =>
+                                            <li key={order}
+                                                className={`${styles[`order-ready-item`]} text text_type_digits-default`}>{order}</li>
+                                        )}
+                                    </ul>
+                                </div>
+                                <div className={styles[`orders-inprogress`]}>
+                                    <h2 className={`${styles[`header-in-progress`]} text text_type_main-medium`}>В
+                                        работе:</h2>
+                                    <ul className={styles[`orders-list`]}>
+                                        {lastTenInProgressOrdersIds.map(order =>
+                                            <li key={order}
+                                                className={`${styles[`order-inprogress-item`]} text text_type_digits-default`}>{order}</li>
+                                        )}
+                                    </ul>
+                                </div>
+                            </div>
 
-                                            {order.ingredients.length > 5 && (
-                                                <li className={styles.ingredient}>
-                                                    <img
-                                                        className={`${styles['ingredient-img']} ${styles['fifth-ingredient-img']}`}
-                                                        src={ingredientsDetails[order.ingredients[5].url]}
-                                                        alt="ingredient"/>
-                                                    <span
-                                                        className={`${styles[`hidden-ingredient`]} text text_type_main-default`}>
-                                                +{order.ingredients.length - 5}
-                                            </span>
+                            <div>
+                                <h2 className="text text_type_main-medium">Выполнено за все время:</h2>
+                                <p className={`${styles[`total-orders`]} text text_type_digits-large`}>{total}</p>
+                            </div>
+                            <div>
+                                <h2 className="text text_type_main-medium">Выполнено за сегодня:</h2>
+                                <p className={`${styles[`total-orders`]} text text_type_digits-large`}>{totalToday}</p>
+                            </div>
 
-                                                </li>
-                                                )}
-                                        </ul>
-
-                                        <div className={styles.total}>
-                                            <span className="text text_type_digits-default">{totalPrice(order)}</span>
-                                            <CurrencyIcon type="primary"/>
-                                        </div>
-                                    </div>
-                                {/*</Link>*/}
-                            </li>
-                        ))}
-
-                    </ul>
-                </section>
-
-                <section className={styles[`stats-sections`]}>
-                    <div className={styles[`orders-statuses`]}>
-                        <div className={styles[`orders-ready`]}>
-                            <h2 className="text text_type_main-medium">Готовы:</h2>
-                            <ul className={styles[`orders-ids-list`]}>
-                                {lastTwentyReadyOrdersIds.map(order =>
-                                    <li key={order}
-                                        className={`${styles[`order-ready-item`]} text text_type_digits-default`}>{order}</li>
-                                )}
-                            </ul>
-                        </div>
-                        <div className={styles[`orders-inprogress`]}>
-                            <h2 className={`${styles[`header-in-progress`]} text text_type_main-medium`}>В работе:</h2>
-                            <ul className={styles[`orders-list`]}>
-                                {lastTwentyInProgressOrdersIds.map(order =>
-                                    <li key={order}
-                                        className={`${styles[`order-inprogress-item`]} text text_type_digits-default`}>{order}</li>
-                                )}
-                            </ul>
-                        </div>
+                        </section>
                     </div>
-
-                    <div>
-                        <h2 className="text text_type_main-medium">Выполнено за все время:</h2>
-                        <p className={`${styles[`total-orders`]} text text_type_digits-large`}>{totalOrders}</p>
-                    </div>
-                    <div>
-                        <h2 className="text text_type_main-medium">Выполнено за сегодня:</h2>
-                        <p className={`${styles[`total-orders`]} text text_type_digits-large`}>{totalTodayOrders}</p>
-                    </div>
-
-                </section>
-            </div>
+                </>
+            }
         </main>
     );
 };

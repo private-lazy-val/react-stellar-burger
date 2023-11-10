@@ -1,32 +1,18 @@
-import styles from "../auth.module.css";
+import commonStyles from "../auth.module.css";
 import {Button, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Link, useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {resetPassword} from "../../services/user/action";
 import {useDispatch, useSelector} from "react-redux";
 import {selectErrMsg} from "../../services/user/selector";
-import {resetError} from '../../services/user/userSlice';
+import {resetError} from '../../services/user/user-slice';
 import {PWD_REGEX, TOKEN_REGEX} from "../../utils/input-regex";
-import {resetPwdFulfilled} from "../../utils/action-types";
+import {useForm} from "../../hooks/use-form";
 
 const ResetPassword = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const errMsg = useSelector(selectErrMsg);
-
-    const [pwd, setPwd] = useState('');
-    const [validPwd, setValidPwd] = useState(false);
-
-    const [token, setToken] = useState('');
-    const [validToken, setValidToken] = useState(false);
-
-    useEffect(() => {
-        setValidPwd(PWD_REGEX.test(pwd));
-    }, [pwd])
-
-    useEffect(() => {
-        setValidToken(TOKEN_REGEX.test(token));
-    }, [token])
 
     useEffect(() => {
         return () => {
@@ -34,71 +20,69 @@ const ResetPassword = () => {
         };
     }, [dispatch])
 
+    const formValidators = {
+        password: (value) => PWD_REGEX.test(value),
+        token: (value) => TOKEN_REGEX.test(value)
+    };
+
+    const {values, validities, handleChange, isFormValid, resetForm} =
+        useForm({password: '', token: ''}, formValidators);
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(resetPassword({password: pwd, token}))
-            .then((action) => {
-                if (action.type === resetPwdFulfilled) {
+        if (isFormValid()) {
+            dispatch(resetPassword({password: values.password, token: values.token}))
+                .unwrap()
+                .then(() => {
                     localStorage.removeItem('visitedForgotPassword');
                     navigate('/login');
-                    setPwd('');
-                    setToken('');
-                }
-            });
+                    resetForm();
+                })
+                .catch(err => console.error(err))
+        }
     }
 
-    const handlePwdChange = (e) => {
-        setPwd(e.target.value);
-    };
-
-    const handleTokenChange = (e) => {
-        setToken(e.target.value);
-    };
-
     return (
-        <main className={styles.main}>
+        <main className={commonStyles.main}>
             <h1 className="text text_type_main-medium">Восстановление пароля</h1>
             {errMsg && <p className="text text_type_main-default text_color_error mt-2">{errMsg}</p>}
-            <form className={styles.form} onSubmit={handleSubmit}>
+            <form className={commonStyles.form} onSubmit={handleSubmit}>
                 <PasswordInput
                     id="password"
                     name='password'
                     placeholder="Введите новый пароль"
-                    value={pwd}
-                    onChange={handlePwdChange}
-                    aria-invalid={validPwd ? "false" : "true"}
+                    value={values.password}
+                    onChange={handleChange}
+                    aria-invalid={!validities.password}
                 />
-
                 <Input
                     type="text"
                     id="token"
                     name='token'
                     placeholder="Код из письма"
-                    value={token}
-                    onChange={handleTokenChange}
+                    value={values.token}
+                    onChange={handleChange}
                     required
                     autoComplete="off"
-                    aria-invalid={validToken ? "false" : "true"}
+                    aria-invalid={!validities.token}
                 />
-
                 <Button
                     htmlType="submit"
                     type="primary"
                     size="medium"
-                    extraClass={styles.submit}
-                    disabled={!validPwd || !validToken}
+                    extraClass={commonStyles[`submit-btn`]}
+                    disabled={!validities.password || !validities.token}
                 >
                     Сохранить
                 </Button>
             </form>
 
-            <p className={`${styles.action} text text_type_main-default text_color_inactive`}>
+            <p className={`${commonStyles.question} text text_type_main-default text_color_inactive`}>
                 Вспомнили пароль?
-                <span className="line">
-                    <Link to="/login" className={styles.link}>
-                        Войти
-                    </Link>
-                </span>
+                <Link to="/login" className={commonStyles.link}>
+                    Войти
+                </Link>
             </p>
         </main>
     );

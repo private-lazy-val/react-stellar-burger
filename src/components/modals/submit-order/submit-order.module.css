@@ -11,16 +11,6 @@
     margin-bottom: 66px;
 }
 
-.error, .backdrop  {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    margin-top: 6px;
-    margin-bottom: 56px;
-    width: 40vw;
-}
-
 .order-id {
     margin-top: 68px;
 }

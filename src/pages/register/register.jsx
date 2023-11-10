@@ -1,17 +1,16 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import styles from '../auth.module.css';
+import commonStyles from '../auth.module.css';
 import {Button, EmailInput, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useDispatch, useSelector} from "react-redux";
 import {register} from '../../services/user/action';
 import {selectErrMsg} from "../../services/user/selector";
-import {resetError} from '../../services/user/userSlice';
+import {resetError} from '../../services/user/user-slice';
 import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
-import {registerFulfilled} from "../../utils/action-types";
+import {useForm} from "../../hooks/use-form";
 
 const Register = () => {
     const dispatch = useDispatch();
-
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || '/profile';
@@ -24,92 +23,67 @@ const Register = () => {
         };
     }, [dispatch])
 
-    const [name, setName] = useState('');
-    const [validName, setValidName] = useState(false);
+    const formValidators = {
+        name: (value) => NAME_REGEX.test(value),
+        email: (value) => EMAIL_REGEX.test(value),
+        password: (value) => PWD_REGEX.test(value),
+    };
 
-    const [email, setEmail] = useState('');
-    const [validEmail, setValidEmail] = useState(false);
-
-    const [pwd, setPwd] = useState('');
-    const [validPwd, setValidPwd] = useState(false);
-
-
-    useEffect(() => {
-        setValidName(NAME_REGEX.test(name));
-    }, [name])
-
-    useEffect(() => {
-        setValidEmail(EMAIL_REGEX.test(email));
-    }, [email])
-
-    useEffect(() => {
-        setValidPwd(PWD_REGEX.test(pwd));
-    }, [pwd])
+    const {values, validities, handleChange, isFormValid, resetForm} =
+        useForm({name: '', email: '', password: ''}, formValidators);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(register({email, password: pwd, name}))
-            .then((action) => {
-                if (action.type === registerFulfilled) {
+        if (isFormValid()) {
+            dispatch(register({email: values.email, password: values.password, name: values.name}))
+                .unwrap()
+                .then(() => {
                     navigate(from, {replace: true});
-
-                    setName('');
-                    setEmail('');
-                    setPwd('');
-                }
-            });
-    }
-
-    const handleNameChange = (e) => {
-        setName(e.target.value);
-    };
-    const handleEmailChange = (e) => {
-        setEmail(e.target.value);
-    };
-
-    const handlePwdChange = (e) => {
-        setPwd(e.target.value);
+                    resetForm();
+                })
+                .catch(err => console.error(err))
+        }
     };
 
     return (
-        <main className={styles.main}>
+        <main className={commonStyles.main}>
             <h1 className="text text_type_main-medium">Регистрация</h1>
             {errMsg && <p className="text text_type_main-default text_color_error mt-2">{errMsg}</p>}
-            <form className={styles.form} onSubmit={handleSubmit}>
+            <form className={commonStyles.form} onSubmit={handleSubmit}>
                 <Input
                     type="text"
                     id="name"
                     name='name'
                     placeholder="Имя"
-                    value={name}
-                    onChange={handleNameChange}
+                    value={values.name}
+                    onChange={handleChange}
                     // When aria-invalid is set to "true", screen readers will announce that the input is invalid
                     // when the user focuses on or navigates to that input
-                    aria-invalid={validName ? "false" : "true"}
+                    aria-invalid={!validities.name}
                 />
                 <EmailInput
                     type="email"
                     id="email"
                     name="email"
                     placeholder="E-mail"
-                    value={email}
-                    onChange={handleEmailChange}
-                    aria-invalid={validEmail ? "false" : "true"}
+                    value={values.email}
+                    onChange={handleChange}
+                    aria-invalid={!validities.email}
                 />
                 <PasswordInput
                     id="password"
                     name='password'
                     placeholder="Пароль"
-                    value={pwd}
-                    onChange={handlePwdChange}
-                    aria-invalid={validPwd ? "false" : "true"}
+                    value={values.password}
+                    onChange={handleChange}
+                    aria-invalid={!validities.password}
                 />
                 <Button
                     htmlType="submit"
                     type="primary"
                     size="medium"
-                    extraClass={styles.submit}
-                    disabled={!validName || !validPwd || !validEmail}
+                    extraClass={commonStyles[`submit-btn`]}
+                    disabled={!validities.name || !validities.email || !validities.password}
                 >
                     Зарегистрироваться
                 </Button>
@@ -117,7 +91,7 @@ const Register = () => {
 
             <p className="text text_type_main-default text_color_inactive">
                 Уже зарегистрированы?
-                <span className="line"><Link to="/login" className={styles.link}>Войти</Link></span>
+                <Link to="/login" className={commonStyles.link}>Войти</Link>
             </p>
         </main>
     )

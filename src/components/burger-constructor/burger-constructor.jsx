@@ -6,28 +6,23 @@ import {useDispatch, useSelector} from "react-redux";
 import {
     addBun,
     addIngredient
-} from "../../services/burgerConstructor/burgerConstructorSlice";
-import {fetchOrderId} from "../../services/submitOrder/submitOrderSlice";
+} from "../../services/burger-constructor/burger-constructor-slice";
+import {createNewOrder} from "../../services/submit-order/submit-order-slice";
 import {
     selectBun,
     selectIngredients
-} from "../../services/burgerConstructor/selector";
-import {
-    selectIsLoadingIngredients,
-    selectHasErrorIngredients
-} from "../../services/burgerIngredients/selector";
+} from "../../services/burger-constructor/selector";
 import {useDrop} from "react-dnd";
-import useModal from "../../hooks/useModal";
-import {selectAllOrders, selectTodayTotalOrders, selectTotalOrders} from "../../services/ordersFeed/selector";
+import useModal from "../../hooks/use-modal";
+import {selectIngredientsStatus} from "../../services/burger-ingredients/selector";
 
 const BurgerConstructor = () => {
     const dispatch = useDispatch();
 
-    const { bun, ingredients, isLoading, hasError } = useSelector(state => ({
+    const {bun, ingredients, ingredientsFetchStatus} = useSelector(state => ({
         bun: selectBun(state),
         ingredients: selectIngredients(state),
-        isLoading: selectIsLoadingIngredients(state),
-        hasError: selectHasErrorIngredients(state)
+        ingredientsFetchStatus: selectIngredientsStatus(state)
     }));
 
     const {
@@ -64,12 +59,12 @@ const BurgerConstructor = () => {
             const newOrder = {
                 ingredients: [bun._id, ...ingredients.map(ingredient => ingredient._id), bun._id]
             }
-            dispatch(fetchOrderId(newOrder));
-            openSubmitOrderModal(newOrder);
+            dispatch(createNewOrder(newOrder));
+            openSubmitOrderModal();
         }
     };
 
-    if (isLoading || hasError) {
+    if (ingredientsFetchStatus !== 'succeeded') {
         return <></>;
     }
 
