@@ -6,7 +6,7 @@
     border-radius: 50%;
     border-left-color: #0CC;
     animation: spin 1s ease infinite;
-    margin-top: 32vh;
+    margin-top: 268px;
 }
 
 @keyframes spin {
