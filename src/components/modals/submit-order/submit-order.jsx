@@ -21,7 +21,7 @@ const SubmitOrder = () => {
     if (orderIdFetchStatus === 'loading') {
         content = <div className="modal-backdrop"><LoadingComponent/></div>
     } else if (orderIdFetchStatus === 'failed' && orderIdFetchStatus !== 'loading') {
-        content = <div className="modal-backdrop">{orderIdFetchError}</div>
+        content = <div className="modal-backdrop text_type_digits-medium">{orderIdFetchError}</div>
     } else {
         content = (
             <div className={styles.container}>

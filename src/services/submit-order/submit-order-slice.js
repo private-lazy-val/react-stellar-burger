@@ -1,27 +1,40 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {fetchWithRefresh} from "../../utils/user-api";
+import {fetchWithRefresh, updateStateWithRefreshToken} from "../../utils/user-api";
 import {getDefaultHeaders} from "../../utils/headers";
 import {BASE_URL} from "../../api/api";
+import {selectAccessToken} from "../user/selector";
 
 export const createNewOrder = createAsyncThunk(
     "submitOrder/createNewOrder",
-    async (newOrder) => {
+    async (newOrder, thunkAPI) => {
+        const state = thunkAPI.getState();
+        let accessToken = selectAccessToken(state);
+        if (!accessToken) {
+            try {
+                await updateStateWithRefreshToken(thunkAPI.dispatch);
+                accessToken = selectAccessToken(thunkAPI.getState());
+            } catch (err) {
+                return thunkAPI.rejectWithValue("Please login before submitting an order");
+            }
+        }
         const endpoint = `${BASE_URL}/orders`;
         const options = {
             method: 'POST',
-            headers: getDefaultHeaders(),
+            headers: getDefaultHeaders(undefined, accessToken),
             body: JSON.stringify(newOrder)
         };
-        const response = await fetchWithRefresh(endpoint, options);
 
-        if (response.success && response.order.number) {
-            return response.order.number;
-        } else {
-            throw new Error('The \'number\' field is missing or empty.');
+        try {
+            const response = await fetchWithRefresh(endpoint, options);
+            if (response.success && response.order.number) {
+                return response.order.number;
+            } else {
+                return thunkAPI.rejectWithValue("Failed to retrieve order number");
+            }
+        } catch (err) {
+            return thunkAPI.rejectWithValue("Failed to submit the order");
         }
-        // No need to catch errors, all errors caught by createAsyncThunk will be passed to action.error in the rejected case
-    }
-);
+    })
 
 export const submitOrderSlice = createSlice({
     name: "submitOrder",
@@ -44,7 +57,7 @@ export const submitOrderSlice = createSlice({
             })
             .addCase(createNewOrder.rejected, (state, action) => {
                 state.status = 'failed';
-                state.error = action.error.message;
+                state.error = action.payload;
             })
     }
 });

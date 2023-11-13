@@ -14,7 +14,7 @@ const ProtectedRoutes = ({ onlyUnAuth = false, component }) => {
         // Запрос еще выполняется
         // Выводим прелоадер в ПР
         // Здесь возвращается просто null для экономии времени
-        return null
+        return null;
     }
 
     if (onlyUnAuth && user) {

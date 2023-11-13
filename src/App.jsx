@@ -15,7 +15,6 @@ import Missing from "./pages/missing/missing";
 import Modal from "./components/modals/modal/modal"
 import useModal from "./hooks/use-modal";
 import {useDispatch} from "react-redux";
-import {checkUserAuth} from "./services/user/action";
 import {OnlyAuth, OnlyUnAuth} from "./components/protected-routes/protected-routes";
 import IngredientPage from "./pages/ingredient-page/ingredient-page";
 import ResetPasswordRoute from "./components/reset-password-route/reset-password-route";
@@ -24,6 +23,8 @@ import OrderPage from "./pages/order-page/order-page";
 import {loadAllIngredients} from "./services/burger-ingredients/burger-ingredients-slice";
 import ProfileOrders from "./pages/profile-orders/profile-orders";
 import OrderInfo from "./components/modals/order-info/order-info";
+import LoadingComponent from "./utils/loading-component";
+import {useAuthCheckLoader} from "./hooks/use-auth-check-loader";
 
 function App() {
     const dispatch = useDispatch();
@@ -41,7 +42,6 @@ function App() {
 
     useEffect(() => {
         dispatch(loadAllIngredients());
-        dispatch(checkUserAuth());
     }, [dispatch]);
 
     useEffect(() => {
@@ -56,6 +56,12 @@ function App() {
 
     // Used in CSSTransition
     const nodeRef = useRef(null);
+
+    const isAuthCheckLoading = useAuthCheckLoader();
+
+    if (isAuthCheckLoading) {
+        return <div className='page-backdrop'><LoadingComponent /></div> // Show loader while auth check is in progress
+    }
 
     return (
                 <>

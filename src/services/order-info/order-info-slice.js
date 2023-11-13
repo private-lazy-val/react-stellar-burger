@@ -3,9 +3,13 @@ import request from "../../api/api";
 
 export const fetchOrder = createAsyncThunk(
     "ordersFeed/fetchOrder",
-    async (orderNumber) => {
-        const res = await request(`/orders/${orderNumber}`);
-        return res.orders[0];
+    async (orderNumber, thunkAPI) => {
+        try {
+            const res = await request(`/orders/${orderNumber}`);
+            return res.orders[0];
+        } catch (err) {
+            return thunkAPI.rejectWithValue("Failed to get the order");
+        }
     }
 );
 
@@ -32,7 +36,7 @@ export const orderInfoSlice = createSlice({
             .addCase(fetchOrder.rejected, (state, action) => {
                 state.order = null;
                 state.status = 'failed';
-                state.error = action.error.message;
+                state.error = action.payload;
             })
 
     }

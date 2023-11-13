@@ -3,25 +3,29 @@ import request from "../../api/api";
 
 export const loadAllIngredients = createAsyncThunk(
     "burgerIngredients/loadAllIngredients",
-    async () => {
-        const res = await request('/ingredients'); // GET is used by default
-        if (res.data && res.data.length > 0) {
-            // "map" starts off as an empty object {}
-            // and by the end of the .reduce() execution,
-            // it becomes an object with properties corresponding to each ingredient's _id
-            const ingredientsMap = res.data.reduce((map, ingredient) => {
-                const { _id, ...restOfProperties } = ingredient;
-                map[_id] = restOfProperties;
-                return map;
-            }, {});
-            return {
-                map: ingredientsMap,
-                array: res.data,
-            };
-        } else {
-            throw new Error('Data format is incorrect or array is empty');
+    async (_, thunkAPI) => {
+        try {
+            const res = await request('/ingredients'); // GET is used by default
+            if (res.data && res.data.length > 0) {
+                // "map" starts off as an empty object {}
+                // and by the end of the .reduce() execution,
+                // it becomes an object with properties corresponding to each ingredient's _id
+                const ingredientsMap = res.data.reduce((map, ingredient) => {
+                    const {_id, ...restOfProperties} = ingredient;
+                    map[_id] = restOfProperties;
+                    return map;
+                }, {});
+                return {
+                    map: ingredientsMap,
+                    array: res.data,
+                };
+            } else {
+                // Handle empty or invalid data
+                return thunkAPI.rejectWithValue('No ingredients found or invalid data format');
+            }
+        } catch (err) {
+            return thunkAPI.rejectWithValue('Failed to fetch ingredients');
         }
-        // No need to catch errors, all errors caught by createAsyncThunk will be passed to action.error in the rejected case
     }
 );
 
@@ -53,7 +57,7 @@ export const burgerIngredientsSlice = createSlice({
             })
             .addCase(loadAllIngredients.rejected, (state, action) => {
                 state.status = 'failed';
-                state.error = action.error.message;
+                state.error = action.payload;
             })
     }
 });
