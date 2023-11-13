@@ -25,6 +25,7 @@ import ProfileOrders from "./pages/profile-orders/profile-orders";
 import OrderInfo from "./components/modals/order-info/order-info";
 import LoadingComponent from "./utils/loading-component";
 import {useAuthCheckLoader} from "./hooks/use-auth-check-loader";
+import Spinner from "./components/spinner/spinner";
 
 function App() {
     const dispatch = useDispatch();
@@ -60,7 +61,7 @@ function App() {
     const isAuthCheckLoading = useAuthCheckLoader();
 
     if (isAuthCheckLoading) {
-        return <div className='page-backdrop'><LoadingComponent /></div> // Show loader while auth check is in progress
+        return <Spinner /> // Show loader while auth check is in progress
     }
 
     return (
