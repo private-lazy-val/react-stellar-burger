@@ -6,7 +6,6 @@ import {selectAuthCheckLoading, selectAuthStatus} from "../services/user/selecto
 export const useAuthCheckLoader = () => {
     const isAuthChecked = useSelector(selectAuthStatus);
     const isAuthCheckLoading = useSelector(selectAuthCheckLoading);
-    console.log(isAuthCheckLoading)
     const dispatch = useDispatch();
 
     useEffect(() => {
