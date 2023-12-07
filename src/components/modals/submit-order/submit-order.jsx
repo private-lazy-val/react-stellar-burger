@@ -3,17 +3,17 @@ import styles from "./submit-order.module.css";
 import submittedOrderImg from "../../../images/order-submit.svg";
 import {useSelector} from 'react-redux';
 import {
-    selectOrderId,
-    selectOrderIdStatus,
-    selectOrderIdError
+    selectOrderNumber,
+    selectOrderNumberStatus,
+    selectOrderNumberError
 } from "../../../services/submit-order/selector";
 import LoadingComponent from "../../../utils/loading-component";
 
 const SubmitOrder = () => {
     const {orderId, orderIdFetchStatus, orderIdFetchError} = useSelector(state => ({
-        orderId: selectOrderId(state),
-        orderIdFetchStatus: selectOrderIdStatus(state),
-        orderIdFetchError: selectOrderIdError(state)
+        orderId: selectOrderNumber(state),
+        orderIdFetchStatus: selectOrderNumberStatus(state),
+        orderIdFetchError: selectOrderNumberError(state)
     }));
 
     let content;

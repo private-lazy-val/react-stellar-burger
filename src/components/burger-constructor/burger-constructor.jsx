@@ -15,9 +15,13 @@ import {
 import {useDrop} from "react-dnd";
 import useModal from "../../hooks/use-modal";
 import {selectIngredientsStatus} from "../../services/burger-ingredients/selector";
+import {selectAccessToken} from "../../services/user/selector";
+import {useNavigate} from "react-router-dom";
 
 const BurgerConstructor = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
+    const accessToken = useSelector(selectAccessToken);
 
     const {bun, ingredients, ingredientsFetchStatus} = useSelector(state => ({
         bun: selectBun(state),
@@ -54,13 +58,15 @@ const BurgerConstructor = () => {
 
     const submitOrder = (e) => {
         e.preventDefault();
-        if (bun && ingredients.length !== 0) {
+        if (bun && ingredients.length !== 0 && accessToken) {
 
             const newOrder = {
                 ingredients: [bun._id, ...ingredients.map(ingredient => ingredient._id), bun._id]
             }
             dispatch(createNewOrder(newOrder));
             openSubmitOrderModal();
+        } else {
+            navigate('/login');
         }
     };
 

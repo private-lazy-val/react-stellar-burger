@@ -3,19 +3,8 @@ import { Navigate, useLocation } from "react-router-dom";
 import {selectAuthStatus, selectUser} from "../../services/user/selector";
 
 const ProtectedRoutes = ({ onlyUnAuth = false, component }) => {
-    // isAuthChecked это флаг, показывающий что проверка токена произведена
-    // при этом результат этой проверки не имеет значения, важно только,
-    // что сам факт проверки имел место.
-    const isAuthChecked = useSelector(selectAuthStatus);
     const user = useSelector(selectUser);
     const location = useLocation();
-
-    if (!isAuthChecked) {
-        // Запрос еще выполняется
-        // Выводим прелоадер в ПР
-        // Здесь возвращается просто null для экономии времени
-        return null;
-    }
 
     if (onlyUnAuth && user) {
         // Пользователь авторизован, но роут предназначен для неавторизованного пользователя

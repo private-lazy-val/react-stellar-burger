@@ -14,9 +14,10 @@ export const createNewOrder = createAsyncThunk(
                 await updateStateWithRefreshToken(thunkAPI.dispatch);
                 accessToken = selectAccessToken(thunkAPI.getState());
             } catch (err) {
-                return thunkAPI.rejectWithValue("Please login before submitting an order");
+                return;
             }
         }
+
         const endpoint = `${BASE_URL}/orders`;
         const options = {
             method: 'POST',
