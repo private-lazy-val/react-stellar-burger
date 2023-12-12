@@ -4,6 +4,7 @@ import {selectAuthStatus, selectUser} from "../../services/user/selector";
 
 const ProtectedRoutes = ({ onlyUnAuth = false, component }) => {
     const user = useSelector(selectUser);
+    const isAuthChecked = useSelector(selectAuthStatus);
     const location = useLocation();
 
     if (onlyUnAuth && user) {
@@ -13,7 +14,7 @@ const ProtectedRoutes = ({ onlyUnAuth = false, component }) => {
         return <Navigate to={from} />;
     }
 
-    if (!onlyUnAuth && !user) {
+    if (!onlyUnAuth && !user && isAuthChecked) {
         return <Navigate to="/login" state={{ from: location }} />;
     }
     return component;
