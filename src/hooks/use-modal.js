@@ -14,23 +14,19 @@ const useModal = () => {
     const modalType = useSelector(selectModalType);
 
     const openIngredientModal = useCallback(() => {
-        localStorage.setItem('ingredientModalOpen', 'true');
         dispatch(setModalType('ingredient'));
     }, [dispatch]);
 
     const closeIngredientModal = useCallback(() => {
-        localStorage.removeItem('ingredientModalOpen');
         dispatch(setModalType(null));
         navigate(-1);
     }, [dispatch, navigate]);
 
     const openOrderModal = useCallback(() => {
-        localStorage.setItem('orderModalOpen', 'true');
         dispatch(setModalType('order'));
     }, [dispatch]);
 
     const closeOrderModal = useCallback(() => {
-        localStorage.removeItem('orderModalOpen');
         dispatch(setModalType(null));
         navigate(-1);
     }, [dispatch, navigate]);

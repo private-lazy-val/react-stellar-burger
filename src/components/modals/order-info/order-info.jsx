@@ -44,7 +44,7 @@ const OrderInfo = () => {
         content = <div className="modal-backdrop text_type_digits-medium">{orderFetchError}</div>
     } else if ((orderFetchStatus === 'succeeded' && order) || order) {
         content = (
-            <>
+            <div className={styles.container}>
                 <p className={`${styles[`order-number`]} text text_type_digits-default`}>{`#${number}`}</p>
                 <h2 className="text text_type_main-medium">{order.name}</h2>
                 <p className={`${styles[`order-status`]} text text_type_main-default`}>{orderStatus}</p>
@@ -90,14 +90,14 @@ const OrderInfo = () => {
                         <CurrencyIcon type="primary"/>
                     </div>
                 </div>
-            </>
+            </div>
         )
     }
 
     return (
-        <div className={styles.container}>
+        <>
             {content}
-        </div>
+        </>
     );
 };
 

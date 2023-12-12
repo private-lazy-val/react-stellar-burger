@@ -15,7 +15,6 @@ import Missing from "./pages/missing/missing";
 import Modal from "./components/modals/modal/modal"
 import useModal from "./hooks/use-modal";
 import {useDispatch} from "react-redux";
-import {checkUserAuth} from "./services/user/action";
 import {OnlyAuth, OnlyUnAuth} from "./components/protected-routes/protected-routes";
 import IngredientPage from "./pages/ingredient-page/ingredient-page";
 import ResetPasswordRoute from "./components/reset-password-route/reset-password-route";
@@ -24,39 +23,35 @@ import OrderPage from "./pages/order-page/order-page";
 import {loadAllIngredients} from "./services/burger-ingredients/burger-ingredients-slice";
 import ProfileOrders from "./pages/profile-orders/profile-orders";
 import OrderInfo from "./components/modals/order-info/order-info";
+import {useAuthCheckLoader} from "./hooks/use-auth-check-loader";
+import Spinner from "./components/spinner/spinner";
+import useOpenModalFromUrl from "./hooks/use-open-modal-from-url";
 
 function App() {
     const dispatch = useDispatch();
     const location = useLocation();
-
     const background = location.state && location.state.background;
     const {
         modalType,
-        openIngredientModal,
         closeIngredientModal,
-        openOrderModal,
         closeOrderModal,
         closeSubmitOrderModal
     } = useModal();
 
     useEffect(() => {
         dispatch(loadAllIngredients());
-        dispatch(checkUserAuth());
     }, [dispatch]);
 
-    useEffect(() => {
-        // Check if modal should be opened on load
-        if (localStorage.getItem('ingredientModalOpen')) {
-            openIngredientModal();
-        }
-        if (localStorage.getItem('orderModalOpen')) {
-            openOrderModal();
-        }
-    }, []);
+    useOpenModalFromUrl();
 
     // Used in CSSTransition
     const nodeRef = useRef(null);
 
+    const isAuthCheckLoading = useAuthCheckLoader();
+
+    if (isAuthCheckLoading) {
+        return <Spinner /> // Show loader while auth check is in progress
+    }
     return (
                 <>
                     {/*If background is not set, then the Routes component will render based on the current location*/}

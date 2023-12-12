@@ -6,7 +6,6 @@ import {
 } from "../../services/profile-orders/actions";
 import {useEffect, useMemo} from "react";
 import {WS_URL} from "../../api/ws-api";
-import {getCookie} from "../../utils/cookies";
 import ProfileSideMenu from "../../components/profile-side-menu/profile-side-menu";
 import Orders from "../../components/orders/orders";
 import {validateOrdersPayload} from "../../utils/validate-orders-payload";
@@ -20,12 +19,28 @@ import {getSortedOrders} from "../../utils/get-sorted-orders";
 import styles from './profile-orders.module.css';
 import {websocketStatus} from "../../utils/ws-status";
 import LoadingComponent from "../../utils/loading-component";
-import {selectBun, selectIngredients} from "../../services/burger-constructor/selector";
-import {selectIngredientsStatus} from "../../services/burger-ingredients/selector";
+import {selectAccessToken} from "../../services/user/selector";
+import {updateStateWithRefreshToken} from "../../utils/user-api";
+import {logout} from "../../services/user/action";
 
 const ProfileOrders = () => {
     const dispatch = useDispatch();
-    const accessToken = getCookie('accessToken');
+    const accessToken = useSelector(selectAccessToken);
+
+    useEffect(() => {
+        const refreshAccessToken = async () => {
+            if (!accessToken) {
+                try {
+                    await updateStateWithRefreshToken(dispatch);
+                } catch (error) {
+                    console.error("Failed to refresh token:", error);
+                    dispatch(logout());
+                }
+            }
+        };
+
+        refreshAccessToken();
+    }, [accessToken, dispatch]);
 
     useEffect(() => {
         // If accessToken state gets updated and is not null, connect to WebSocket

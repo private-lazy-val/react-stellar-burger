@@ -1,99 +1,154 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {setUser, setAuthChecked, setUserLoading} from "./user-slice";
-import {userApi} from "../../utils/user-api";
+import {setAccessToken, setUser, setAuthChecked} from "./user-slice";
+import {updateStateWithRefreshToken, userApi} from "../../utils/user-api";
 import {deleteCookie, getCookie, setCookie} from "../../utils/cookies";
+import {selectAccessToken} from "./selector";
 
-export const getUser = () => {
-    return (dispatch) => {
-        dispatch(setUserLoading(true));
-        return userApi.getUser().then((res) => {
-            dispatch(setUser(res.user));
-            dispatch(setUserLoading(false));
-        });
-    };
-};
+export const getUser = createAsyncThunk(
+    "user/getUser",
+    async (_, thunkAPI) => {
+        let accessToken = selectAccessToken(thunkAPI.getState());
+        if (!accessToken) {
+            try {
+                await updateStateWithRefreshToken(thunkAPI.dispatch);
+                accessToken = selectAccessToken(thunkAPI.getState());
+            } catch (err) {
+                return thunkAPI.rejectWithValue("Token refresh failed");
+            }
+        }
+        try {
+            const res = await userApi.getUser(accessToken);
+            if (res.success) {
+                thunkAPI.dispatch(setUser(res.user));
+            } else {
+                return thunkAPI.rejectWithValue(res.message || "Failed to fetch user data");
+            }
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.message || "Error during user data fetch");
+        }
+    }
+);
 
 export const updateUser = createAsyncThunk(
     "user/updateUser",
-    async (userData) => {
-        const res = await userApi.updateUser(userData);
-        if (!res.success) {
-            throw new Error(res.message || "User update failed");
+    async (userData, thunkAPI) => {
+        let accessToken = selectAccessToken(thunkAPI.getState());
+        if (!accessToken) {
+            try {
+                await updateStateWithRefreshToken(thunkAPI.dispatch);
+                accessToken = selectAccessToken(thunkAPI.getState());
+            } catch (err) {
+                return thunkAPI.rejectWithValue("Token refresh failed");
+            }
         }
-        return res.user;
+        try {
+            const res = await userApi.updateUser(userData, accessToken);
+            if (!res.success) {
+                return thunkAPI.rejectWithValue(res.message || "User update failed");
+            }
+            return res.user;
+        } catch (error) {
+            return thunkAPI.rejectWithValue("Error during user update");
+        }
     }
 );
 
 export const login = createAsyncThunk(
     "user/login",
-    async (userData) => {
-        const res = await userApi.login(userData);
-        if (!res.success) {
-            throw new Error(res.message || "Login failed");
+    async (userData, thunkAPI) => {
+        try {
+            const res = await userApi.login(userData);
+            if (res.success) {
+                setCookie('refreshToken', res.refreshToken);
+                thunkAPI.dispatch(setAccessToken(res.accessToken.split('Bearer ')[1]));
+                return res.user;
+            } else {
+                // Handle unsuccessful login attempt
+                return thunkAPI.rejectWithValue(res.message || "Login failed");
+            }
+        } catch (err) {
+            // Handle other types of errors (e.g., network issues)
+            return thunkAPI.rejectWithValue(err.message || "An error occurred during login");
         }
-        setCookie('refreshToken', res.refreshToken);
-        setCookie('accessToken', res.accessToken.split('Bearer ')[1]);
-        return res.user;
     }
 );
 
 export const register = createAsyncThunk(
     "user/register",
-    async (userData) => {
-        const res = await userApi.register(userData);
-        if (!res.success) {
-            throw new Error(res.message || "Registration failed");
+    async (userData, thunkAPI) => {
+        try {
+            const res = await userApi.register(userData);
+            if (res.success) {
+                setCookie('refreshToken', res.refreshToken);
+                thunkAPI.dispatch(setAccessToken(res.accessToken.split('Bearer ')[1]));
+                return res.user;
+            } else {
+                return thunkAPI.rejectWithValue(res.message || "Registration failed");
+            }
+        } catch (err) {
+            return thunkAPI.rejectWithValue(err.message || "An error occurred during registration");
         }
-        setCookie('refreshToken', res.refreshToken);
-        setCookie('accessToken', res.accessToken.split('Bearer ')[1]);
-        return res.user;
     }
 );
 
-export const checkUserAuth = () => {
-    return (dispatch) => {
-        if (getCookie("accessToken")) {
-            dispatch(getUser())
-                .catch(() => {
-                    // deleteCookie("accessToken");
-                    // deleteCookie("refreshToken");
-                    // use reducers when you have direct, synchronous updates to the state
-                    dispatch(setUser(null));
-                })
-                .finally(() => dispatch(setAuthChecked(true)));
-        } else {
-            dispatch(setAuthChecked(true));
+export const checkUserAuth = createAsyncThunk(
+    "user/checkUserAuth",
+    async (_, thunkAPI) => {
+        let accessToken = selectAccessToken(thunkAPI.getState());
+        // If accessToken is not available, try refreshing it
+        if (!accessToken) {
+            try {
+                await updateStateWithRefreshToken(thunkAPI.dispatch);
+                accessToken = selectAccessToken(thunkAPI.getState());
+            } catch (err) {
+                thunkAPI.dispatch(logout());
+                thunkAPI.dispatch(setAuthChecked(true));
+                return thunkAPI.rejectWithValue("Failed to refresh token");
+            }
         }
-    };
-};
+        // If accessToken is available after refresh (or was initially available)
+        if (accessToken) {
+            try {
+                await thunkAPI.dispatch(getUser());
+            } catch (error) {
+                // Handle errors in getUser
+                thunkAPI.dispatch(logout());
+                return thunkAPI.rejectWithValue("Error during user data fetch");
+            }
+        }
+        // Mark auth check as completed
+        thunkAPI.dispatch(setAuthChecked(true));
+    }
+);
 
 export const logout = createAsyncThunk(
     "user/logout",
     async () => {
         await userApi.logout(getCookie("refreshToken"));
-        deleteCookie("accessToken");
         deleteCookie("refreshToken");
     }
 );
 
 export const forgotPassword = createAsyncThunk(
     "user/forgotPassword",
-    async (email) => {
-        const res = await userApi.forgotPassword(email);
-        if (!res.success) {
-            throw new Error(res.message || "Password reset failed");
+    async (email, thunkAPI) => {
+        try {
+            const res = await userApi.forgotPassword(email);
+            if (res.success) return res;
+        } catch (err) {
+            return thunkAPI.rejectWithValue(err.message || "Password reset failed");
         }
-        return res;
     }
 );
 
 export const resetPassword = createAsyncThunk(
     "user/resetPassword",
-    async (userData) => {
-        const res = await userApi.resetPassword(userData);
-        if (!res.success) {
-            throw new Error(res.message || "Password reset failed");
+    async (userData, thunkAPI) => {
+        try {
+            const res = await userApi.resetPassword(userData);
+            if (res.success) return res;
+        } catch (err) {
+            return thunkAPI.rejectWithValue(err.message || "Password reset failed");
         }
-        return res;
     }
 );
