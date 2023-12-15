@@ -1,16 +1,22 @@
-import React, {useEffect, forwardRef} from "react";
+import React, {useEffect, forwardRef, ReactNode} from "react";
 import ReactDOM from "react-dom";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 import {CloseIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./modal.module.css";
-import PropTypes from "prop-types";
 
-const modalRoot = document.getElementById("react-modals");
+type ModalProps = {
+    children: ReactNode;
+    closeModal: () => void;
+}
 
-const Modal = forwardRef(({children, closeModal}, ref) => {
+type Ref = HTMLDivElement;
+
+const modalRoot = document.getElementById("react-modals") as HTMLElement;
+
+const Modal = forwardRef<Ref, ModalProps>(({children, closeModal}, ref): React.JSX.Element => {
 
     useEffect(() => {
-        const handleEscClose = (e) => {
+        const handleEscClose = (e: KeyboardEvent): void => {
             if (e.key === "Escape") {
                 closeModal();
             }
@@ -32,10 +38,5 @@ const Modal = forwardRef(({children, closeModal}, ref) => {
         </div>, modalRoot
     );
 });
-
-Modal.propTypes = {
-    children: PropTypes.element.isRequired,
-    closeModal: PropTypes.func.isRequired,
-};
 
 export default Modal;

@@ -1,4 +1,6 @@
-export const getSortedOrders = (orders) => {
+import {Order} from "./types";
+
+export const getSortedOrders = (orders: Order[]): Order[] => {
     return [...orders].sort((a, b) => {
         // Assuming createdAt is a string in ISO date format
         const dateA = new Date(a.createdAt);

@@ -6,9 +6,9 @@ import {Provider} from 'react-redux';
 import store from './services/store';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
-    // <React.StrictMode>
+    <React.StrictMode>
         <Provider store={store}>
             <Router>
                 <Routes>
@@ -16,5 +16,5 @@ root.render(
                 </Routes>
             </Router>
         </Provider>
-    // </React.StrictMode>
+    </React.StrictMode>
 );

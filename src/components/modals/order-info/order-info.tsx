@@ -1,4 +1,3 @@
-import {useDispatch, useSelector} from "react-redux";
 import styles from './order-info.module.css';
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
 import {getIngredientCount, getIngredientsTotalPrice} from "../../../utils/ingredients-info";
@@ -7,15 +6,16 @@ import {
 } from "../../../services/burger-ingredients/selector";
 import {useParams} from "react-router-dom";
 import {fetchOrder} from "../../../services/order-info/order-info-slice";
-import {useEffect, useMemo} from "react";
+import React, {useEffect, useMemo} from "react";
 import LoadingComponent from "../../../utils/loading-component";
 import {getOrder, selectOrderError, selectOrderStatus} from "../../../services/order-info/selector";
+import {useAppDispatch, useAppSelector} from "../../../services/redux-hooks";
 
-const OrderInfo = () => {
-    const dispatch = useDispatch();
-    const {number} = useParams();
+const OrderInfo = (): React.JSX.Element => {
+    const dispatch = useAppDispatch();
+    const {number} = useParams<{ number: string }>();
 
-    const {allIngredients, orderFetchStatus, orderFetchError} = useSelector(state => {
+    const {allIngredients, orderFetchStatus, orderFetchError} = useAppSelector(state => {
         const {allIngredients} = getIngredients(state);
         return {
             allIngredients,
@@ -24,13 +24,13 @@ const OrderInfo = () => {
         }
     });
 
-    const order = useSelector(getOrder(number));
+    const order = useAppSelector(getOrder(number));
 
     useEffect(() => {
         if (!order) {
             dispatch(fetchOrder(number))
         }
-    }, [dispatch]);
+    }, [dispatch, number, order]);
 
     const orderStatus = order?.status === 'done' ? 'Выполнен' : 'В процессе';
 

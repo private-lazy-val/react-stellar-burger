@@ -1,40 +1,51 @@
-import {createSlice, nanoid} from '@reduxjs/toolkit';
+import {createSlice, nanoid, PayloadAction} from '@reduxjs/toolkit';
+import {BaseIngredient} from "../../utils/types";
 
+type Bun = BaseIngredient;
+type Ingredient = BaseIngredient;
+
+// Define the state type
+type BurgerConstructorState = {
+    bun: Bun | null;
+    ingredients: Ingredient[];
+}
+// Define the initial state
+const initialState: BurgerConstructorState = {
+    bun: null,
+    ingredients: []
+};
 export const burgerConstructorSlice = createSlice({
     name: "burgerConstructor",
-    initialState: {
-        bun: null,
-        ingredients: []
-    },
+    initialState,
     reducers: {
         addBun: {
-            reducer(state, action) {
+            reducer(state, action: PayloadAction<Bun>) {
                 state.bun = action.payload;
             },
-            prepare(ingredient) {
+            prepare(ingredient: Bun) {
                 return {
                     payload: {...ingredient, uuid: nanoid()}
                 }
             }
         },
         addIngredient: {
-            reducer(state, action) {
+            reducer(state, action: PayloadAction<Ingredient>) {
                 state.ingredients.push(action.payload);
             },
-            prepare(ingredient) {
+            prepare(ingredient: Ingredient) {
                 return {
                     payload: {...ingredient, uuid: nanoid()}
                 }
             }
         },
-        removeIngredient: (state, action) => {
+        removeIngredient: (state, action: PayloadAction<{ uuid: string }>) => {
             state.ingredients = state.ingredients.filter(ingredient => ingredient.uuid !== action.payload.uuid);
         },
         resetConstructor: (state) => {
             state.bun = null;
             state.ingredients = [];
         },
-        moveIngredients: (state, action) => {
+        moveIngredients: (state, action: PayloadAction<{ fromIndex: number, toIndex: number }>) => {
             const {fromIndex, toIndex} = action.payload;
             state.ingredients.splice(toIndex, 0, state.ingredients.splice(fromIndex, 1)[0]);
         }

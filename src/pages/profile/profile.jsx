@@ -13,7 +13,7 @@ const Profile = () => {
     const dispatch = useDispatch();
     const errMsg = useSelector(selectErrMsg);
 
-    const user = useSelector(selectUser);
+    const user = useSelector(selectUser) || { name: '', email: '' };;
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -27,8 +27,7 @@ const Profile = () => {
 
     const {values, validities, handleChange, isFormValid, resetForm} =
         useForm(
-            {name: user?.name || '', email: user?.email || '', password: '******'}, formValidators);
-
+            {name: user.name || '', email: user.email || '', password: '******'}, formValidators);
 
     const handleUpdate = async (e) => {
         e.preventDefault();

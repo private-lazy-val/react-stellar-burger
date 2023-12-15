@@ -6,7 +6,6 @@ import {useCallback} from "react";
 import {removeIngredient} from "../../services/burger-constructor/burger-constructor-slice";
 import {useDispatch} from "react-redux";
 import PropTypes from "prop-types";
-import ingredientPropType from "../../utils/prop-types";
 
 const DraggableIngredient = React.memo(({ingredient, id, index, moveIngredient}) => {
     const dispatch = useDispatch();
@@ -93,12 +92,5 @@ const DraggableIngredient = React.memo(({ingredient, id, index, moveIngredient})
         </li>
     );
 });
-
-DraggableIngredient.propTypes = {
-    ingredient: ingredientPropType.isRequired,
-    id: PropTypes.string.isRequired,
-    index: PropTypes.number.isRequired,
-    moveIngredient: PropTypes.func.isRequired,
-};
 
 export default DraggableIngredient;

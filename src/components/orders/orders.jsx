@@ -5,7 +5,6 @@ import useModal from "../../hooks/use-modal";
 import styles from "./orders.module.css";
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
 import {getIngredientsTotalPrice, getIngredientCount, getUnique} from "../../utils/ingredients-info";
-import PropTypes from "prop-types";
 import {useBasePath} from "../../hooks/use-base-path";
 import {validateOrder, validateOrderIngredients} from "../../utils/validate-orders-payload";
 import React, {useMemo} from "react";
@@ -101,9 +100,5 @@ const Orders = React.memo(({orders}) => {
         </section>
     );
 });
-
-Orders.propTypes = {
-    orders: PropTypes.array.isRequired
-};
 
 export default Orders;

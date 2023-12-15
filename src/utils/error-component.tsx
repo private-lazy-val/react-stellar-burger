@@ -1,9 +1,9 @@
 import {Button} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useNavigate} from "react-router-dom";
-
-const ErrorComponent = () => {
+import React from "react";
+const ErrorComponent = (): React.JSX.Element => {
     const navigate = useNavigate();
-    const goBack = () => navigate(-1);
+    const goBack = (): void => navigate(-1);
     return (
         <>
             <h1 className="text text_type_digits-medium">An error occurred</h1>

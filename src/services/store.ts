@@ -28,7 +28,6 @@ import {
     wsError as ordersFeedWsError
 } from "./orders-feed/actions";
 
-
 const profileOrdersMiddleware = wsMiddleware({
     wsConnect: profileOrdersWsConnect,
     wsDisconnect: profileOrdersWsDisconnect,
@@ -50,7 +49,7 @@ const ordersFeedMiddleware = wsMiddleware({
     onMessage: ordersFeedWsMessage,
 })
 
-export default configureStore({
+const store = configureStore({
     reducer: {
         burgerIngredients: burgerIngredientsReducer,
         burgerConstructor: burgerConstructorReducer,
@@ -65,3 +64,7 @@ export default configureStore({
         return getDefaultMiddleware({serializableCheck: false}).concat(profileOrdersMiddleware, ordersFeedMiddleware);
     }
 });
+
+export default store;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

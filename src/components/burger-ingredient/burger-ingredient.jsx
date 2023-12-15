@@ -2,7 +2,6 @@ import React, {useMemo} from 'react';
 import styles from "./burger-ingredient.module.css";
 import {Counter, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useDrag} from "react-dnd";
-import ingredientPropType from "../../utils/prop-types";
 import {useSelector} from "react-redux";
 import {makeSelectIngredientCount} from "../../services/burger-constructor/selector";
 import useModal from "../../hooks/use-modal";
@@ -56,9 +55,5 @@ const BurgerIngredient = React.memo(({ingredient}) => {
         </Link>
     );
 });
-
-BurgerIngredient.propTypes = {
-    ingredient: ingredientPropType.isRequired
-};
 
 export default BurgerIngredient;
