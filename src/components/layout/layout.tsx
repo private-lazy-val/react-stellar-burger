@@ -1,7 +1,8 @@
 import AppHeader from "../app-header/app-header";
 import {Outlet} from "react-router-dom";
+import React from "react";
 
-const Layout = () => {
+const Layout = (): React.JSX.Element => {
     return (
         <>
             <AppHeader/>

@@ -5,13 +5,13 @@ import {selectIngredients} from "../../services/burger-constructor/selector";
 import {useDispatch, useSelector} from "react-redux";
 import DraggableIngredient from '../draggable-ingredient/draggable-ingredient';
 
-const DroppableIngredientArea = React.memo(() => {
+const DroppableIngredientArea = React.memo((): React.JSX.Element => {
     const ingredients = useSelector(selectIngredients);
     const dispatch = useDispatch();
 
     // Handle reordering logic
     const moveIngredient = useCallback(
-        (dragIndex, hoverIndex) => {
+        (dragIndex: number, hoverIndex: number): void => {
             dispatch(moveIngredients({fromIndex: dragIndex, toIndex: hoverIndex}));
         },
         [dispatch]
@@ -23,7 +23,7 @@ const DroppableIngredientArea = React.memo(() => {
             {ingredients.map((ingredient, index) => (
                 <DraggableIngredient
                     key={ingredient.uuid}
-                    id={ingredient.uuid}
+                    id={ingredient.uuid!}
                     ingredient={ingredient}
                     index={index}
                     moveIngredient={moveIngredient}

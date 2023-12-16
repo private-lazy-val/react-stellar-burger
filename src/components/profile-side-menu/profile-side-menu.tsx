@@ -1,8 +1,9 @@
 import {NavLink} from "react-router-dom";
 import {useUserActions} from "../../hooks/use-user-actions";
 import styles from './profile-side-menu.module.css';
+import React from "react";
 
-const ProfileSideMenu = () => {
+const ProfileSideMenu = (): React.JSX.Element => {
     const {onLogout, setActive} = useUserActions();
 
     return (

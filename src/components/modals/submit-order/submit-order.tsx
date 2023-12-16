@@ -8,8 +8,9 @@ import {
     selectOrderNumberError
 } from "../../../services/submit-order/selector";
 import LoadingComponent from "../../../utils/loading-component";
+import {AsyncThunkStatuses} from "../../../utils/types";
 
-const SubmitOrder = () => {
+const SubmitOrder = (): React.JSX.Element => {
     const {orderId, orderIdFetchStatus, orderIdFetchError} = useSelector(state => ({
         orderId: selectOrderNumber(state),
         orderIdFetchStatus: selectOrderNumberStatus(state),
@@ -18,9 +19,9 @@ const SubmitOrder = () => {
 
     let content;
 
-    if (orderIdFetchStatus === 'loading') {
+    if (orderIdFetchStatus === AsyncThunkStatuses.loading) {
         content = <div className="modal-backdrop"><LoadingComponent/></div>
-    } else if (orderIdFetchStatus === 'failed' && orderIdFetchStatus !== 'loading') {
+    } else if (orderIdFetchStatus === AsyncThunkStatuses.failed) {
         content = <div className="modal-backdrop text_type_digits-medium">{orderIdFetchError}</div>
     } else {
         content = (
