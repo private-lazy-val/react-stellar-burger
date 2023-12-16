@@ -39,7 +39,6 @@ export enum IngredientsTypes {
     Main = 'Начинки',
     Sauces = 'Соусы'
 }
-
 export enum AsyncThunkStatuses {
     'idle',
     'loading',

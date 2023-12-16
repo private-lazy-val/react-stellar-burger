@@ -16,7 +16,7 @@ import {Dispatch} from "redux";
 
 export type TWsActionTypes = {
     wsConnect: ActionCreatorWithoutPayload;
-    wsSendMessage?: ActionCreatorWithPayload<any>;
+    // wsSendMessage: ActionCreatorWithPayload<ExtendedWsMessagePayload | WsMessagePayload>;
     onOpen: ActionCreatorWithoutPayload;
     onClose: ActionCreatorWithoutPayload;
     onError: ActionCreatorWithPayload<string>;
@@ -37,7 +37,7 @@ export const wsMiddleware = (wsActions: TWsActionTypes): Middleware<{}, RootStat
             const {type, payload} = action; // determine the kind of action being handled
             const {
                 wsConnect,
-                wsSendMessage,
+                // wsSendMessage,
                 onOpen,
                 onClose,
                 onError,
@@ -60,11 +60,11 @@ export const wsMiddleware = (wsActions: TWsActionTypes): Middleware<{}, RootStat
 // Defines a handler for the open event on the WebSocket, which dispatches the onOpen action
 // when the WebSocket connection is successfully opened.
             if (socket) {
-                socket!.onopen = () => dispatch(onOpen());
+                socket.onopen = () => dispatch(onOpen());
 
-                socket!.onerror = () => dispatch(onError('WebSocket error'));
+                socket.onerror = () => dispatch(onError('WebSocket error'));
 
-                socket!.onmessage = (event) => {
+                socket.onmessage = (event) => {
                     const parsedData = JSON.parse(event.data);
                     if (parsedData.message === 'Invalid or missing token') {
                         if (wsTokenRefresh) {
@@ -117,9 +117,9 @@ export const wsMiddleware = (wsActions: TWsActionTypes): Middleware<{}, RootStat
                     }
                 };
 
-                if (wsSendMessage && type === wsSendMessage.type) {
-                    socket.send(JSON.stringify(action.payload));
-                }
+                // if (wsSendMessage && type === wsSendMessage.type) {
+                //     socket.send(JSON.stringify(action.payload));
+                // }
 
                 if (wsDisconnect.type === type) {
                     socket.close(); // This calls the close method on the WebSocket object, which initiates the closing handshake to terminate the connection.
