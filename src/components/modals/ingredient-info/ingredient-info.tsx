@@ -1,14 +1,14 @@
 import React from "react";
 import styles from "./ingredient-info.module.css";
-import {useAppSelector} from '../../../services/redux-hooks';
 import {useParams} from "react-router-dom";
 import {
     selectIngredientsError,
-    getIngredients,
+    getIngredientsMap,
     selectIngredientsStatus
 } from "../../../services/burger-ingredients/selector";
 import LoadingComponent from "../../../utils/loading-component";
-import {BaseIngredient} from "../../../utils/types";
+import {AsyncThunkStatuses, BaseIngredient} from "../../../utils/types";
+import {useSelector} from '../../../services/store';
 
 type IngredientProps = {
     title: string;
@@ -18,8 +18,9 @@ type Ingredient = Omit<BaseIngredient, '_id' | 'uuid'>;
 
 const IngredientInfo = React.memo(({title}: IngredientProps): React.JSX.Element => {
     const {ingredientId} = useParams<{ ingredientId?: string }>();
-    const {allIngredients, ingredientsFetchStatus, ingredientsFetchError} = useAppSelector(state => {
-        const {allIngredients} = getIngredients(state);
+
+    const {allIngredients, ingredientsFetchStatus, ingredientsFetchError} = useSelector(state => {
+        const {allIngredients} = getIngredientsMap(state);
         return {
             allIngredients,
             ingredientsFetchStatus: selectIngredientsStatus(state),
@@ -31,11 +32,11 @@ const IngredientInfo = React.memo(({title}: IngredientProps): React.JSX.Element 
 
     let content;
 
-    if (ingredientsFetchStatus === 'loading') {
+    if (ingredientsFetchStatus === AsyncThunkStatuses.loading) {
         content = <div className="modal-backdrop"><LoadingComponent/></div>
-    } else if (ingredientsFetchStatus === 'failed' && ingredientsFetchStatus !== 'loading') {
+    } else if (ingredientsFetchStatus === AsyncThunkStatuses.failed) {
         content = <div className="modal-backdrop text_type_digits-medium">{ingredientsFetchError}</div>
-    } else if (ingredientsFetchStatus === 'succeeded' && ingredient) {
+    } else if (ingredientsFetchStatus === AsyncThunkStatuses.succeeded && ingredient) {
         content = (
             <div className={`${styles.container} mb-15`}>
                 <h2 className={`${styles.heading} text text_type_main-large`}>{title}</h2>

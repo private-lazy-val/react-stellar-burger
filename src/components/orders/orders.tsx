@@ -1,5 +1,4 @@
-import {useSelector} from "react-redux";
-import {getIngredients} from "../../services/burger-ingredients/selector";
+import {getIngredientsMap} from "../../services/burger-ingredients/selector";
 import {Link, useLocation} from "react-router-dom";
 import useModal from "../../hooks/use-modal";
 import styles from "./orders.module.css";
@@ -8,8 +7,20 @@ import {getIngredientsTotalPrice, getIngredientCount, getUnique} from "../../uti
 import {useBasePath} from "../../hooks/use-base-path";
 import {validateOrder, validateOrderIngredients} from "../../utils/validate-orders-payload";
 import React, {useMemo} from "react";
+import {useSelector} from "../../services/store";
+import {BaseIngredient, Order} from "../../utils/types";
 
-const Orders = React.memo(({orders}) => {
+
+type OrdersProps = {
+    orders: Order[]
+}
+
+type OrderWithTotalAndIngredients = Order & {
+    ingredients: BaseIngredient[];
+    total: number;
+};
+
+const Orders = React.memo(({orders}: OrdersProps): React.JSX.Element => {
     const location = useLocation();
 
     const {
@@ -18,9 +29,9 @@ const Orders = React.memo(({orders}) => {
 
     const basePath = useBasePath();
 
-    const {allIngredients} = useSelector(getIngredients);
+    const {allIngredients} = useSelector(getIngredientsMap);
 
-    const validOrdersWithTotalPriceAndUniqueIngredients = useMemo(() => {
+    const validOrdersWithTotalPriceAndUniqueIngredients = useMemo<OrderWithTotalAndIngredients[]>(() => {
         return orders.map(order => {
             if (validateOrder(order)) {
                 const validIngredientIds = validateOrderIngredients(order, allIngredients);
@@ -28,11 +39,11 @@ const Orders = React.memo(({orders}) => {
                     const uniqueIngredients = getUnique(validIngredientIds);
                     const ingredientCount = getIngredientCount(order);
                     const totalPrice = getIngredientsTotalPrice(ingredientCount, allIngredients);
-                    return { ...order, ingredients: uniqueIngredients, total: totalPrice };
+                    return { ...order,  ingredients: uniqueIngredients, total: totalPrice };
                 }
             }
             return null;
-        }).filter(order => order !== null); // Filter out the null entries
+        }).filter(order => order !== null) as OrderWithTotalAndIngredients[]; // Filter out the null entries
     }, [orders, allIngredients]);
 
     return (

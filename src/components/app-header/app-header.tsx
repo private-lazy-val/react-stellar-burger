@@ -1,10 +1,14 @@
 import {Logo, BurgerIcon, ListIcon, ProfileIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./app-header.module.css";
 import {NavLink, useLocation} from "react-router-dom";
-import {useSelector} from "react-redux";
 import {selectUser, selectUserIsLoading} from "../../services/user/selector";
+import {useSelector} from "../../services/store";
+import React from "react";
 
-const AppHeader = () => {
+type NavLinkClassFuncArg = {
+    isActive: boolean;
+};
+const AppHeader = (): React.JSX.Element => {
     const location = useLocation();
 
     const {user, userIsLoading} = useSelector(state => ({
@@ -13,7 +17,7 @@ const AppHeader = () => {
     }));
 
     const userName = user ? user.name : (userIsLoading ? 'Загрузка...' : 'Личный кабинет');
-    const setActive = ({isActive}) => isActive
+    const setActive = ({isActive}: NavLinkClassFuncArg) => isActive
         ? 'text text_type_main-default'
         : 'text text_type_main-default text_color_inactive';
 

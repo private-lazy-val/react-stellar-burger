@@ -12,10 +12,11 @@ export type BaseIngredient = {
     image_large: string;
     __v: number;
     uuid?: string;
+    alt?: string;
 }
 
 export type IngredientsMap = {
-    [ingredientId: string]: BaseIngredient;
+    [_id: string]: Omit<BaseIngredient, '_id'>;
 };
 
 export type Order = {
@@ -30,3 +31,27 @@ export type Order = {
     _id: string;
 }
 
+export type OrdersMap = {
+    [number: string]: Omit<Order, 'number'>;
+}
+export enum IngredientsTypes {
+    Buns = 'Булки',
+    Main = 'Начинки',
+    Sauces = 'Соусы'
+}
+
+export enum AsyncThunkStatuses {
+    'idle',
+    'loading',
+    'succeeded',
+    'failed'
+}
+
+export type WsMessagePayload = {
+    orders: Order[];
+}
+
+export type ExtendedWsMessagePayload = WsMessagePayload & {
+    totalToday: number;
+    total: number;
+};

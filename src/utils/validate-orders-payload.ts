@@ -11,7 +11,7 @@ export const validateOrder = (order: Order): boolean => {
 
 export const validateOrderIngredients = (order: Order, ingredientsMap: IngredientsMap): string[] => {
     // Return only valid ingredient IDs
-    return order.ingredients.filter(ingredientId => (
-        ingredientId !== null && ingredientsMap.hasOwnProperty(ingredientId)
+    return order.ingredients.filter(_id => (
+        _id !== null && ingredientsMap.hasOwnProperty(_id)
     ));
 }

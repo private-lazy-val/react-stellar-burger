@@ -2,12 +2,21 @@ import React, {useMemo} from 'react';
 import styles from "./burger-ingredient.module.css";
 import {Counter, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useDrag} from "react-dnd";
-import {useSelector} from "react-redux";
 import {makeSelectIngredientCount} from "../../services/burger-constructor/selector";
 import useModal from "../../hooks/use-modal";
 import {Link, useLocation} from "react-router-dom";
+import {BaseIngredient} from "../../utils/types";
+import {useSelector} from "../../services/store";
 
-const BurgerIngredient = React.memo(({ingredient}) => {
+type BurgerIngredientProps = {
+    ingredient: BaseIngredient;
+}
+
+type DragCollectedProps = {
+    opacity: number;
+}
+
+const BurgerIngredient = React.memo(({ingredient}: BurgerIngredientProps): React.JSX.Element => {
     const location = useLocation();
 
     const ingredientId = ingredient['_id'];
@@ -21,7 +30,7 @@ const BurgerIngredient = React.memo(({ingredient}) => {
         openIngredientModal
     } = useModal();
 
-    const [{opacity}, dragRef] = useDrag({
+    const [{opacity}, dragRef] = useDrag<BaseIngredient, unknown, DragCollectedProps>({
         type: "ingredient",
         // Defines the draggable item object which holds the data that describes the dragged item
         item: ingredient,

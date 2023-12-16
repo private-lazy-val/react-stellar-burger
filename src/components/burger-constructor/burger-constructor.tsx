@@ -1,8 +1,7 @@
-import {useMemo} from "react";
+import React, {useMemo} from "react";
 import DroppableIngredientArea from '../droppable-ingredient-area/droppable-ingredient-area';
 import {ConstructorElement, CurrencyIcon, Button} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./burger-constructor.module.css";
-import {useDispatch, useSelector} from "react-redux";
 import {
     addBun,
     addIngredient
@@ -17,13 +16,22 @@ import useModal from "../../hooks/use-modal";
 import {selectIngredientsStatus} from "../../services/burger-ingredients/selector";
 import {selectAccessToken} from "../../services/user/selector";
 import {useNavigate} from "react-router-dom";
+import {useDispatch, useSelector} from "../../services/store";
+import {AsyncThunkStatuses, BaseIngredient} from "../../utils/types";
 
+type DropCollectedProps = {
+    opacity: number;
+}
+
+type TNewOrder = {
+    ingredients: string[];
+}
 const BurgerConstructor = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const accessToken = useSelector(selectAccessToken);
 
-    const {bun, ingredients, ingredientsFetchStatus} = useSelector(state => ({
+    const { bun, ingredients, ingredientsFetchStatus } = useSelector(state => ({
         bun: selectBun(state),
         ingredients: selectIngredients(state),
         ingredientsFetchStatus: selectIngredientsStatus(state)
@@ -37,7 +45,7 @@ const BurgerConstructor = () => {
         return ingredients.reduce((accumulator, ingredient) => accumulator + ingredient.price, 0) + (bun ? bun.price * 2 : 0);
     }, [bun, ingredients]);
 
-    const [{opacity}, dropTarget] = useDrop({
+    const [{opacity}, dropTarget] = useDrop<BaseIngredient, unknown, DropCollectedProps>({
         accept: "ingredient",
         // A function that is called when a draggable item is released over a drop target
         drop(ingredient) {
@@ -48,7 +56,7 @@ const BurgerConstructor = () => {
         })
     });
 
-    const addIngredientToCart = (ingredient) => {
+    const addIngredientToCart = (ingredient: BaseIngredient): void => {
         if (ingredient.type === 'bun') {
             dispatch(addBun(ingredient));
         } else {
@@ -56,13 +64,14 @@ const BurgerConstructor = () => {
         }
     };
 
-    const submitOrder = (e) => {
+    const submitOrder = (e: React.SyntheticEvent): void => {
         e.preventDefault();
         if (bun && ingredients.length !== 0 && accessToken) {
 
-            const newOrder = {
+            const newOrder: TNewOrder = {
                 ingredients: [bun._id, ...ingredients.map(ingredient => ingredient._id), bun._id]
             }
+            //@ts-ignore
             dispatch(createNewOrder(newOrder));
             openSubmitOrderModal();
         } else {
@@ -70,7 +79,7 @@ const BurgerConstructor = () => {
         }
     };
 
-    if (ingredientsFetchStatus !== 'succeeded') {
+    if (ingredientsFetchStatus !== AsyncThunkStatuses.succeeded) {
         return <></>;
     }
 

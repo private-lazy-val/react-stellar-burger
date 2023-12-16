@@ -14,7 +14,7 @@ import Profile from "./pages/profile/profile";
 import Missing from "./pages/missing/missing";
 import Modal from "./components/modals/modal/modal"
 import useModal from "./hooks/use-modal";
-import {useAppDispatch} from "./services/redux-hooks";
+import {useDispatch} from "./services/store";
 import {OnlyAuth, OnlyUnAuth} from "./components/protected-routes/protected-routes";
 import IngredientPage from "./pages/ingredient-page/ingredient-page";
 import ResetPasswordRoute from "./components/reset-password-route/reset-password-route";
@@ -28,7 +28,7 @@ import Spinner from "./components/spinner/spinner";
 import useOpenModalFromUrl from "./hooks/use-open-modal-from-url";
 
 function App() {
-    const dispatch = useAppDispatch();
+    const dispatch = useDispatch();
     const location = useLocation();
     const background = location.state && location.state.background;
     const {

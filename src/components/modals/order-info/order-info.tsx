@@ -2,21 +2,21 @@ import styles from './order-info.module.css';
 import {CurrencyIcon, FormattedDate} from "@ya.praktikum/react-developer-burger-ui-components";
 import {getIngredientCount, getIngredientsTotalPrice} from "../../../utils/ingredients-info";
 import {
-    getIngredients
+    getIngredientsMap
 } from "../../../services/burger-ingredients/selector";
 import {useParams} from "react-router-dom";
 import {fetchOrder} from "../../../services/order-info/order-info-slice";
 import React, {useEffect, useMemo} from "react";
 import LoadingComponent from "../../../utils/loading-component";
 import {getOrder, selectOrderError, selectOrderStatus} from "../../../services/order-info/selector";
-import {useAppDispatch, useAppSelector} from "../../../services/redux-hooks";
+import {useSelector, useDispatch} from "../../../services/store";
 
 const OrderInfo = (): React.JSX.Element => {
-    const dispatch = useAppDispatch();
+    const dispatch = useDispatch();
     const {number} = useParams<{ number: string }>();
 
-    const {allIngredients, orderFetchStatus, orderFetchError} = useAppSelector(state => {
-        const {allIngredients} = getIngredients(state);
+    const {allIngredients, orderFetchStatus, orderFetchError} = useSelector(state => {
+        const {allIngredients} = getIngredientsMap(state);
         return {
             allIngredients,
             orderFetchStatus: selectOrderStatus(state),
@@ -24,23 +24,23 @@ const OrderInfo = (): React.JSX.Element => {
         }
     });
 
-    const order = useAppSelector(getOrder(number));
+    const order = useSelector(getOrder(number!));
 
     useEffect(() => {
-        if (!order) {
+        if (!order && number) {
             dispatch(fetchOrder(number))
         }
     }, [dispatch, number, order]);
 
     const orderStatus = order?.status === 'done' ? 'Выполнен' : 'В процессе';
 
-    const ingredientCount = useMemo(() => getIngredientCount(order), [order]);
+    const ingredientCount = useMemo(() => order ? getIngredientCount(order) : {}, [order]);
 
     let content;
 
     if (orderFetchStatus === 'loading') {
         content = <div className="modal-backdrop"><LoadingComponent/></div>
-    } else if (orderFetchStatus === 'failed' && orderFetchStatus !== 'loading') {
+    } else if (orderFetchStatus === 'failed') {
         content = <div className="modal-backdrop text_type_digits-medium">{orderFetchError}</div>
     } else if ((orderFetchStatus === 'succeeded' && order) || order) {
         content = (

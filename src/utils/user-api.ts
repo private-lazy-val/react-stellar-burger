@@ -30,16 +30,16 @@ export const refreshToken = async ():Promise<TokenResponse> => {
             headers: getDefaultHeaders(false),
             body: JSON.stringify({token: getCookie("refreshToken")}),
         });
-        return await checkResponse(res);
+        return await checkResponse<TokenResponse>(res);
     } catch (error) {
         throw error;
     }
 };
 
-export const fetchWithRefresh = async <T>(url: string, options: FetchOptions, dispatch?: Dispatch):Promise<ServerResponse<T>> => {
+export const fetchWithRefresh = async <T>(url: string, options: FetchOptions, dispatch: Dispatch):Promise<ServerResponse<T>> => {
     try {
         const res = await fetch(url, options);
-        return await checkResponse(res);
+        return await checkResponse<T>(res);
     } catch (err) {
         if (err instanceof Error && err.message === "jwt expired") {
             const refreshData = await refreshToken(); //обновляем токен
@@ -47,16 +47,14 @@ export const fetchWithRefresh = async <T>(url: string, options: FetchOptions, di
                 console.error((err.message || "Failed to refresh token"));
             }
             setCookie("refreshToken", refreshData.refreshToken);
-            if (dispatch) {
-                dispatch(setAccessToken(refreshData.accessToken.split('Bearer ')[1]));
-            }
+            dispatch(setAccessToken(refreshData.accessToken.split('Bearer ')[1]));
             // Replace the old Authorization header with the new token
             options.headers = {
                 ...options.headers,
                 "Authorization": refreshData.accessToken
             };
             const res = await fetch(url, options); //повторяем запрос
-            return await checkResponse(res);
+            return await checkResponse<T>(res);
         } else {
             throw err;
         }
@@ -78,19 +76,19 @@ export const updateStateWithRefreshToken = async (dispatch: Dispatch): Promise<T
     }
 };
 
-const getUser = ({accessToken}: Pick<TokenResponse, "accessToken">): Promise<ServerResponse<UserData>> =>
-    fetchWithRefresh(`${BASE_URL}/auth/user`, {
+const getUser = ({accessToken}: Pick<TokenResponse, "accessToken">, dispatch: Dispatch): Promise<ServerResponse<UserData>> =>
+    fetchWithRefresh<UserData>(`${BASE_URL}/auth/user`, {
         method: "GET",
-        headers: getDefaultHeaders(true, accessToken)
-    });
+        headers: getDefaultHeaders(true, accessToken),
+    }, dispatch);
 
 const updateUser = (userData: UserData,
-                    {accessToken}: Pick<TokenResponse, "accessToken">): Promise<ServerResponse<UserData>> =>
+                    {accessToken}: Pick<TokenResponse, "accessToken">, dispatch: Dispatch): Promise<ServerResponse<UserData>> =>
     fetchWithRefresh(`${BASE_URL}/auth/user`, {
         method: "PATCH",
         headers: getDefaultHeaders(true, accessToken),
         body: JSON.stringify(userData)
-    });
+    }, dispatch);
 
 const login = async (userData: UserData): Promise<ServerResponse<UserData>> => {
     const res = await fetch(`${BASE_URL}/auth/login`, {

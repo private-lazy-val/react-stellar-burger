@@ -1,14 +1,33 @@
 // the middleware allows Redux to interact with a WebSocket by translating WebSocket events into Redux actions
 // and vice versa, enabling real-time features in a Redux application.
-
 import {refreshToken} from "../../utils/user-api";
 import {setCookie} from "../../utils/cookies";
 import {WS_URL} from "../../api/ws-api";
 import {setAccessToken} from "../user/user-slice";
+import {RootState} from "../store";
+import {
+    ActionCreatorWithoutPayload,
+    ActionCreatorWithPayload,
+    AnyAction,
+    Middleware,
+    MiddlewareAPI
+} from '@reduxjs/toolkit';
+import {Dispatch} from "redux";
 
-export const wsMiddleware = (wsActions) => {
-    return (store) => { // this function is the actual middleware that will be applied to the Redux store
-        let socket = null; // the reference to the WebSocket connection
+export type TWsActionTypes = {
+    wsConnect: ActionCreatorWithoutPayload;
+    wsSendMessage?: ActionCreatorWithPayload<any>;
+    onOpen: ActionCreatorWithoutPayload;
+    onClose: ActionCreatorWithoutPayload;
+    onError: ActionCreatorWithPayload<string>;
+    onMessage: ActionCreatorWithPayload<any>;
+    wsConnecting: ActionCreatorWithoutPayload;
+    wsDisconnect: ActionCreatorWithoutPayload;
+    wsTokenRefresh?: ActionCreatorWithoutPayload;
+}
+export const wsMiddleware = (wsActions: TWsActionTypes): Middleware<{}, RootState> => {
+    return (store: MiddlewareAPI<Dispatch<AnyAction>, RootState>) => { // this function is the actual middleware that will be applied to the Redux store
+        let socket: WebSocket | null = null; // the reference to the WebSocket connection
         let isDisconnect = false; // the socket is closed intentionally
         let reconnectDelay = 1000;
         let initialWsUrl = '';
@@ -41,14 +60,16 @@ export const wsMiddleware = (wsActions) => {
 // Defines a handler for the open event on the WebSocket, which dispatches the onOpen action
 // when the WebSocket connection is successfully opened.
             if (socket) {
-                socket.onopen = () => dispatch(onOpen());
+                socket!.onopen = () => dispatch(onOpen());
 
-                socket.onerror = () => dispatch(onError('WebSocket error'));
+                socket!.onerror = () => dispatch(onError('WebSocket error'));
 
-                socket.onmessage = (event) => {
+                socket!.onmessage = (event) => {
                     const parsedData = JSON.parse(event.data);
                     if (parsedData.message === 'Invalid or missing token') {
-                        dispatch(wsTokenRefresh());
+                        if (wsTokenRefresh) {
+                            dispatch(wsTokenRefresh());
+                        }
                     } else if (parsedData.success) {
                         dispatch(onMessage(parsedData));
                     } else {

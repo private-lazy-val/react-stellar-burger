@@ -2,8 +2,8 @@ export const BASE_URL = "https://norma.nomoreparties.space/api";
 
 type ApiResponse<T> = {
     success: boolean;
-    orders: T[];
-};
+} & T;
+
 const checkResponse = <T>(res: Response): Promise<ApiResponse<T>> => {
     if (res.ok) { // checks HTTP response status
         return res.json();

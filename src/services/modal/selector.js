@@ -1,1 +1,0 @@
-export const selectModalType = (state) => state.modal.modalType;

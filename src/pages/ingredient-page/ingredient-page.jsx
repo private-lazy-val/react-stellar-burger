@@ -2,7 +2,7 @@ import {useSelector} from "react-redux";
 import React from "react";
 import {useParams} from "react-router-dom";
 import {
-    getIngredients,
+    getIngredientsMap,
     selectIngredientsError,
     selectIngredientsStatus
 } from "../../services/burger-ingredients/selector";
@@ -15,7 +15,7 @@ import IngredientInfo from "../../components/modals/ingredient-info/ingredient-i
 const IngredientPage = () => {
     const {ingredientId} = useParams();
     const { allIngredients, ingredientsFetchStatus, ingredientsFetchError } = useSelector(state => {
-        const { allIngredients } = getIngredients(state);
+        const { allIngredients } = getIngredientsMap(state);
         return {
             allIngredients,
             ingredientsFetchStatus: selectIngredientsStatus(state),

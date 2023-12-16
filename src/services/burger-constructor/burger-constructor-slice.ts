@@ -1,11 +1,11 @@
 import {createSlice, nanoid, PayloadAction} from '@reduxjs/toolkit';
 import {BaseIngredient} from "../../utils/types";
 
-type Bun = BaseIngredient;
-type Ingredient = BaseIngredient;
+export type Bun = BaseIngredient;
+export type Ingredient = BaseIngredient;
 
 // Define the state type
-type BurgerConstructorState = {
+export type BurgerConstructorState = {
     bun: Bun | null;
     ingredients: Ingredient[];
 }
@@ -51,6 +51,9 @@ export const burgerConstructorSlice = createSlice({
         }
     },
 });
+
+type TBurgerConstructorActionCreators = typeof burgerConstructorSlice.actions;
+export type TBurgerConstructorActions = ReturnType<TBurgerConstructorActionCreators[keyof TBurgerConstructorActionCreators]>;
 
 export default burgerConstructorSlice.reducer;
 export const {

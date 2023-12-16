@@ -7,8 +7,8 @@ type IngredientCount = {
 export const getIngredientsTotalPrice = (ingredientCount: IngredientCount, ingredientsMap: IngredientsMap): number => {
     if (Object.keys(ingredientCount).length === 0) return 0;
 
-    return Object.entries(ingredientCount).reduce((sum, [ingredientId, count]) => {
-        const ingredient = ingredientsMap[ingredientId];
+    return Object.entries(ingredientCount).reduce((sum, [_id, count]) => {
+        const ingredient = ingredientsMap[_id];
         if (ingredient) {
             return sum + count * ingredient.price;
         } else {

@@ -4,8 +4,7 @@ import {ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger
 import styles from "./draggable-ingredient.module.css";
 import {useCallback} from "react";
 import {removeIngredient} from "../../services/burger-constructor/burger-constructor-slice";
-import {useDispatch} from "react-redux";
-import PropTypes from "prop-types";
+import {useDispatch} from "../../services/store";
 
 const DraggableIngredient = React.memo(({ingredient, id, index, moveIngredient}) => {
     const dispatch = useDispatch();

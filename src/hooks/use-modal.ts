@@ -1,20 +1,18 @@
 import {useCallback} from "react";
-import {useAppDispatch, useAppSelector} from '../services/redux-hooks';
-import {
-    setModalType
-} from '../services/modal/modal-slice';
+import {useSelector, useDispatch} from "../services/store";
+import {ModalTypes, setModalType} from '../services/modal/modal-slice';
 import {resetConstructor} from "../services/burger-constructor/burger-constructor-slice";
 import {useNavigate} from "react-router-dom";
 import {selectModalType} from '../services/modal/selector';
 
 const useModal = () => {
-    const dispatch = useAppDispatch();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const modalType = useAppSelector(selectModalType);
+    const modalType = useSelector(selectModalType);
 
     const openIngredientModal = useCallback((): void => {
-        dispatch(setModalType('ingredient'));
+        dispatch(setModalType(ModalTypes.Ingredient));
     }, [dispatch]);
 
     const closeIngredientModal = useCallback((): void => {
@@ -23,7 +21,7 @@ const useModal = () => {
     }, [dispatch, navigate]);
 
     const openOrderModal = useCallback((): void => {
-        dispatch(setModalType('order'));
+        dispatch(setModalType(ModalTypes.Order));
     }, [dispatch]);
 
     const closeOrderModal = useCallback((): void => {
@@ -32,7 +30,7 @@ const useModal = () => {
     }, [dispatch, navigate]);
 
     const openSubmitOrderModal = useCallback((): void => {
-        dispatch(setModalType('submit-order'));
+        dispatch(setModalType(ModalTypes.SubmitOrder));
     }, [dispatch]);
 
     const closeSubmitOrderModal = useCallback((): void => {

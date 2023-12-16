@@ -1,13 +1,20 @@
-import {configureStore} from "@reduxjs/toolkit";
-import burgerIngredientsReducer from './burger-ingredients/burger-ingredients-slice';
-import burgerConstructorReducer from './burger-constructor/burger-constructor-slice';
+import {combineReducers, configureStore, ThunkAction} from "@reduxjs/toolkit";
+import burgerIngredientsReducer, {TBurgerIngredientsActions} from './burger-ingredients/burger-ingredients-slice';
+import burgerConstructorReducer, {TBurgerConstructorActions} from './burger-constructor/burger-constructor-slice';
 import submitOrderReducer from './submit-order/submit-order-slice';
-import modalReducer from './modal/modal-slice';
+import modalReducer, {TModalActions} from './modal/modal-slice';
 import userReducer from './user/user-slice';
 import ordersFeedReducer from "./orders-feed/orders-feed-reducer";
 import orderInfoReducer from "./order-info/order-info-slice";
 import profileOrdersReducer from "./profile-orders/profile-orders-reducer";
 import {wsMiddleware} from './middleware/ws-middleware';
+import {
+    TypedUseSelectorHook,
+        useDispatch as dispatchHook,
+        useSelector as selectorHook,
+} from "react-redux";
+import type {} from "redux-thunk/extend-redux";
+
 import {
     connect as profileOrdersWsConnect,
     disconnect as profileOrdersWsDisconnect,
@@ -16,8 +23,9 @@ import {
     wsClose as profileOrdersWsClose,
     wsMessage as profileOrdersWsMessage,
     wsError as profileOrdersWsError,
-    wsTokenRefresh as profileOrdersWsTokenRefresh
+    wsTokenRefresh as profileOrdersWsTokenRefresh, TProfileOrdersActions
 } from "./profile-orders/actions";
+
 import {
     connect as ordersFeedWsConnect,
     disconnect as ordersFeedWsDisconnect,
@@ -25,7 +33,7 @@ import {
     wsOpen as ordersFeedWsOpen,
     wsClose as ordersFeedWsClose,
     wsMessage as ordersFeedWsMessage,
-    wsError as ordersFeedWsError
+    wsError as ordersFeedWsError, TOrdersFeedActions
 } from "./orders-feed/actions";
 
 const profileOrdersMiddleware = wsMiddleware({
@@ -49,22 +57,39 @@ const ordersFeedMiddleware = wsMiddleware({
     onMessage: ordersFeedWsMessage,
 })
 
-const store = configureStore({
-    reducer: {
-        burgerIngredients: burgerIngredientsReducer,
-        burgerConstructor: burgerConstructorReducer,
-        ordersFeed: ordersFeedReducer,
-        profileOrders: profileOrdersReducer,
-        orderInfo: orderInfoReducer,
-        submitOrder: submitOrderReducer,
-        modal: modalReducer,
-        user: userReducer
-    },
+const reducer = combineReducers({
+    burgerIngredients: burgerIngredientsReducer,
+    burgerConstructor: burgerConstructorReducer,
+    ordersFeed: ordersFeedReducer,
+    profileOrders: profileOrdersReducer,
+    orderInfo: orderInfoReducer,
+    submitOrder: submitOrderReducer,
+    modal: modalReducer,
+    user: userReducer
+})
+
+export const store = configureStore({
+    reducer,
     middleware: (getDefaultMiddleware) => {
         return getDefaultMiddleware({serializableCheck: false}).concat(profileOrdersMiddleware, ordersFeedMiddleware);
     }
 });
 
-export default store;
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof reducer>;
+
+export type AppActions =
+    | TBurgerIngredientsActions
+    | TBurgerConstructorActions
+    | TModalActions
+    | TProfileOrdersActions
+    | TOrdersFeedActions;
+
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, AppActions>;
+
+export type AppDispatch<TReturnType = void> = (
+    action: AppActions | AppThunk<TReturnType>
+) => TReturnType;
+export const useDispatch: () => AppDispatch = dispatchHook;
+export const useSelector: TypedUseSelectorHook<RootState> = selectorHook;
+
+
