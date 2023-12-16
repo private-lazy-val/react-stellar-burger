@@ -7,13 +7,13 @@ import {removeIngredient} from "../../services/burger-constructor/burger-constru
 import {useDispatch} from "../../services/store";
 import {BaseIngredient} from "../../utils/types";
 
-type DraggableIngredientTypes = {
+type DraggableIngredientProps = {
     ingredient: BaseIngredient;
     id: string;
     index: number;
     moveIngredient: (dragIndex: number, hoverIndex: number) => void;
 }
-const DraggableIngredient = React.memo(({ingredient, id, index, moveIngredient}: DraggableIngredientTypes): React.JSX.Element => {
+const DraggableIngredient = React.memo(({ingredient, id, index, moveIngredient}: DraggableIngredientProps): React.JSX.Element => {
     const dispatch = useDispatch();
 
     const ref = useRef<HTMLLIElement>(null);

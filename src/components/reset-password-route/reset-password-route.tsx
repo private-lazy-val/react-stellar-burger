@@ -1,8 +1,10 @@
-// reset-password-route.js
-import { useEffect } from 'react';
+import React, {ReactElement, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const ResetPasswordRoute = ({ component }) => {
+type ResetPasswordProps = {
+    component: ReactElement
+}
+const ResetPasswordRoute = ({ component }: ResetPasswordProps): React.JSX.Element | null => {
     const navigate = useNavigate();
 
     useEffect(() => {

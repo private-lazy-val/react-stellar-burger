@@ -10,7 +10,6 @@ import React, {useMemo} from "react";
 import {useSelector} from "../../services/store";
 import {BaseIngredient, Order} from "../../utils/types";
 
-
 type OrdersProps = {
     orders: Order[]
 }
