@@ -43,6 +43,7 @@ export const fetchWithRefresh = async <T>(url: string, options: FetchOptions, di
         return await checkResponse(res);
     } catch (err) {
         if (err instanceof Error && err.message === "jwt expired") {
+            console.log('refreshing access token')
             const refreshData = await refreshToken(); //обновляем токен
             if (!refreshData || !refreshData.success) {
                 console.error((err.message || "Failed to refresh token"));
@@ -97,6 +98,7 @@ const login = async (userData: User): Promise<ServerBasicResponse<RegisterData>>
         headers: getDefaultHeaders(false),
         body: JSON.stringify(userData)
     });
+    console.log(res)
     return await checkResponse(res);
 }
 

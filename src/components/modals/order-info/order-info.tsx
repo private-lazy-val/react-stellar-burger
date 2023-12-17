@@ -25,7 +25,7 @@ const OrderInfo = (): React.JSX.Element => {
         }
     });
 
-    const order = useSelector(getOrder(number!));
+    const order = useSelector(getOrder(+number!));
 
     useEffect(() => {
         if (!order && number) {

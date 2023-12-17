@@ -80,6 +80,7 @@ export const login = createAsyncThunk<User, User, {
     async (userData, {dispatch, rejectWithValue}) => {
         try {
             const res = await userApi.login(userData);
+            console.log(res)
             if (res.success) {
                 setCookie('refreshToken', res.refreshToken);
                 dispatch(setAccessToken(res.accessToken.split('Bearer ')[1]));
@@ -88,15 +89,11 @@ export const login = createAsyncThunk<User, User, {
                 // Handle unsuccessful login attempt
                 return rejectWithValue(res.message || "Login failed");
             }
-        } catch (error) {
-            // Handle other types of errors (e.g., network issues)
-            if (error instanceof Error) {
-                return rejectWithValue(error.message || "An error occurred during login");
-            } else {
-                // Handle the case where the thrown value is not an Error object
-                return rejectWithValue("An unknown error occurred");
-            }
+        }catch (error) {
+            // Use rejectWithValue for any other errors
+            return rejectWithValue("An unknown error occurred");
         }
+
     }
 );
 

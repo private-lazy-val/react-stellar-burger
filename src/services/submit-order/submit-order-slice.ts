@@ -7,11 +7,15 @@ import {AsyncThunkStatuses, Order} from "../../utils/types";
 import {RootState} from "../store";
 
 export type OrderData = {
-    success: boolean;
+    name: string;
     order: Order;
 };
 
-export const createNewOrder = createAsyncThunk<number, Order, {
+export type OrderRequest = {
+    ingredients: string[];
+}
+
+export const createNewOrder = createAsyncThunk<number, OrderRequest, {
     state: RootState,
     rejectValue: string
 }>(
@@ -23,7 +27,7 @@ export const createNewOrder = createAsyncThunk<number, Order, {
                 await updateStateWithRefreshToken(dispatch);
                 accessToken = selectAccessToken(getState());
             } catch (err) {
-                return;
+                return rejectWithValue("Failed to retrieve access token");
             }
         }
 
@@ -73,7 +77,7 @@ export const submitOrderSlice = createSlice({
                 state.error = null;
                 state.number = action.payload;
             })
-            .addCase(createNewOrder.rejected, (state, action:  PayloadAction<number | unknown>) => {
+            .addCase(createNewOrder.rejected, (state, action: PayloadAction<string | undefined>) => {
                 state.status = AsyncThunkStatuses.failed;
                 state.error = action.payload || 'An error occurred when submitting the order';
             })

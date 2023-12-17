@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./submit-order.module.css";
 import submittedOrderImg from "../../../images/order-submit.svg";
-import {useSelector} from 'react-redux';
+import {useSelector} from '../../../services/store';
 import {
     selectOrderNumber,
     selectOrderNumberStatus,

@@ -1,4 +1,4 @@
-import {combineReducers, configureStore, ThunkAction, ThunkDispatch} from "@reduxjs/toolkit";
+import {combineReducers, configureStore, ThunkDispatch} from "@reduxjs/toolkit";
 import burgerIngredientsReducer, {TBurgerIngredientsActions} from './burger-ingredients/burger-ingredients-slice';
 import burgerConstructorReducer, {TBurgerConstructorActions} from './burger-constructor/burger-constructor-slice';
 import submitOrderReducer from './submit-order/submit-order-slice';

@@ -19,12 +19,19 @@ export type IngredientsMap = {
     [_id: string]: Omit<BaseIngredient, '_id'>;
 };
 
+type Owner = {
+    name: string;
+    email: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export type Order = {
     createdAt: string;
-    ingredients: Array<string>;
+    ingredients: string[];
     name: string;
     number: number;
-    owner?: string;
+    owner?: Owner;
     status: string;
     updatedAt: string;
     __v?: number;
