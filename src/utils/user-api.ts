@@ -5,7 +5,7 @@ import {setAccessToken} from "../services/user/user-slice";
 import { Dispatch } from "redux";
 import {UserData} from "./types";
 
-type ServerResponse<T> = T & { message?: string, success?: string };
+type ServerResponse<T> = T & { message?: string, success?: string, user?: UserData };
 
 type TokenResponse = {
     accessToken: string;
