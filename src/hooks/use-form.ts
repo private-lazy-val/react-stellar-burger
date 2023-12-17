@@ -9,11 +9,11 @@ type TUseForm<T> = {
     resetForm: () => void;
 }
 
-type TFormValidators<T> = {
-    [K in keyof T]?: (value: T[K]) => boolean;
-}
+type TFormValidators = {
+    [key: string]: (value: string) => boolean;
+};
 
-export const useForm = <T>(initialValues: T, validators: TFormValidators<T>): TUseForm<T> => {
+export const useForm = <T>(initialValues: T, validators: TFormValidators): TUseForm<T> => {
     const [values, setValues] = useState<T>(initialValues);
     const [validities, setValidities] = useState({});
 

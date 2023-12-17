@@ -24,7 +24,7 @@ const checkResponse = <T>(res: Response):Promise<ServerBasicResponse<T>> => {
     return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 };
 
-export const refreshToken = async ():Promise<TokenData> => {
+export const refreshToken = async ():Promise<ServerBasicResponse<TokenData>> => {
     try {
         const res = await fetch(`${BASE_URL}/auth/token`, {
             method: "POST",
@@ -40,7 +40,7 @@ export const refreshToken = async ():Promise<TokenData> => {
 export const fetchWithRefresh = async <T>(url: string, options: FetchOptions, dispatch: Dispatch):Promise<ServerBasicResponse<T>> => {
     try {
         const res = await fetch(url, options);
-        return await checkResponse<T>(res);
+        return await checkResponse(res);
     } catch (err) {
         if (err instanceof Error && err.message === "jwt expired") {
             const refreshData = await refreshToken(); //обновляем токен
@@ -84,7 +84,7 @@ const getUser = ({accessToken}: Pick<TokenData, "accessToken">, dispatch: Dispat
     }, dispatch);
 
 const updateUser = (userData: User,
-                    {accessToken}: Pick<TokenData, "accessToken">, dispatch: Dispatch): Promise<ServerBasicResponse<User>> =>
+                    {accessToken}: Pick<TokenData, "accessToken">, dispatch: Dispatch): Promise<ServerBasicResponse<UserData>> =>
     fetchWithRefresh(`${BASE_URL}/auth/user`, {
         method: "PATCH",
         headers: getDefaultHeaders(true, accessToken),

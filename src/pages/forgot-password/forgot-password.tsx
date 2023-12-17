@@ -3,7 +3,7 @@ import commonStyles from "../auth.module.css";
 import {Button, EmailInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Link, useNavigate} from "react-router-dom";
 import {forgotPassword} from "../../services/user/action";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector} from "../../services/store";
 import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/user-slice';
 import {EMAIL_REGEX} from "../../utils/input-regex";
@@ -36,7 +36,7 @@ const ForgotPassword = (): React.JSX.Element => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (isFormValid()) {
-            dispatch(forgotPassword({email: values.email}))
+            dispatch(forgotPassword(values.email))
                 .unwrap()
                 .then(() => {
                     localStorage.setItem('visitedForgotPassword', 'true');
@@ -53,7 +53,6 @@ const ForgotPassword = (): React.JSX.Element => {
             {errMsg && <p className="text text_type_main-default text_color_error mt-2">{errMsg}</p>}
             <form className={commonStyles.form} onSubmit={handleSubmit}>
                 <EmailInput
-                    type="email"
                     id="email"
                     name="email"
                     placeholder="Укажите e-mail"

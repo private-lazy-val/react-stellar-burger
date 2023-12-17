@@ -1,4 +1,4 @@
-import {combineReducers, configureStore, ThunkAction} from "@reduxjs/toolkit";
+import {combineReducers, configureStore, ThunkAction, ThunkDispatch} from "@reduxjs/toolkit";
 import burgerIngredientsReducer, {TBurgerIngredientsActions} from './burger-ingredients/burger-ingredients-slice';
 import burgerConstructorReducer, {TBurgerConstructorActions} from './burger-constructor/burger-constructor-slice';
 import submitOrderReducer from './submit-order/submit-order-slice';
@@ -84,11 +84,14 @@ export type AppActions =
     | TOrdersFeedActions
     | TUserActions;
 
-export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, AppActions>;
+// export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, AppActions>;
 
-export type AppDispatch<TReturnType = void> = (
-    action: AppActions | AppThunk<TReturnType>
-) => TReturnType;
+// export type AppDispatch<TReturnType = void> = (
+//     action: AppActions | AppThunk<TReturnType>
+// ) => TReturnType;
+
+export type AppDispatch = ThunkDispatch<RootState, unknown, AppActions>;
+
 export const useDispatch: () => AppDispatch = dispatchHook;
 export const useSelector: TypedUseSelectorHook<RootState> = selectorHook;
 

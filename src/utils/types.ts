@@ -61,3 +61,7 @@ export type User = {
     name: string;
     password?: string;
 };
+
+export type SetActiveSection = {
+    isActive: boolean;
+};

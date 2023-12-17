@@ -4,10 +4,7 @@ import {NavLink, useLocation} from "react-router-dom";
 import {selectUser, selectUserIsLoading} from "../../services/user/selector";
 import {useSelector} from "../../services/store";
 import React from "react";
-
-type NavLinkClassFuncArg = {
-    isActive: boolean;
-};
+import {SetActiveSection} from "../../utils/types";
 const AppHeader = (): React.JSX.Element => {
     const location = useLocation();
 
@@ -17,7 +14,7 @@ const AppHeader = (): React.JSX.Element => {
     }));
 
     const userName = user ? user.name : (userIsLoading ? 'Загрузка...' : 'Личный кабинет');
-    const setActive = ({isActive}: NavLinkClassFuncArg) => isActive
+    const setActive = ({isActive}: SetActiveSection) => isActive
         ? 'text text_type_main-default'
         : 'text text_type_main-default text_color_inactive';
 

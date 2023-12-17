@@ -26,7 +26,7 @@ const BurgerIngredients = (): React.JSX.Element => {
     }));
 
     const isLoading = ingredientsFetchStatus === AsyncThunkStatuses.loading;
-    const showLoader = useDelayedLoader(isLoading, 300);
+    const showLoader = useDelayedLoader({ isLoading, delay: 300 });
 
     const categorizedItems: TCategorizedItems = useMemo(() => ({
         [IngredientsTypes.Buns]: allIngredients.filter(item => item.type === 'bun'),

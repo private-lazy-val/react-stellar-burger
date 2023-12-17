@@ -3,8 +3,9 @@ import BurgerConstructor from "../../components/burger-constructor/burger-constr
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import styles from './home.module.css';
+import React from "react";
 
-const Home = () => {
+const Home = (): React.JSX.Element => {
 
     return (
         <main className={styles.main}>
