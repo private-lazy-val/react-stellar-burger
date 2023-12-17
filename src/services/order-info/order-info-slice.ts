@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import request from "../../api/api";
-import {Order} from "../../utils/types";
+import {AsyncThunkStatuses, Order} from "../../utils/types";
 
 type OrderResponse = {
     orders: Order[];
@@ -8,13 +8,13 @@ type OrderResponse = {
 
 export type OrderState = {
     order: Order | null;
-    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    status: AsyncThunkStatuses;
     error: string | null;
 }
 
 const initialState: OrderState = {
     order: null,
-    status: 'idle',
+    status: AsyncThunkStatuses.idle,
     error: null,
 };
 
@@ -38,17 +38,17 @@ export const orderInfoSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchOrder.pending, (state) => {
-                state.status = 'loading';
+                state.status = AsyncThunkStatuses.loading;
                 state.error = null;
             })
             .addCase(fetchOrder.fulfilled, (state, action: PayloadAction<Order>) => {
                 state.order = action.payload;
-                state.status = 'succeeded';
+                state.status = AsyncThunkStatuses.succeeded;
                 state.error = null;
             })
             .addCase(fetchOrder.rejected, (state, action: PayloadAction<string | undefined>) => {
                 state.order = null;
-                state.status = 'failed';
+                state.status = AsyncThunkStatuses.failed;
                 state.error = action.payload ?? "An unknown error occurred";
             })
     }

@@ -56,7 +56,7 @@ export type ExtendedWsMessagePayload = WsMessagePayload & {
     total: number;
 };
 
-export type UserData = {
+export type User = {
     email: string;
     name: string;
     password?: string;

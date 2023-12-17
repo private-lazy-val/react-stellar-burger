@@ -3,36 +3,41 @@ import {getCookie, setCookie} from "./cookies";
 import {getDefaultHeaders} from "./headers";
 import {setAccessToken} from "../services/user/user-slice";
 import { Dispatch } from "redux";
-import {UserData} from "./types";
+import {User} from "./types";
 
-type ServerResponse<T> = T & { message?: string, success?: string, user?: UserData };
+export type ServerBasicResponse<T = {}> = T & { message?: string, success: boolean };
 
-type TokenResponse = {
+export type TokenData = {
     accessToken: string;
     refreshToken: string;
-    success: boolean;
 };
+
+export type UserData = {
+    user: User;
+}
+
+export type RegisterData =  UserData & TokenData;
 
 type FetchOptions = RequestInit & { headers: HeadersInit };
 
-const checkResponse = <T>(res: Response):Promise<ServerResponse<T>> => {
+const checkResponse = <T>(res: Response):Promise<ServerBasicResponse<T>> => {
     return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 };
 
-export const refreshToken = async ():Promise<TokenResponse> => {
+export const refreshToken = async ():Promise<TokenData> => {
     try {
         const res = await fetch(`${BASE_URL}/auth/token`, {
             method: "POST",
             headers: getDefaultHeaders(false),
             body: JSON.stringify({token: getCookie("refreshToken")}),
         });
-        return await checkResponse<TokenResponse>(res);
+        return await checkResponse(res);
     } catch (error) {
         throw error;
     }
 };
 
-export const fetchWithRefresh = async <T>(url: string, options: FetchOptions, dispatch: Dispatch):Promise<ServerResponse<T>> => {
+export const fetchWithRefresh = async <T>(url: string, options: FetchOptions, dispatch: Dispatch):Promise<ServerBasicResponse<T>> => {
     try {
         const res = await fetch(url, options);
         return await checkResponse<T>(res);
@@ -50,14 +55,14 @@ export const fetchWithRefresh = async <T>(url: string, options: FetchOptions, di
                 "Authorization": refreshData.accessToken
             };
             const res = await fetch(url, options); //повторяем запрос
-            return await checkResponse<T>(res);
+            return await checkResponse(res);
         } else {
             throw err;
         }
     }
 };
 
-export const updateStateWithRefreshToken = async (dispatch: Dispatch): Promise<TokenResponse | void> => {
+export const updateStateWithRefreshToken = async (dispatch: Dispatch): Promise<TokenData | void> => {
     try {
         const refreshData = await refreshToken();
         if (refreshData && refreshData.accessToken) {
@@ -72,21 +77,21 @@ export const updateStateWithRefreshToken = async (dispatch: Dispatch): Promise<T
     }
 };
 
-const getUser = ({accessToken}: Pick<TokenResponse, "accessToken">, dispatch: Dispatch): Promise<ServerResponse<UserData>> =>
-    fetchWithRefresh<UserData>(`${BASE_URL}/auth/user`, {
+const getUser = ({accessToken}: Pick<TokenData, "accessToken">, dispatch: Dispatch): Promise<ServerBasicResponse<UserData>> =>
+    fetchWithRefresh(`${BASE_URL}/auth/user`, {
         method: "GET",
         headers: getDefaultHeaders(true, accessToken),
     }, dispatch);
 
-const updateUser = (userData: UserData,
-                    {accessToken}: Pick<TokenResponse, "accessToken">, dispatch: Dispatch): Promise<ServerResponse<UserData>> =>
+const updateUser = (userData: User,
+                    {accessToken}: Pick<TokenData, "accessToken">, dispatch: Dispatch): Promise<ServerBasicResponse<User>> =>
     fetchWithRefresh(`${BASE_URL}/auth/user`, {
         method: "PATCH",
         headers: getDefaultHeaders(true, accessToken),
         body: JSON.stringify(userData)
     }, dispatch);
 
-const login = async (userData: UserData): Promise<ServerResponse<UserData>> => {
+const login = async (userData: User): Promise<ServerBasicResponse<RegisterData>> => {
     const res = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
         headers: getDefaultHeaders(false),
@@ -95,7 +100,7 @@ const login = async (userData: UserData): Promise<ServerResponse<UserData>> => {
     return await checkResponse(res);
 }
 
-const register = async (userData: UserData): Promise<ServerResponse<UserData>> => {
+const register = async (userData: User): Promise<ServerBasicResponse<RegisterData>> => {
     const res = await fetch(`${BASE_URL}/auth/register`, {
         method: "POST",
         headers: getDefaultHeaders(false),
@@ -104,7 +109,7 @@ const register = async (userData: UserData): Promise<ServerResponse<UserData>> =
     return await checkResponse(res);
 }
 
-const logout = async ({refreshToken}: Pick<TokenResponse, "refreshToken">): Promise<ServerResponse<UserData>> => {
+const logout = async ({refreshToken}: Pick<TokenData, "refreshToken">): Promise<ServerBasicResponse> => {
     const res = await fetch(`${BASE_URL}/auth/logout`, {
         method: "POST",
         headers: getDefaultHeaders(false),
@@ -114,7 +119,7 @@ const logout = async ({refreshToken}: Pick<TokenResponse, "refreshToken">): Prom
 }
 
 // provide email
-const forgotPassword = async ({email}: Pick<UserData, "email">): Promise<ServerResponse<UserData>> => {
+const forgotPassword = async ({email}: Pick<User, "email">): Promise<ServerBasicResponse> => {
     const res = await fetch(`${BASE_URL}/password-reset`, {
         method: "POST",
         headers: getDefaultHeaders(false),
@@ -124,7 +129,7 @@ const forgotPassword = async ({email}: Pick<UserData, "email">): Promise<ServerR
 }
 
 //provide password and token from an email
-const resetPassword = async (userData: UserData): Promise<ServerResponse<UserData>> => {
+const resetPassword = async (userData: User): Promise<ServerBasicResponse> => {
     const res = await fetch(`${BASE_URL}/password-reset/reset`, {
         method: "POST",
         headers: getDefaultHeaders(false),

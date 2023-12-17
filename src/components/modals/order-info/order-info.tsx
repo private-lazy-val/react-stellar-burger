@@ -10,6 +10,7 @@ import React, {useEffect, useMemo} from "react";
 import LoadingComponent from "../../../utils/loading-component";
 import {getOrder, selectOrderError, selectOrderStatus} from "../../../services/order-info/selector";
 import {useSelector, useDispatch} from "../../../services/store";
+import {AsyncThunkStatuses} from "../../../utils/types";
 
 const OrderInfo = (): React.JSX.Element => {
     const dispatch = useDispatch();
@@ -38,11 +39,11 @@ const OrderInfo = (): React.JSX.Element => {
 
     let content;
 
-    if (orderFetchStatus === 'loading') {
+    if (orderFetchStatus === AsyncThunkStatuses.loading) {
         content = <div className="modal-backdrop"><LoadingComponent/></div>
-    } else if (orderFetchStatus === 'failed') {
+    } else if (orderFetchStatus === AsyncThunkStatuses.failed) {
         content = <div className="modal-backdrop text_type_digits-medium">{orderFetchError}</div>
-    } else if ((orderFetchStatus === 'succeeded' && order) || order) {
+    } else if ((orderFetchStatus === AsyncThunkStatuses.succeeded && order) || order) {
         content = (
             <div className={styles.container}>
                 <p className={`${styles[`order-number`]} text text_type_digits-default`}>{`#${number}`}</p>

@@ -1,7 +1,18 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {login, register, logout, forgotPassword, resetPassword, updateUser, checkUserAuth} from "./action";
+import {User} from "../../utils/types";
+import {ServerBasicResponse} from "../../utils/user-api";
 
-const initialState = {
+export type UserState = {
+    user: User | null;
+    accessToken: string | null;
+    isAuthChecked: boolean;
+    authCheckLoading: boolean;
+    isLoading: boolean;
+    errMsg: string | null;
+}
+
+const initialState: UserState = {
     user: null,
     accessToken: null,
     isAuthChecked: false,
@@ -14,16 +25,16 @@ export const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-        setAuthChecked: (state, action) => {
+        setAuthChecked: (state, action: PayloadAction<boolean>) => {
             state.isAuthChecked = action.payload;
         },
-        setAccessToken: (state, action) => {
+        setAccessToken: (state, action: PayloadAction<string | null>) => {
             state.accessToken = action.payload;
         },
-        setUserLoading: (state, action) => {
+        setUserLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
         },
-        setUser: (state, action) => {
+        setUser: (state, action: PayloadAction<User>) => {
             state.isLoading = false;
             state.user = action.payload;
         },
@@ -33,7 +44,7 @@ export const userSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(login.fulfilled, (state, action) => {
+            .addCase(login.fulfilled, (state, action: PayloadAction<ServerBasicResponse<User>>) => {
                 state.user = action.payload;
                 state.isAuthChecked = true;
             })
@@ -76,6 +87,8 @@ export const userSlice = createSlice({
     }
 });
 
-export const {setAuthChecked, setAccessToken, setUserLoading, setUser, resetError} = userSlice.actions;
+type TUserActionCreators = typeof userSlice.actions;
+export type TUserActions = ReturnType<TUserActionCreators[keyof TUserActionCreators]>;
 
+export const {setAuthChecked, setAccessToken, setUserLoading, setUser, resetError} = userSlice.actions;
 export default userSlice.reducer;

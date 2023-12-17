@@ -3,7 +3,7 @@ import burgerIngredientsReducer, {TBurgerIngredientsActions} from './burger-ingr
 import burgerConstructorReducer, {TBurgerConstructorActions} from './burger-constructor/burger-constructor-slice';
 import submitOrderReducer from './submit-order/submit-order-slice';
 import modalReducer, {TModalActions} from './modal/modal-slice';
-import userReducer from './user/user-slice';
+import userReducer, {TUserActions} from './user/user-slice';
 import ordersFeedReducer from "./orders-feed/orders-feed-reducer";
 import orderInfoReducer from "./order-info/order-info-slice";
 import profileOrdersReducer from "./profile-orders/profile-orders-reducer";
@@ -81,7 +81,8 @@ export type AppActions =
     | TBurgerConstructorActions
     | TModalActions
     | TProfileOrdersActions
-    | TOrdersFeedActions;
+    | TOrdersFeedActions
+    | TUserActions;
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, AppActions>;
 

@@ -11,6 +11,7 @@ import LoadingComponent from "../../utils/loading-component";
 import ItemNotFound from "../../utils/item-not-found";
 import {useDelayedLoader} from "../../hooks/use-delayed-loader";
 import IngredientInfo from "../../components/modals/ingredient-info/ingredient-info";
+import {AsyncThunkStatuses} from "../../utils/types";
 
 const IngredientPage = () => {
     const {ingredientId} = useParams();
@@ -23,7 +24,7 @@ const IngredientPage = () => {
         };
     });
 
-    const isLoading = ingredientsFetchStatus === 'loading';
+    const isLoading = ingredientsFetchStatus === AsyncThunkStatuses.loading;
     const showLoader = useDelayedLoader(isLoading, 300);
 
     const ingredient = allIngredients[ingredientId] || null;
@@ -32,15 +33,15 @@ const IngredientPage = () => {
 
     if (showLoader) {
         content = <div className="page-backdrop"><LoadingComponent/></div>
-    } else if (ingredientsFetchStatus === 'failed' && !showLoader) {
+    } else if (ingredientsFetchStatus === AsyncThunkStatuses.failed && !showLoader) {
         content = <div className="page-backdrop text_type_digits-medium">{ingredientsFetchError}</div>
-    } else if (ingredientsFetchStatus === 'succeeded' && ingredient) {
+    } else if (ingredientsFetchStatus === AsyncThunkStatuses.succeeded && ingredient) {
         content = (
             <IngredientInfo title="Детали ингредиента"/>
         )
     }
 
-    if (!ingredient && ingredientsFetchStatus === 'succeeded') {
+    if (!ingredient && ingredientsFetchStatus === AsyncThunkStatuses.succeeded) {
         content = <div className="page-backdrop"><ItemNotFound/></div>
     }
 

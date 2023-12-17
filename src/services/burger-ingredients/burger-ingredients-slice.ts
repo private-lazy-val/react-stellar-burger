@@ -82,7 +82,6 @@ export const burgerIngredientsSlice = createSlice({
 });
 
 type TBurgerIngredientsActionCreators = typeof burgerIngredientsSlice.actions;
-
 export type TBurgerIngredientsActions = ReturnType<TBurgerIngredientsActionCreators[keyof TBurgerIngredientsActionCreators]>;
 export const {switchTab} = burgerIngredientsSlice.actions;
 export default burgerIngredientsSlice.reducer;
