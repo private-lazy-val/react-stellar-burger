@@ -3,18 +3,14 @@ import {getCookie, setCookie} from "./cookies";
 import {getDefaultHeaders} from "./headers";
 import {setAccessToken} from "../services/user/user-slice";
 import { Dispatch } from "redux";
+import {UserData} from "./types";
 
-type ServerResponse<T> = T & { message?: string };
+type ServerResponse<T> = T & { message?: string, success?: string };
 
 type TokenResponse = {
     accessToken: string;
     refreshToken: string;
     success: boolean;
-};
-
-type UserData = {
-    email: string;
-    name: string;
 };
 
 type FetchOptions = RequestInit & { headers: HeadersInit };

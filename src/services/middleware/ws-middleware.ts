@@ -16,7 +16,7 @@ import {Dispatch} from "redux";
 
 export type TWsActionTypes = {
     wsConnect: ActionCreatorWithoutPayload;
-    // wsSendMessage: ActionCreatorWithPayload<ExtendedWsMessagePayload | WsMessagePayload>;
+    // wsSendMessage: ActionCreatorWithPayload<any>;
     onOpen: ActionCreatorWithoutPayload;
     onClose: ActionCreatorWithoutPayload;
     onError: ActionCreatorWithPayload<string>;

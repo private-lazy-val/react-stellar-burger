@@ -39,6 +39,7 @@ export enum IngredientsTypes {
     Main = 'Начинки',
     Sauces = 'Соусы'
 }
+
 export enum AsyncThunkStatuses {
     'idle',
     'loading',
@@ -53,4 +54,10 @@ export type WsMessagePayload = {
 export type ExtendedWsMessagePayload = WsMessagePayload & {
     totalToday: number;
     total: number;
+};
+
+export type UserData = {
+    email: string;
+    name: string;
+    password?: string;
 };

@@ -3,6 +3,15 @@ import {setAccessToken, setUser, setAuthChecked} from "./user-slice";
 import {updateStateWithRefreshToken, userApi} from "../../utils/user-api";
 import {deleteCookie, getCookie, setCookie} from "../../utils/cookies";
 import {selectAccessToken} from "./selector";
+import {UserData} from "../../utils/types";
+
+type ApiResponse<T> = {
+    success: boolean;
+    message?: string;
+    user?: T;
+    refreshToken?: string;
+    accessToken?: string;
+}
 
 export const getUser = createAsyncThunk(
     "user/getUser",
@@ -17,7 +26,7 @@ export const getUser = createAsyncThunk(
             }
         }
         try {
-            const res = await userApi.getUser(accessToken);
+            const res = await userApi.getUser(accessToken, thunkAPI.dispatch);
             if (res.success) {
                 thunkAPI.dispatch(setUser(res.user));
             } else {
@@ -29,7 +38,7 @@ export const getUser = createAsyncThunk(
     }
 );
 
-export const updateUser = createAsyncThunk(
+export const updateUser = createAsyncThunk<ApiResponse<UserData>, UserData>(
     "user/updateUser",
     async (userData, thunkAPI) => {
         let accessToken = selectAccessToken(thunkAPI.getState());
@@ -53,7 +62,7 @@ export const updateUser = createAsyncThunk(
     }
 );
 
-export const login = createAsyncThunk(
+export const login = createAsyncThunk<ApiResponse<UserData>, UserData>(
     "user/login",
     async (userData, thunkAPI) => {
         try {
@@ -73,7 +82,7 @@ export const login = createAsyncThunk(
     }
 );
 
-export const register = createAsyncThunk(
+export const register = createAsyncThunk<ApiResponse<UserData>, UserData>(
     "user/register",
     async (userData, thunkAPI) => {
         try {
@@ -129,7 +138,7 @@ export const logout = createAsyncThunk(
     }
 );
 
-export const forgotPassword = createAsyncThunk(
+export const forgotPassword = createAsyncThunk<ApiResponse<UserData>, UserData>(
     "user/forgotPassword",
     async (email, thunkAPI) => {
         try {
@@ -141,7 +150,7 @@ export const forgotPassword = createAsyncThunk(
     }
 );
 
-export const resetPassword = createAsyncThunk(
+export const resetPassword = createAsyncThunk<ApiResponse<UserData>, UserData>(
     "user/resetPassword",
     async (userData, thunkAPI) => {
         try {

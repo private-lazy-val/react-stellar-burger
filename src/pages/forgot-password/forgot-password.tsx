@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import commonStyles from "../auth.module.css";
 import {Button, EmailInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Link, useNavigate} from "react-router-dom";
@@ -9,7 +9,11 @@ import {resetError} from '../../services/user/user-slice';
 import {EMAIL_REGEX} from "../../utils/input-regex";
 import {useForm} from "../../hooks/use-form";
 
-const ForgotPassword = () => {
+type ForgotPasswordFormValues = {
+    email: string;
+};
+
+const ForgotPassword = (): React.JSX.Element => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -22,14 +26,14 @@ const ForgotPassword = () => {
     }, [dispatch])
 
     const formValidators = {
-        email: (value) => EMAIL_REGEX.test(value)
+        email: (value: string) => EMAIL_REGEX.test(value)
     };
 
     const {values, validities, handleChange, isFormValid, resetForm} =
-        useForm({email: ''}, formValidators);
+        useForm<ForgotPasswordFormValues>({email: ''}, formValidators);
 
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (isFormValid()) {
             dispatch(forgotPassword({email: values.email}))

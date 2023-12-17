@@ -1,13 +1,26 @@
-import {useState, useCallback} from 'react';
+import {useState, useCallback, ChangeEvent} from 'react';
 
-export const useForm = (initialValues, validators) => {
-    const [values, setValues] = useState(initialValues);
+type TUseForm<T> = {
+    values: T;
+    validities: { [K in keyof T]?: boolean };
+    handleChange: (evt: ChangeEvent<HTMLInputElement>) => void;
+    setValues: (state: T) => void;
+    isFormValid: () => boolean;
+    resetForm: () => void;
+}
+
+type TFormValidators<T> = {
+    [K in keyof T]?: (value: T[K]) => boolean;
+}
+
+export const useForm = <T>(initialValues: T, validators: TFormValidators<T>): TUseForm<T> => {
+    const [values, setValues] = useState<T>(initialValues);
     const [validities, setValidities] = useState({});
 
     // Update values and validities
     const handleChange = useCallback(
-        (event) => {
-            const {name, value} = event.target;
+        (evt: ChangeEvent<HTMLInputElement>) => {
+            const {name, value} = evt.target;
             // If a validator function exists for this name,
             // it's called with the value of the input field to check if the value is valid.
             const isValid = validators[name] ? validators[name](value) : true;

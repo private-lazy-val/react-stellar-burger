@@ -13,8 +13,6 @@ import {
         useDispatch as dispatchHook,
         useSelector as selectorHook,
 } from "react-redux";
-import type {} from "redux-thunk/extend-redux";
-
 
 import {
     connect as profileOrdersWsConnect,
