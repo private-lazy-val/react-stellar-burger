@@ -6,7 +6,7 @@ import React from "react";
 
 const Missing = (): React.JSX.Element => {
     const navigate = useNavigate();
-    const goBack = () => navigate(-1);
+    const goBack = (): void => navigate(-1);
     return (
         <main className={commonStyles.main}>
             <h1 className={`${styles.header} text text_type_digits-medium`}>Whoops! This is not <br/> what you were

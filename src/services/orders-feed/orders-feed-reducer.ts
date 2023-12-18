@@ -1,4 +1,4 @@
-import {createReducer} from '@reduxjs/toolkit';
+import {createReducer, PayloadAction} from '@reduxjs/toolkit';
 import {
     wsClose,
     wsConnecting,
@@ -6,7 +6,7 @@ import {
     wsMessage,
     wsOpen
 } from "./actions";
-import {Order, OrdersMap, websocketStatuses} from "../../utils/types";
+import {ExtendedWsMessagePayload, Order, OrdersMap, websocketStatuses} from "../../utils/types";
 
 export type ordersFeedTypes = {
     status: websocketStatuses;
@@ -40,10 +40,10 @@ const ordersFeedReducer = createReducer(initialState, (builder) => {
         .addCase(wsClose, state => {
             state.status = websocketStatuses.OFFLINE;
         })
-        .addCase(wsError, (state, action) => {
+        .addCase(wsError, (state, action: PayloadAction<string> ) => {
             state.connectingError = action.payload ?? "An unknown connection error occurred";
         })
-        .addCase(wsMessage, (state, action) => {
+        .addCase(wsMessage, (state, action:PayloadAction<ExtendedWsMessagePayload>) => {
             if (action.payload) {
                 state.ordersMap = action.payload.orders.reduce((acc, order) => {
                     // Use order.number as the key, and spread the rest of the order properties as the value

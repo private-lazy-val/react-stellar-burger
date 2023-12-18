@@ -3,7 +3,12 @@ import { logout } from '../services/user/action';
 import {resetOrders} from "../services/profile-orders/actions";
 import {SetActiveSection} from "../utils/types";
 
-export const useUserActions = () => {
+type userActionsReturnType = {
+    onLogout: () => void;
+    setActive: ({ isActive }: SetActiveSection) => string;
+};
+
+export const useUserActions = (): userActionsReturnType => {
     const dispatch = useDispatch();
 
     const onLogout = () => {
@@ -11,7 +16,7 @@ export const useUserActions = () => {
         dispatch(resetOrders());
     }
 
-    const setActive = ({ isActive }: SetActiveSection) => isActive
+    const setActive = ({ isActive }: SetActiveSection): string => isActive
         ? 'text text_type_main-medium'
         : 'text text_type_main-medium text_color_inactive';
 

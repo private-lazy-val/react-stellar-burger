@@ -5,7 +5,17 @@ import {resetConstructor} from "../services/burger-constructor/burger-constructo
 import {useNavigate} from "react-router-dom";
 import {selectModalType} from '../services/modal/selector';
 
-const useModal = () => {
+type UseModalReturnType = {
+    modalType: ModalTypes | null;
+    openIngredientModal: () => void;
+    closeIngredientModal: () => void;
+    openOrderModal: () => void;
+    closeOrderModal: () => void;
+    openSubmitOrderModal: () => void;
+    closeSubmitOrderModal: () => void;
+};
+
+const useModal = (): UseModalReturnType => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 

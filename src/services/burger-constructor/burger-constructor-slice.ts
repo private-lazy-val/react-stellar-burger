@@ -38,7 +38,8 @@ export const burgerConstructorSlice = createSlice({
                 }
             }
         },
-        removeIngredient: (state, action: PayloadAction<{ uuid: string }>) => {
+
+        removeIngredient: (state, action: PayloadAction<Pick<BaseIngredient, "uuid">>) => {
             state.ingredients = state.ingredients.filter(ingredient => ingredient.uuid !== action.payload.uuid);
         },
         resetConstructor: (state) => {

@@ -1,6 +1,6 @@
-import {ReactElement} from "react";
+import React from "react";
 
-const LoadingComponent = (): ReactElement => {
+const LoadingComponent = (): React.JSX.Element => {
     return (
         <h1 className="text text_type_digits-medium">Loading...</h1>
     );

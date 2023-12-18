@@ -1,8 +1,9 @@
 import {useLocation} from "react-router-dom";
 import React from "react";
+
 const ItemNotFound = (): React.JSX.Element => {
     const location = useLocation();
-    const { pathname } = location;
+    const {pathname} = location;
 
     let message;
 
