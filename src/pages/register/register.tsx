@@ -1,15 +1,20 @@
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import commonStyles from '../auth.module.css';
 import {Button, EmailInput, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector} from "../../services/store";
 import {register} from '../../services/user/action';
 import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/user-slice';
 import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
 import {useForm} from "../../hooks/use-form";
 
-const Register = () => {
+type RegisterFormValues = {
+    name: string;
+    email: string;
+    password: string;
+}
+const Register = (): React.JSX.Element => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
@@ -24,15 +29,15 @@ const Register = () => {
     }, [dispatch])
 
     const formValidators = {
-        name: (value) => NAME_REGEX.test(value),
-        email: (value) => EMAIL_REGEX.test(value),
-        password: (value) => PWD_REGEX.test(value),
+        name: (value: string) => NAME_REGEX.test(value),
+        email: (value: string) => EMAIL_REGEX.test(value),
+        password: (value: string) => PWD_REGEX.test(value),
     };
 
     const {values, validities, handleChange, isFormValid, resetForm} =
-        useForm({name: '', email: '', password: ''}, formValidators);
+        useForm<RegisterFormValues>({name: '', email: '', password: ''}, formValidators);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (isFormValid()) {
             dispatch(register({email: values.email, password: values.password, name: values.name}))
@@ -62,7 +67,6 @@ const Register = () => {
                     aria-invalid={!validities.name}
                 />
                 <EmailInput
-                    type="email"
                     id="email"
                     name="email"
                     placeholder="E-mail"

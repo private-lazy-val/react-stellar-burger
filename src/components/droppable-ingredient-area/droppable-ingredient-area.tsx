@@ -2,7 +2,7 @@ import React, {useCallback} from 'react';
 import styles from "../droppable-ingredient-area/droppable-ingredient-area.module.css";
 import {moveIngredients} from "../../services/burger-constructor/burger-constructor-slice";
 import {selectIngredients} from "../../services/burger-constructor/selector";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector} from "../../services/store";
 import DraggableIngredient from '../draggable-ingredient/draggable-ingredient';
 
 const DroppableIngredientArea = React.memo((): React.JSX.Element => {

@@ -6,5 +6,4 @@ const Spinner = (): React.JSX.Element => {
         <div className={styles.spinner}></div>
     );
 }
-
 export default Spinner;

@@ -33,7 +33,6 @@ export const wsMiddleware = (wsActions: TWsActionTypes): Middleware<{}, RootStat
 
         return (next) => async (action) => { // 'next' is a Redux middleware API function used to pass the action to the next middleware in line
             const {dispatch} = store;
-            // const {type, payload} = action; // determine the kind of action being handled
             const {
                 // wsConnect,
                 // wsSendMessage,
@@ -47,8 +46,8 @@ export const wsMiddleware = (wsActions: TWsActionTypes): Middleware<{}, RootStat
             } = wsActions;
 // If the dispatched action type matches the wsConnect action, a new WebSocket connection
 // is established with the URL provided in the action payload.
+            // if (type === wsConnect.type)
             if (wsActions.wsConnect.match(action)) {
-                // if (type === wsConnect.type) {
                 const {payload} = action;
                 initialWsUrl = payload;
                 // Close the existing socket if it exists before creating a new one
@@ -77,7 +76,7 @@ export const wsMiddleware = (wsActions: TWsActionTypes): Middleware<{}, RootStat
                         dispatch(onError(parsedData.message || 'Unknown error'));
                     }
                 };
-                //  type === wsTokenRefresh.type
+                //  if (wsTokenRefresh && type === wsTokenRefresh.type) {
                 if (wsActions.wsTokenRefresh && wsActions.wsTokenRefresh.match(action)) {
                     console.log('refreshing token...')
                     try {
@@ -119,9 +118,11 @@ export const wsMiddleware = (wsActions: TWsActionTypes): Middleware<{}, RootStat
                 };
 
                 // if (wsSendMessage && type === wsSendMessage.type) {
+                // if (wsActions.wsSendMessage && wsActions.wsSendMessage.match(action)) {
                 //     socket.send(JSON.stringify(action.payload));
                 // }
 
+                //   if (wsDisconnect.type === type) {
                 if (wsActions.wsDisconnect.match(action)) {
                     socket.close(); // This calls the close method on the WebSocket object, which initiates the closing handshake to terminate the connection.
                     socket = null;
@@ -131,7 +132,6 @@ export const wsMiddleware = (wsActions: TWsActionTypes): Middleware<{}, RootStat
             // the middleware passes the action to the next middleware in line,
             // or to the reducers if there are no more middlewares
             next(action);
-        }
-            ;
+        };
     };
 };

@@ -1,6 +1,6 @@
 import styles from "./orders-feed.module.css";
-import {useDispatch, useSelector} from "react-redux";
-import {useEffect, useMemo} from "react";
+import {useDispatch, useSelector} from "../../services/store";
+import React, {useEffect, useMemo} from "react";
 import {
     connect as connectFeedOrders,
     disconnect as disconnectFeedOrders
@@ -19,7 +19,7 @@ import {
 import {websocketStatus} from "../../utils/ws-status";
 import LoadingComponent from "../../utils/loading-component";
 
-const OrdersFeed = () => {
+const OrdersFeed = (): React.JSX.Element => {
     const dispatch = useDispatch();
 
     useEffect(() => {

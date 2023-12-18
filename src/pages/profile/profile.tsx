@@ -1,42 +1,47 @@
 import {Button, EmailInput, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import commonStyles from '../auth.module.css';
 import styles from './profile.module.css';
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector} from "../../services/store";
 import {updateUser} from "../../services/user/action";
 import {selectErrMsg, selectUser} from "../../services/user/selector";
 import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
 import {useForm} from "../../hooks/use-form";
-import {useState} from "react";
+import React, {useState} from "react";
 import ProfileSideMenu from "../../components/profile-side-menu/profile-side-menu";
 
-const Profile = () => {
+type ProfileValues = {
+    name: string;
+    email: string;
+    password: string;
+}
+const Profile = (): React.JSX.Element => {
     const dispatch = useDispatch();
     const errMsg = useSelector(selectErrMsg);
 
-    const user = useSelector(selectUser) || { name: '', email: '' };;
+    const user = useSelector(selectUser) || { name: '', email: '' };
 
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+    const [name, setName] = useState(user?.name ?? '');
+    const [email, setEmail] = useState(user?.email ?? '');
     const [password, setPassword] = useState('******');
 
     const formValidators = {
-        name: (value) => NAME_REGEX.test(value),
-        email: (value) => EMAIL_REGEX.test(value),
-        password: (value) => PWD_REGEX.test(value),
+        name: (value: string) => NAME_REGEX.test(value),
+        email: (value: string) => EMAIL_REGEX.test(value),
+        password: (value: string) => PWD_REGEX.test(value),
     };
 
     const {values, validities, handleChange, isFormValid, resetForm} =
-        useForm(
+        useForm<ProfileValues>(
             {name: user.name || '', email: user.email || '', password: '******'}, formValidators);
 
-    const handleUpdate = async (e) => {
+    const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (isFormValid) {
+        if (isFormValid()) {
             dispatch(updateUser({name: values.name, email: values.email, password: values.password}))
                 .unwrap()
                 .then(() => {
-                    setName(user.name);
-                    setEmail(user.email);
+                    setName(user?.name ?? '');
+                    setEmail(user?.email ?? '');
                     setPassword('******');
                 })
                 .catch(err => console.error(err))
@@ -63,7 +68,6 @@ const Profile = () => {
                     aria-invalid={!validities.name}
                 />
                 <EmailInput
-                    type="email"
                     id="email"
                     name="email"
                     placeholder="E-mail"
@@ -73,7 +77,6 @@ const Profile = () => {
                     aria-invalid={!validities.email}
                 />
                 <PasswordInput
-                    type='password'
                     id="password"
                     name='password'
                     placeholder="Пароль"

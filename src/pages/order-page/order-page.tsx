@@ -1,6 +1,6 @@
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector} from "../../services/store";
 import {useParams} from "react-router-dom";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import {fetchOrder} from "../../services/order-info/order-info-slice";
 import {selectOrderStatus, selectOrder, selectOrderError} from "../../services/order-info/selector";
 import LoadingComponent from "../../utils/loading-component";
@@ -10,21 +10,22 @@ import {useDelayedLoader} from "../../hooks/use-delayed-loader";
 import OrderInfo from "../../components/modals/order-info/order-info";
 import {AsyncThunkStatuses} from "../../utils/types";
 
-const OrderPage = () => {
+const OrderPage = (): React.JSX.Element => {
     const dispatch = useDispatch();
-    const {number} = useParams();
-    
+    const {orderNumber} = useParams<{ orderNumber: string }>();
+
+
     const {orderFetchStatus, orderFetchError} = useSelector(state => ({
         orderFetchStatus: selectOrderStatus(state),
         orderFetchError: selectOrderError(state)
     }));
 
     const isLoading = orderFetchStatus === AsyncThunkStatuses.loading;
-    const showLoader = useDelayedLoader(isLoading, 300);
+    const showLoader = useDelayedLoader({isLoading, delay: 300});
 
     useEffect(() => {
-        dispatch(fetchOrder(number))
-    }, [number, dispatch]);
+        dispatch(fetchOrder(orderNumber!))
+    }, [orderNumber, dispatch]);
 
     const order = useSelector(selectOrder);
 

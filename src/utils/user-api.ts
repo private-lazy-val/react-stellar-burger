@@ -2,10 +2,13 @@ import {BASE_URL} from "../api/api";
 import {getCookie, setCookie} from "./cookies";
 import {getDefaultHeaders} from "./headers";
 import {setAccessToken} from "../services/user/user-slice";
-import { Dispatch } from "redux";
-import {User} from "./types";
+import {Dispatch} from "redux";
+import {TResetPassword, User} from "./types";
 
-export type ServerBasicResponse<T = {}> = T & { message?: string, success: boolean };
+export type ServerBasicResponse<T = {}> = T & {
+    message?: string,
+    success: boolean
+};
 
 export type TokenData = {
     accessToken: string;
@@ -16,15 +19,23 @@ export type UserData = {
     user: User;
 }
 
-export type RegisterData =  UserData & TokenData;
+export type RegisterData = UserData & TokenData;
 
-type FetchOptions = RequestInit & { headers: HeadersInit };
-
-const checkResponse = <T>(res: Response):Promise<ServerBasicResponse<T>> => {
-    return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
+type FetchOptions = RequestInit & {
+    headers: HeadersInit
 };
 
-export const refreshToken = async ():Promise<ServerBasicResponse<TokenData>> => {
+const checkResponse = async<T>(res: Response): Promise<ServerBasicResponse<T>> => {
+    // return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
+    if (res.ok) {
+        return await res.json();
+    } else {
+        const errorResponse = await res.json();
+        return Promise.reject(new Error(errorResponse.message || 'An unknown error occurred'));
+    }
+};
+
+export const refreshToken = async (): Promise<ServerBasicResponse<TokenData>> => {
     try {
         const res = await fetch(`${BASE_URL}/auth/token`, {
             method: "POST",
@@ -37,13 +48,12 @@ export const refreshToken = async ():Promise<ServerBasicResponse<TokenData>> => 
     }
 };
 
-export const fetchWithRefresh = async <T>(url: string, options: FetchOptions, dispatch: Dispatch):Promise<ServerBasicResponse<T>> => {
+export const fetchWithRefresh = async <T>(url: string, options: FetchOptions, dispatch: Dispatch): Promise<ServerBasicResponse<T>> => {
     try {
         const res = await fetch(url, options);
         return await checkResponse(res);
     } catch (err) {
         if (err instanceof Error && err.message === "jwt expired") {
-            console.log('refreshing access token')
             const refreshData = await refreshToken(); //обновляем токен
             if (!refreshData || !refreshData.success) {
                 console.error((err.message || "Failed to refresh token"));
@@ -74,7 +84,7 @@ export const updateStateWithRefreshToken = async (dispatch: Dispatch): Promise<T
             console.error("Failed to refresh token");
         }
     } catch (error) {
-        throw error;
+        console.log(error);
     }
 };
 
@@ -98,7 +108,6 @@ const login = async (userData: User): Promise<ServerBasicResponse<RegisterData>>
         headers: getDefaultHeaders(false),
         body: JSON.stringify(userData)
     });
-    console.log(res)
     return await checkResponse(res);
 }
 
@@ -131,7 +140,7 @@ const forgotPassword = async ({email}: Pick<User, "email">): Promise<ServerBasic
 }
 
 //provide password and token from an email
-const resetPassword = async (userData: User): Promise<ServerBasicResponse> => {
+const resetPassword = async (userData: TResetPassword): Promise<ServerBasicResponse> => {
     const res = await fetch(`${BASE_URL}/password-reset/reset`, {
         method: "POST",
         headers: getDefaultHeaders(false),

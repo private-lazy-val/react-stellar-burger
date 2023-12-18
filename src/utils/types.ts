@@ -65,9 +65,14 @@ export type ExtendedWsMessagePayload = WsMessagePayload & {
 
 export type User = {
     email: string;
-    name: string;
+    name?: string;
     password?: string;
 };
+
+export type TResetPassword = {
+    password: string;
+    token: string;
+}
 
 export type SetActiveSection = {
     isActive: boolean;

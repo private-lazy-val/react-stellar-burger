@@ -1,5 +1,5 @@
 import { useEffect} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from '../services/store';
 import { checkUserAuth } from '../services/user/action';
 import {selectAuthCheckLoading, selectAuthStatus} from "../services/user/selector";
 

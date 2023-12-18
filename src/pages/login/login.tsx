@@ -1,17 +1,20 @@
 import commonStyles from "../auth.module.css";
 import {Button, EmailInput, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Link} from "react-router-dom";
-import {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useEffect} from "react";
+import {useDispatch, useSelector} from "../../services/store";
 import {login} from '../../services/user/action';
 import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/user-slice';
 import {EMAIL_REGEX, PWD_REGEX} from "../../utils/input-regex";
 import {useForm} from "../../hooks/use-form";
 
-const Login = () => {
+type LoginFormValues = {
+    email: string;
+    password: string;
+}
+const Login = (): React.JSX.Element => {
     const dispatch = useDispatch();
-
     const errMsg = useSelector(selectErrMsg);
 
     useEffect(() => {
@@ -22,14 +25,14 @@ const Login = () => {
     }, [dispatch])
 
     const formValidators = {
-        email: (value) => EMAIL_REGEX.test(value),
-        password: (value) => PWD_REGEX.test(value)
+        email: (value: string) => EMAIL_REGEX.test(value),
+        password: (value: string) => PWD_REGEX.test(value)
     };
 
     const {values, validities, handleChange, isFormValid, resetForm} =
-        useForm({email: '', password: ''}, formValidators);
+        useForm<LoginFormValues>({email: '', password: ''}, formValidators);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (isFormValid()) {
             dispatch(login({email: values.email, password: values.password}))
@@ -47,7 +50,6 @@ const Login = () => {
             {errMsg && <p className="text text_type_main-default text_color_error mt-2">{errMsg}</p>}
             <form className={commonStyles.form} onSubmit={handleSubmit}>
                 <EmailInput
-                    type="email"
                     id="email"
                     name="email"
                     placeholder="E-mail"

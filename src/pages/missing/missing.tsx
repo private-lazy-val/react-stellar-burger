@@ -2,9 +2,10 @@ import {useNavigate} from "react-router-dom";
 import {Button} from "@ya.praktikum/react-developer-burger-ui-components";
 import commonStyles from '../auth.module.css';
 import styles from './missing.module.css';
+import React from "react";
 
 
-const Missing = () => {
+const Missing = (): React.JSX.Element => {
     const navigate = useNavigate();
     const goBack = () => navigate(-1);
     return (

@@ -1,10 +1,10 @@
 import profileStyles from "../profile/profile.module.css";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector} from "../../services/store";
 import {
     connect as connectProfileOrders,
     disconnect as disconnectProfileOrders
 } from "../../services/profile-orders/actions";
-import {useEffect, useMemo} from "react";
+import React, {useEffect, useMemo} from "react";
 import {WS_URL} from "../../api/ws-api";
 import ProfileSideMenu from "../../components/profile-side-menu/profile-side-menu";
 import Orders from "../../components/orders/orders";
@@ -20,27 +20,11 @@ import styles from './profile-orders.module.css';
 import {websocketStatus} from "../../utils/ws-status";
 import LoadingComponent from "../../utils/loading-component";
 import {selectAccessToken} from "../../services/user/selector";
-import {updateStateWithRefreshToken} from "../../utils/user-api";
-import {logout} from "../../services/user/action";
+// import useRefreshTokenIfNeeded from "../../hooks/use-refresh-token-if-needed";
 
-const ProfileOrders = () => {
+const ProfileOrders = (): React.JSX.Element => {
     const dispatch = useDispatch();
     const accessToken = useSelector(selectAccessToken);
-
-    useEffect(() => {
-        const refreshAccessToken = async () => {
-            if (!accessToken) {
-                try {
-                    await updateStateWithRefreshToken(dispatch);
-                } catch (error) {
-                    console.error("Failed to refresh token:", error);
-                    dispatch(logout());
-                }
-            }
-        };
-
-        refreshAccessToken();
-    }, [accessToken, dispatch]);
 
     useEffect(() => {
         // If accessToken state gets updated and is not null, connect to WebSocket

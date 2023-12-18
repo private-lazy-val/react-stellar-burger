@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {fetchWithRefresh, updateStateWithRefreshToken} from "../../utils/user-api";
+import {fetchWithRefresh} from "../../utils/user-api";
 import {getDefaultHeaders} from "../../utils/headers";
 import {BASE_URL} from "../../api/api";
 import {selectAccessToken} from "../user/selector";
@@ -22,33 +22,34 @@ export const createNewOrder = createAsyncThunk<number, OrderRequest, {
     "submitOrder/createNewOrder",
     async (newOrder, {getState, dispatch, rejectWithValue}) => {
         let accessToken = selectAccessToken(getState());
-        if (!accessToken) {
-            try {
-                await updateStateWithRefreshToken(dispatch);
-                accessToken = selectAccessToken(getState());
-            } catch (err) {
-                return rejectWithValue("Failed to retrieve access token");
-            }
-        }
 
         const endpoint = `${BASE_URL}/orders`;
-        const options = {
-            method: 'POST',
-            headers: getDefaultHeaders(undefined, accessToken),
-            body: JSON.stringify(newOrder)
+        const createOrder = async (accessToken: string) => {
+            const options = {
+                method: 'POST',
+                headers: getDefaultHeaders(undefined, accessToken),
+                body: JSON.stringify(newOrder)
+            };
+            try {
+                const response = await fetchWithRefresh<OrderData>(endpoint, options, dispatch);
+                if (response.success && response.order.number) {
+                    return response.order.number;
+                } else {
+                    return rejectWithValue("Failed to retrieve order number");
+                }
+            } catch (err) {
+                return rejectWithValue("Failed to submit the order");
+            }
         };
 
-        try {
-            const response = await fetchWithRefresh<OrderData>(endpoint, options, dispatch);
-            if (response.success && response.order.number) {
-                return response.order.number;
-            } else {
-                return rejectWithValue("Failed to retrieve order number");
-            }
-        } catch (err) {
-            return rejectWithValue("Failed to submit the order");
+        // If accessToken is available after refresh (or was initially available)
+        if (accessToken) {
+            return await createOrder(accessToken);
+        } else {
+            return rejectWithValue("Authentication required");
         }
-    })
+    }
+);
 
 export type submitOrder = {
     number: number | null,

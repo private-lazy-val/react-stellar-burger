@@ -1,4 +1,4 @@
-import {useSelector} from "react-redux";
+import {useSelector} from "../../services/store";
 import React from "react";
 import {useParams} from "react-router-dom";
 import {
@@ -13,8 +13,8 @@ import {useDelayedLoader} from "../../hooks/use-delayed-loader";
 import IngredientInfo from "../../components/modals/ingredient-info/ingredient-info";
 import {AsyncThunkStatuses} from "../../utils/types";
 
-const IngredientPage = () => {
-    const {ingredientId} = useParams();
+const IngredientPage = (): React.JSX.Element => {
+    const { ingredientId } = useParams<{ ingredientId: string }>();
     const { allIngredients, ingredientsFetchStatus, ingredientsFetchError } = useSelector(state => {
         const { allIngredients } = getIngredientsMap(state);
         return {
@@ -25,9 +25,9 @@ const IngredientPage = () => {
     });
 
     const isLoading = ingredientsFetchStatus === AsyncThunkStatuses.loading;
-    const showLoader = useDelayedLoader(isLoading, 300);
+    const showLoader = useDelayedLoader({ isLoading, delay: 300 });
 
-    const ingredient = allIngredients[ingredientId] || null;
+    const ingredient = ingredientId ? allIngredients[ingredientId] : null;
 
     let content;
 

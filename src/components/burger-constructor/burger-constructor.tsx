@@ -1,4 +1,4 @@
-import React, {useMemo} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import DroppableIngredientArea from '../droppable-ingredient-area/droppable-ingredient-area';
 import {ConstructorElement, CurrencyIcon, Button} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./burger-constructor.module.css";
@@ -14,10 +14,11 @@ import {
 import {useDrop} from "react-dnd";
 import useModal from "../../hooks/use-modal";
 import {selectIngredientsStatus} from "../../services/burger-ingredients/selector";
-import {selectAccessToken} from "../../services/user/selector";
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "../../services/store";
 import {AsyncThunkStatuses, BaseIngredient} from "../../utils/types";
+import {selectAccessToken} from "../../services/user/selector";
+import {updateStateWithRefreshToken} from "../../utils/user-api";
 
 type DropCollectedProps = {
     opacity: number;
@@ -30,8 +31,22 @@ const BurgerConstructor = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const accessToken = useSelector(selectAccessToken);
+    // State to track if token refresh has been attempted
+    const [tokenRefreshAttempted, setTokenRefreshAttempted] = useState(false);
 
-    const { bun, ingredients, ingredientsFetchStatus } = useSelector(state => ({
+    useEffect(() => {
+        const refreshTokenIfNeeded = async () => {
+            if (!accessToken && !tokenRefreshAttempted) {
+                await updateStateWithRefreshToken(dispatch);
+                setTokenRefreshAttempted(true);
+            }
+        };
+
+        refreshTokenIfNeeded();
+    }, [accessToken, dispatch, navigate, tokenRefreshAttempted]);
+
+
+    const {bun, ingredients, ingredientsFetchStatus} = useSelector(state => ({
         bun: selectBun(state),
         ingredients: selectIngredients(state),
         ingredientsFetchStatus: selectIngredientsStatus(state)
@@ -67,11 +82,9 @@ const BurgerConstructor = () => {
     const submitOrder = (e: React.SyntheticEvent): void => {
         e.preventDefault();
         if (bun && ingredients.length !== 0 && accessToken) {
-
             const newOrder: TNewOrder = {
                 ingredients: [bun._id, ...ingredients.map(ingredient => ingredient._id), bun._id]
             }
-            //@ts-ignore
             dispatch(createNewOrder(newOrder));
             openSubmitOrderModal();
         } else {

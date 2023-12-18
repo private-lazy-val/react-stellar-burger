@@ -4,26 +4,14 @@ import {ServerBasicResponse, updateStateWithRefreshToken, userApi} from "../../u
 import {deleteCookie, getCookie, setCookie} from "../../utils/cookies";
 import {selectAccessToken} from "./selector";
 import {RootState} from "../store";
-import {User} from "../../utils/types";
+import {TResetPassword, User} from "../../utils/types";
 
-export const getUser = createAsyncThunk<void, void, {
+export const getUser = createAsyncThunk<void, string, {
     state: RootState,
     rejectValue: string
 }>(
     "user/getUser",
-    async (_, {getState, dispatch, rejectWithValue}) => {
-        let accessToken = selectAccessToken(getState());
-        if (!accessToken) {
-            try {
-                await updateStateWithRefreshToken(dispatch);
-                accessToken = selectAccessToken(getState());
-            } catch (err) {
-                return rejectWithValue("Token refresh failed");
-            }
-        }
-        if (accessToken === null) {
-            return rejectWithValue("Access token is null");
-        }
+    async (accessToken, {dispatch, rejectWithValue}) => {
         try {
             const res = await userApi.getUser({accessToken}, dispatch);
             if (res.success) {
@@ -49,28 +37,37 @@ export const updateUser = createAsyncThunk<User, User, {
     "user/updateUser",
     async (userData, {getState, dispatch, rejectWithValue}) => {
         let accessToken = selectAccessToken(getState());
+        let tokenRefreshAttempted = false;
+        const makeUpdateRequest = async (accessToken: string) => {
+            try {
+                const res = await userApi.updateUser(userData, {accessToken}, dispatch);
+                if (!res.success) {
+                    return rejectWithValue(res.message || "User update failed");
+                }
+                return res.user;
+            } catch (error) {
+                return rejectWithValue("Error during user update");
+            }
+        };
         if (!accessToken) {
             try {
                 await updateStateWithRefreshToken(dispatch);
                 accessToken = selectAccessToken(getState());
+                tokenRefreshAttempted = true;
             } catch (err) {
                 return rejectWithValue("Token refresh failed");
             }
         }
-        if (accessToken === null) {
-            return rejectWithValue("Access token is null");
-        }
-        try {
-            const res = await userApi.updateUser(userData, {accessToken}, dispatch);
-            if (!res.success) {
-                return rejectWithValue(res.message || "User update failed");
-            }
-            return res.user;
-        } catch (error) {
-            return rejectWithValue("Error during user update");
+        // If accessToken is available after refresh (or was initially available)
+        if (accessToken) {
+            return await makeUpdateRequest(accessToken);
+        } else {
+            // If after the refresh attempt there is still no accessToken
+            return rejectWithValue("Authentication required");
         }
     }
 );
+
 
 export const login = createAsyncThunk<User, User, {
     state: RootState,
@@ -80,20 +77,20 @@ export const login = createAsyncThunk<User, User, {
     async (userData, {dispatch, rejectWithValue}) => {
         try {
             const res = await userApi.login(userData);
-            console.log(res)
             if (res.success) {
                 setCookie('refreshToken', res.refreshToken);
                 dispatch(setAccessToken(res.accessToken.split('Bearer ')[1]));
                 return res.user;
             } else {
-                // Handle unsuccessful login attempt
                 return rejectWithValue(res.message || "Login failed");
             }
-        }catch (error) {
-            // Use rejectWithValue for any other errors
-            return rejectWithValue("An unknown error occurred");
+        } catch (error) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            } else {
+                return rejectWithValue("An unknown error occurred");
+            }
         }
-
     }
 );
 
@@ -130,11 +127,22 @@ export const checkUserAuth = createAsyncThunk<void, void, {
     "user/checkUserAuth",
     async (_, {getState, dispatch, rejectWithValue}) => {
         let accessToken = selectAccessToken(getState());
-        // If accessToken is not available, try refreshing it
-        if (!accessToken) {
+        let tokenRefreshAttempted = false;
+        const checkAuthRequest = async (accessToken: string) => {
+            try {
+                await dispatch(getUser(accessToken));
+            } catch (error) {
+                dispatch(logout());
+                dispatch(setAuthChecked(true));
+                return rejectWithValue("Error during user data fetch");
+            }
+        };
+        // If accessToken is not available, try refreshing it once
+        if (!accessToken && !tokenRefreshAttempted) {
             try {
                 await updateStateWithRefreshToken(dispatch);
                 accessToken = selectAccessToken(getState());
+                tokenRefreshAttempted = true; // Mark that a token refresh has been attempted
             } catch (err) {
                 dispatch(logout());
                 dispatch(setAuthChecked(true));
@@ -143,13 +151,7 @@ export const checkUserAuth = createAsyncThunk<void, void, {
         }
         // If accessToken is available after refresh (or was initially available)
         if (accessToken) {
-            try {
-                await dispatch(getUser());
-            } catch (error) {
-                // Handle errors in getUser
-                dispatch(logout());
-                return rejectWithValue("Error during user data fetch");
-            }
+            await checkAuthRequest(accessToken);
         }
         // Mark auth check as completed
         dispatch(setAuthChecked(true));
@@ -188,7 +190,7 @@ export const forgotPassword = createAsyncThunk<ServerBasicResponse, string, {
         try {
             const res = await userApi.forgotPassword({email});
             if (res.success) {
-                return res
+                return res;
             } else {
                 return rejectWithValue(res.message || "Password forgot unsuccessful");
             }
@@ -203,12 +205,12 @@ export const forgotPassword = createAsyncThunk<ServerBasicResponse, string, {
     }
 );
 
-export const resetPassword = createAsyncThunk<ServerBasicResponse, User, {
+export const resetPassword = createAsyncThunk<ServerBasicResponse, TResetPassword, {
     state: RootState,
     rejectValue: string
 }>(
     "user/resetPassword",
-    async (userData: User, {rejectWithValue}) => {
+    async (userData: TResetPassword, {rejectWithValue}) => {
         try {
             const res = await userApi.resetPassword(userData);
             if (res.success) {

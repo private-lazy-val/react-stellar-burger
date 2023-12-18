@@ -1,15 +1,19 @@
 import commonStyles from "../auth.module.css";
 import {Button, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Link, useNavigate} from "react-router-dom";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import {resetPassword} from "../../services/user/action";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector} from "../../services/store";
 import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/user-slice';
 import {PWD_REGEX, TOKEN_REGEX} from "../../utils/input-regex";
 import {useForm} from "../../hooks/use-form";
 
-const ResetPassword = () => {
+type ResetPasswordValues = {
+    password: string;
+    token: string;
+}
+const ResetPassword = (): React.JSX.Element => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const errMsg = useSelector(selectErrMsg);
@@ -21,15 +25,15 @@ const ResetPassword = () => {
     }, [dispatch])
 
     const formValidators = {
-        password: (value) => PWD_REGEX.test(value),
-        token: (value) => TOKEN_REGEX.test(value)
+        password: (value: string) => PWD_REGEX.test(value),
+        token: (value: string) => TOKEN_REGEX.test(value)
     };
 
     const {values, validities, handleChange, isFormValid, resetForm} =
-        useForm({password: '', token: ''}, formValidators);
+        useForm<ResetPasswordValues>({password: '', token: ''}, formValidators);
 
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (isFormValid()) {
             dispatch(resetPassword({password: values.password, token: values.token}))

@@ -32,7 +32,6 @@ const ForgotPassword = (): React.JSX.Element => {
     const {values, validities, handleChange, isFormValid, resetForm} =
         useForm<ForgotPasswordFormValues>({email: ''}, formValidators);
 
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (isFormValid()) {
