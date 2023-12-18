@@ -30,7 +30,7 @@ const OrderInfo = () => {
         if (!order) {
             dispatch(fetchOrder(number))
         }
-    }, [dispatch]);
+    }, [dispatch, number, order]);
 
     const orderStatus = order?.status === 'done' ? 'Выполнен' : 'В процессе';
 

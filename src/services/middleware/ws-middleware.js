@@ -4,6 +4,7 @@
 import {refreshToken} from "../../utils/user-api";
 import {setCookie} from "../../utils/cookies";
 import {WS_URL} from "../../api/ws-api";
+import {setAccessToken} from "../user/user-slice";
 
 export const wsMiddleware = (wsActions) => {
     return (store) => { // this function is the actual middleware that will be applied to the Redux store
@@ -62,7 +63,7 @@ export const wsMiddleware = (wsActions) => {
                         if (refreshData.success) {
                             console.log('setting tokens...')
                             setCookie("refreshToken", refreshData.refreshToken);
-                            setCookie("accessToken", refreshData.accessToken.replace('Bearer ', ''));
+                            dispatch(setAccessToken(refreshData.accessToken.split('Bearer ')[1]))
 
                             // Reconnect with the new token
                             const newWsUrl = `${WS_URL}/orders?token=${refreshData.accessToken.replace('Bearer ', '')}`;

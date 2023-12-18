@@ -6,18 +6,9 @@ import {selectAccessToken} from "./selector";
 
 export const getUser = createAsyncThunk(
     "user/getUser",
-    async (_, thunkAPI) => {
-        let accessToken = selectAccessToken(thunkAPI.getState());
-        if (!accessToken) {
-            try {
-                await updateStateWithRefreshToken(thunkAPI.dispatch);
-                accessToken = selectAccessToken(thunkAPI.getState());
-            } catch (err) {
-                return thunkAPI.rejectWithValue("Token refresh failed");
-            }
-        }
+    async (accessToken, thunkAPI) => {
         try {
-            const res = await userApi.getUser(accessToken);
+            const res = await userApi.getUser(accessToken, thunkAPI.dispatch);
             if (res.success) {
                 thunkAPI.dispatch(setUser(res.user));
             } else {
@@ -33,22 +24,33 @@ export const updateUser = createAsyncThunk(
     "user/updateUser",
     async (userData, thunkAPI) => {
         let accessToken = selectAccessToken(thunkAPI.getState());
+        let tokenRefreshAttempted = false;
+        const makeUpdateRequest = async (token) => {
+            try {
+                const res = await userApi.updateUser(userData, token, thunkAPI.dispatch);
+                if (!res.success) {
+                    return thunkAPI.rejectWithValue(res.message || "User update failed");
+                }
+                return res.user;
+            } catch (error) {
+                return thunkAPI.rejectWithValue("Error during user update");
+            }
+        };
         if (!accessToken) {
             try {
                 await updateStateWithRefreshToken(thunkAPI.dispatch);
                 accessToken = selectAccessToken(thunkAPI.getState());
+                tokenRefreshAttempted = true;
             } catch (err) {
                 return thunkAPI.rejectWithValue("Token refresh failed");
             }
         }
-        try {
-            const res = await userApi.updateUser(userData, accessToken);
-            if (!res.success) {
-                return thunkAPI.rejectWithValue(res.message || "User update failed");
-            }
-            return res.user;
-        } catch (error) {
-            return thunkAPI.rejectWithValue("Error during user update");
+        // If accessToken is available after refresh (or was initially available)
+        if (accessToken) {
+            return await makeUpdateRequest(accessToken);
+        } else {
+            // If after the refresh attempt there is still no accessToken
+            return thunkAPI.rejectWithValue("Authentication required");
         }
     }
 );
@@ -95,11 +97,24 @@ export const checkUserAuth = createAsyncThunk(
     "user/checkUserAuth",
     async (_, thunkAPI) => {
         let accessToken = selectAccessToken(thunkAPI.getState());
-        // If accessToken is not available, try refreshing it
-        if (!accessToken) {
+        let tokenRefreshAttempted = false;
+
+        const checkAuthRequest = async (token) => {
+            try {
+                await thunkAPI.dispatch(getUser(token));
+            } catch (error) {
+                thunkAPI.dispatch(logout());
+                thunkAPI.dispatch(setAuthChecked(true));
+                return thunkAPI.rejectWithValue("Error during user data fetch");
+            }
+        };
+
+        // If accessToken is not available, try refreshing it once
+        if (!accessToken && !tokenRefreshAttempted) {
             try {
                 await updateStateWithRefreshToken(thunkAPI.dispatch);
                 accessToken = selectAccessToken(thunkAPI.getState());
+                tokenRefreshAttempted = true; // Mark that a token refresh has been attempted
             } catch (err) {
                 thunkAPI.dispatch(logout());
                 thunkAPI.dispatch(setAuthChecked(true));
@@ -108,13 +123,7 @@ export const checkUserAuth = createAsyncThunk(
         }
         // If accessToken is available after refresh (or was initially available)
         if (accessToken) {
-            try {
-                await thunkAPI.dispatch(getUser());
-            } catch (error) {
-                // Handle errors in getUser
-                thunkAPI.dispatch(logout());
-                return thunkAPI.rejectWithValue("Error during user data fetch");
-            }
+            await checkAuthRequest(accessToken);
         }
         // Mark auth check as completed
         thunkAPI.dispatch(setAuthChecked(true));

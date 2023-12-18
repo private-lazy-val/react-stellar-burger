@@ -26,19 +26,24 @@ export const fetchWithRefresh = async (url, options, dispatch) => {
         return await checkResponse(res);
     } catch (err) {
         if (err.message === "jwt expired") {
-            const refreshData = await refreshToken(); //обновляем токен
-            if (!refreshData || !refreshData.success) {
-                console.error((err.message || "Failed to refresh token"));
+            try {
+                const refreshData = await refreshToken(); //обновляем токен
+                if (!refreshData || !refreshData.success) {
+                    console.error((err.message || "Failed to refresh token"));
+                }
+                setCookie("refreshToken", refreshData.refreshToken);
+                dispatch(setAccessToken(refreshData.accessToken.split('Bearer ')[1]));
+                // Replace the old Authorization header with the new token
+                options.headers = {
+                    ...options.headers,
+                    "Authorization": refreshData.accessToken
+                };
+                const res = await fetch(url, options); //повторяем запрос
+                return await checkResponse(res);
+            } catch (refreshError) {
+                console.error("Error during token refresh:", refreshError.message);
+                throw refreshError;
             }
-            setCookie("refreshToken", refreshData.refreshToken);
-            dispatch(setAccessToken(refreshData.accessToken.split('Bearer ')[1]));
-            // Replace the old Authorization header with the new token
-            options.headers = {
-                ...options.headers,
-                "Authorization": refreshData.accessToken
-            };
-            const res = await fetch(url, options); //повторяем запрос
-            return await checkResponse(res);
         } else {
             throw err;
         }
@@ -53,25 +58,25 @@ export const updateStateWithRefreshToken = async (dispatch) => {
             setCookie("refreshToken", refreshData.refreshToken);
             return refreshData;
         } else {
-            console.error("Failed to refresh token");
+            console.error("Failed to refresh token: Token or accessToken missing in response");
         }
     } catch (error) {
-        throw error;
+        console.error("Error occurred while refreshing token:", error.message);
     }
 };
 
-const getUser = (accessToken) =>
+const getUser = (accessToken, dispatch) =>
     fetchWithRefresh(`${BASE_URL}/auth/user`, {
         method: "GET",
         headers: getDefaultHeaders(undefined, accessToken)
-    });
+    }, dispatch);
 
-const updateUser = (userData, accessToken) =>
+const updateUser = (userData, accessToken, dispatch) =>
     fetchWithRefresh(`${BASE_URL}/auth/user`, {
         method: "PATCH",
         headers: getDefaultHeaders(undefined, accessToken),
         body: JSON.stringify(userData)
-    });
+    }, dispatch);
 
 const login = async (userData) => {
     const res = await fetch(`${BASE_URL}/auth/login`, {

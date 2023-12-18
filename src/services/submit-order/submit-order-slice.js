@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {fetchWithRefresh, updateStateWithRefreshToken} from "../../utils/user-api";
+import {fetchWithRefresh} from "../../utils/user-api";
 import {getDefaultHeaders} from "../../utils/headers";
 import {BASE_URL} from "../../api/api";
 import {selectAccessToken} from "../user/selector";
@@ -7,35 +7,35 @@ import {selectAccessToken} from "../user/selector";
 export const createNewOrder = createAsyncThunk(
     "submitOrder/createNewOrder",
     async (newOrder, thunkAPI) => {
-        const state = thunkAPI.getState();
-        let accessToken = selectAccessToken(state);
-        if (!accessToken) {
-            try {
-                await updateStateWithRefreshToken(thunkAPI.dispatch);
-                accessToken = selectAccessToken(thunkAPI.getState());
-            } catch (err) {
-                return;
-            }
-        }
+        let accessToken = selectAccessToken(thunkAPI.getState());
 
         const endpoint = `${BASE_URL}/orders`;
-        const options = {
-            method: 'POST',
-            headers: getDefaultHeaders(undefined, accessToken),
-            body: JSON.stringify(newOrder)
+        const createOrder = async (token) => {
+            const options = {
+                method: 'POST',
+                headers: getDefaultHeaders(undefined, token),
+                body: JSON.stringify(newOrder)
+            };
+            try {
+                const response = await fetchWithRefresh(endpoint, options, thunkAPI.dispatch);
+                if (response.success && response.order.number) {
+                    return response.order.number;
+                } else {
+                    return thunkAPI.rejectWithValue("Failed to retrieve order number");
+                }
+            } catch (err) {
+                return thunkAPI.rejectWithValue("Failed to submit the order");
+            }
         };
 
-        try {
-            const response = await fetchWithRefresh(endpoint, options);
-            if (response.success && response.order.number) {
-                return response.order.number;
-            } else {
-                return thunkAPI.rejectWithValue("Failed to retrieve order number");
-            }
-        } catch (err) {
-            return thunkAPI.rejectWithValue("Failed to submit the order");
+        // If accessToken is available after refresh (or was initially available)
+        if (accessToken) {
+            return await createOrder(accessToken);
+        } else {
+            return thunkAPI.rejectWithValue("Authentication required");
         }
-    })
+    }
+);
 
 export const submitOrderSlice = createSlice({
     name: "submitOrder",

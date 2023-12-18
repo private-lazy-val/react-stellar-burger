@@ -1,4 +1,4 @@
-import {useMemo} from "react";
+import {useEffect, useMemo, useState} from "react";
 import DroppableIngredientArea from '../droppable-ingredient-area/droppable-ingredient-area';
 import {ConstructorElement, CurrencyIcon, Button} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./burger-constructor.module.css";
@@ -17,11 +17,25 @@ import useModal from "../../hooks/use-modal";
 import {selectIngredientsStatus} from "../../services/burger-ingredients/selector";
 import {selectAccessToken} from "../../services/user/selector";
 import {useNavigate} from "react-router-dom";
+import {updateStateWithRefreshToken} from "../../utils/user-api";
 
 const BurgerConstructor = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const accessToken = useSelector(selectAccessToken);
+    // State to track if token refresh has been attempted
+    const [tokenRefreshAttempted, setTokenRefreshAttempted] = useState(false);
+
+    useEffect(() => {
+        const refreshTokenIfNeeded = async () => {
+            if (!accessToken && !tokenRefreshAttempted) {
+                await updateStateWithRefreshToken(dispatch);
+                setTokenRefreshAttempted(true);
+            }
+        };
+
+        refreshTokenIfNeeded();
+    }, [accessToken, dispatch, navigate, tokenRefreshAttempted]);
 
     const {bun, ingredients, ingredientsFetchStatus} = useSelector(state => ({
         bun: selectBun(state),

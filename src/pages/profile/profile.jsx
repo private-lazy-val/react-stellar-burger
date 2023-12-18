@@ -13,8 +13,7 @@ const Profile = () => {
     const dispatch = useDispatch();
     const errMsg = useSelector(selectErrMsg);
 
-    const user = useSelector(selectUser);
-
+    const user = useSelector(selectUser) || { name: '', email: '' };
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('******');

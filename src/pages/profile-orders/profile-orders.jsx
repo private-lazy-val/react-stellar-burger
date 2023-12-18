@@ -20,27 +20,10 @@ import styles from './profile-orders.module.css';
 import {websocketStatus} from "../../utils/ws-status";
 import LoadingComponent from "../../utils/loading-component";
 import {selectAccessToken} from "../../services/user/selector";
-import {updateStateWithRefreshToken} from "../../utils/user-api";
-import {logout} from "../../services/user/action";
 
 const ProfileOrders = () => {
     const dispatch = useDispatch();
     const accessToken = useSelector(selectAccessToken);
-
-    useEffect(() => {
-        const refreshAccessToken = async () => {
-            if (!accessToken) {
-                try {
-                    await updateStateWithRefreshToken(dispatch);
-                } catch (error) {
-                    console.error("Failed to refresh token:", error);
-                    dispatch(logout());
-                }
-            }
-        };
-
-        refreshAccessToken();
-    }, [accessToken, dispatch]);
 
     useEffect(() => {
         // If accessToken state gets updated and is not null, connect to WebSocket
