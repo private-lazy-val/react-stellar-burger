@@ -17,7 +17,7 @@ type IngredientProps = {
 type Ingredient = Omit<BaseIngredient, '_id' | 'uuid'>;
 
 const IngredientInfo = React.memo(({title}: IngredientProps): React.JSX.Element => {
-    const {ingredientId} = useParams<{ ingredientId?: string }>();
+    const {ingredientId} = useParams<{ ingredientId: string }>();
 
     const {allIngredients, ingredientsFetchStatus, ingredientsFetchError} = useSelector(state => {
         const {allIngredients} = getIngredientsMap(state);

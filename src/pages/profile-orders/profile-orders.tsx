@@ -12,15 +12,14 @@ import {validateOrdersPayload} from "../../utils/validate-orders-payload";
 import {
     selectProfileOrders,
     selectProfileStatus,
-    selectProfileisInitialDataLoaded,
+    selectProfileIsInitialDataLoaded,
     selectProfileConnectingError
 } from "../../services/profile-orders/selector";
 import {getSortedOrders} from "../../utils/get-sorted-orders";
 import styles from './profile-orders.module.css';
-import {websocketStatus} from "../../utils/ws-status";
+import {websocketStatuses} from "../../utils/types";
 import LoadingComponent from "../../utils/loading-component";
 import {selectAccessToken} from "../../services/user/selector";
-// import useRefreshTokenIfNeeded from "../../hooks/use-refresh-token-if-needed";
 
 const ProfileOrders = (): React.JSX.Element => {
     const dispatch = useDispatch();
@@ -40,7 +39,7 @@ const ProfileOrders = (): React.JSX.Element => {
     const {orders, status, isInitialDataLoaded, connectingError} = useSelector(state => ({
         orders: selectProfileOrders(state),
         status: selectProfileStatus(state),
-        isInitialDataLoaded: selectProfileisInitialDataLoaded(state),
+        isInitialDataLoaded: selectProfileIsInitialDataLoaded(state),
         connectingError: selectProfileConnectingError(state)
     }));
 
@@ -51,13 +50,13 @@ const ProfileOrders = (): React.JSX.Element => {
 
     let ordersContent;
 
-    if (status === websocketStatus.CONNECTING || (status === websocketStatus.ONLINE && !isInitialDataLoaded)) {
+    if (status === websocketStatuses.CONNECTING || (status === websocketStatuses.ONLINE && !isInitialDataLoaded)) {
         ordersContent = <div className='page-backdrop'><LoadingComponent/></div>;
-    } else if (connectingError && status === websocketStatus.OFFLINE) {
+    } else if (connectingError && status === websocketStatuses.OFFLINE) {
         ordersContent = <h1 className='page-backdrop text_type_digits-medium'>Connection lost. Please try again later.</h1>;
-    } else if (status === websocketStatus.ONLINE && validOrders.length === 0 && isInitialDataLoaded) {
+    } else if (status === websocketStatuses.ONLINE && validOrders.length === 0 && isInitialDataLoaded) {
         ordersContent = <h1 className={`${styles[`empty-feed`]} text_type_digits-medium`}>You haven't placed any orders yet</h1>
-    } else if (status === websocketStatus.ONLINE && validOrders.length > 0) {
+    } else if (status === websocketStatuses.ONLINE && validOrders.length > 0) {
         ordersContent = <Orders orders={validOrders} />
     }
 

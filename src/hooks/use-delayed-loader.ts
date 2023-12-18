@@ -7,7 +7,7 @@ type DelayedLoaderProps = {
     delay: number;
 }
 
-export const useDelayedLoader = ({isLoading, delay}: DelayedLoaderProps) => {
+export const useDelayedLoader = ({isLoading, delay}: DelayedLoaderProps): boolean => {
     const [showLoader, setShowLoader] = useState(false);
 
     useEffect(() => {

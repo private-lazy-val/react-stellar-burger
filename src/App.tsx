@@ -1,4 +1,4 @@
-import {useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import {Route, Routes, useLocation} from "react-router-dom";
 import transitions from "./components/modals/modal/modal-transitions.module.css";
 import {CSSTransition} from "react-transition-group";
@@ -27,7 +27,7 @@ import {useAuthCheckLoader} from "./hooks/use-auth-check-loader";
 import Spinner from "./components/spinner/spinner";
 import useOpenModalFromUrl from "./hooks/use-open-modal-from-url";
 
-function App() {
+function App(): React.JSX.Element {
     const dispatch = useDispatch();
     const location = useLocation();
     const background = location.state && location.state.background;

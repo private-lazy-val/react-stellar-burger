@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 import styles from "./burger-ingredient.module.css";
 import {Counter, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useDrag} from "react-dnd";
-import {makeSelectIngredientCount} from "../../services/burger-constructor/selector";
+import {getIngredientCount} from "../../services/burger-constructor/selector";
 import useModal from "../../hooks/use-modal";
 import {Link, useLocation} from "react-router-dom";
 import {BaseIngredient} from "../../utils/types";
@@ -18,10 +18,9 @@ type DragCollectedProps = {
 
 const BurgerIngredient = React.memo(({ingredient}: BurgerIngredientProps): React.JSX.Element => {
     const location = useLocation();
-
     const ingredientId = ingredient['_id'];
     // This selection function is utilized to keep a stable reference to the created selector
-    const selectIngredientCount = useMemo(makeSelectIngredientCount, []);
+    const selectIngredientCount = useMemo(getIngredientCount, []);
     // If the parts of the state that this selector depends upon (bun and ingredients) are updated in the Redux store,
     // useSelector will trigger a re-run of the selection function and, if the selected value (count) changes, the component will re-render.
     const count = useSelector(state => selectIngredientCount(state, ingredient._id));

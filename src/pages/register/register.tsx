@@ -8,12 +8,8 @@ import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/user-slice';
 import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
 import {useForm} from "../../hooks/use-form";
+import {User} from "../../utils/types";
 
-type RegisterFormValues = {
-    name: string;
-    email: string;
-    password: string;
-}
 const Register = (): React.JSX.Element => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -34,8 +30,8 @@ const Register = (): React.JSX.Element => {
         password: (value: string) => PWD_REGEX.test(value),
     };
 
-    const {values, validities, handleChange, isFormValid, resetForm} =
-        useForm<RegisterFormValues>({name: '', email: '', password: ''}, formValidators);
+    const {values, validators, handleChange, isFormValid, resetForm} =
+        useForm<User>({name: '', email: '', password: ''}, formValidators);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -60,11 +56,11 @@ const Register = (): React.JSX.Element => {
                     id="name"
                     name='name'
                     placeholder="Имя"
-                    value={values.name}
+                    value={values.name!}
                     onChange={handleChange}
                     // When aria-invalid is set to "true", screen readers will announce that the input is invalid
                     // when the user focuses on or navigates to that input
-                    aria-invalid={!validities.name}
+                    aria-invalid={!validators.name}
                 />
                 <EmailInput
                     id="email"
@@ -72,22 +68,22 @@ const Register = (): React.JSX.Element => {
                     placeholder="E-mail"
                     value={values.email}
                     onChange={handleChange}
-                    aria-invalid={!validities.email}
+                    aria-invalid={!validators.email}
                 />
                 <PasswordInput
                     id="password"
                     name='password'
                     placeholder="Пароль"
-                    value={values.password}
+                    value={values.password!}
                     onChange={handleChange}
-                    aria-invalid={!validities.password}
+                    aria-invalid={!validators.password}
                 />
                 <Button
                     htmlType="submit"
                     type="primary"
                     size="medium"
                     extraClass={commonStyles[`submit-btn`]}
-                    disabled={!validities.name || !validities.email || !validities.password}
+                    disabled={!validators.name || !validators.email || !validators.password}
                 >
                     Зарегистрироваться
                 </Button>

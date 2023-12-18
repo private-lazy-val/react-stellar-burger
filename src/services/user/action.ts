@@ -4,7 +4,7 @@ import {ServerBasicResponse, updateStateWithRefreshToken, userApi} from "../../u
 import {deleteCookie, getCookie, setCookie} from "../../utils/cookies";
 import {selectAccessToken} from "./selector";
 import {RootState} from "../store";
-import {TResetPassword, User} from "../../utils/types";
+import {ResetPassword, User} from "../../utils/types";
 
 export const getUser = createAsyncThunk<void, string, {
     state: RootState,
@@ -205,12 +205,12 @@ export const forgotPassword = createAsyncThunk<ServerBasicResponse, string, {
     }
 );
 
-export const resetPassword = createAsyncThunk<ServerBasicResponse, TResetPassword, {
+export const resetPassword = createAsyncThunk<ServerBasicResponse, ResetPassword, {
     state: RootState,
     rejectValue: string
 }>(
     "user/resetPassword",
-    async (userData: TResetPassword, {rejectWithValue}) => {
+    async (userData: ResetPassword, {rejectWithValue}) => {
         try {
             const res = await userApi.resetPassword(userData);
             if (res.success) {

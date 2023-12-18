@@ -8,10 +8,7 @@ import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/user-slice';
 import {EMAIL_REGEX} from "../../utils/input-regex";
 import {useForm} from "../../hooks/use-form";
-
-type ForgotPasswordFormValues = {
-    email: string;
-};
+import {User} from "../../utils/types";
 
 const ForgotPassword = (): React.JSX.Element => {
     const dispatch = useDispatch();
@@ -29,8 +26,8 @@ const ForgotPassword = (): React.JSX.Element => {
         email: (value: string) => EMAIL_REGEX.test(value)
     };
 
-    const {values, validities, handleChange, isFormValid, resetForm} =
-        useForm<ForgotPasswordFormValues>({email: ''}, formValidators);
+    const {values, validators, handleChange, isFormValid, resetForm} =
+        useForm<Pick<User, 'email'>>({email: ''}, formValidators);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -57,7 +54,7 @@ const ForgotPassword = (): React.JSX.Element => {
                     placeholder="Укажите e-mail"
                     value={values.email}
                     onChange={handleChange}
-                    aria-invalid={!validities.email}
+                    aria-invalid={!validators.email}
                 />
 
                 <Button
@@ -65,7 +62,7 @@ const ForgotPassword = (): React.JSX.Element => {
                     type="primary"
                     size="medium"
                     extraClass={commonStyles[`submit-btn`]}
-                    disabled={!validities.email}
+                    disabled={!validators.email}
                 >
                     Восстановить
                 </Button>

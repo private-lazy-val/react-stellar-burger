@@ -5,7 +5,7 @@ import {selectIngredients} from "../../services/burger-constructor/selector";
 import {useDispatch, useSelector} from "../../services/store";
 import DraggableIngredient from '../draggable-ingredient/draggable-ingredient';
 
-const DroppableIngredientArea = React.memo((): React.JSX.Element => {
+const DroppableIngredientArea = (): React.JSX.Element => {
     const ingredients = useSelector(selectIngredients);
     const dispatch = useDispatch();
 
@@ -31,6 +31,6 @@ const DroppableIngredientArea = React.memo((): React.JSX.Element => {
             ))}
         </ul>
     );
-});
+};
 
 export default DroppableIngredientArea;

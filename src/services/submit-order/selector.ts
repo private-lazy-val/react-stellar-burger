@@ -1,5 +1,6 @@
 import {RootState} from "../store";
+import {AsyncThunkStatuses} from "../../utils/types";
 
-export const selectOrderNumber = (state: RootState) => state.submitOrder.number;
-export const selectOrderNumberStatus = (state: RootState) => state.submitOrder.status;
-export const selectOrderNumberError = (state: RootState) => state.submitOrder.error;
+export const selectOrderNumber = (state: RootState): number | null => state.submitOrder.number;
+export const selectOrderNumberStatus = (state: RootState): AsyncThunkStatuses => state.submitOrder.status;
+export const selectOrderNumberError = (state: RootState): string | null => state.submitOrder.error;

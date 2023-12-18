@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import request from "../../api/api";
 import {AsyncThunkStatuses, BaseIngredient, IngredientsMap, IngredientsTypes} from "../../utils/types";
+import {RootState} from "../store";
 type IngredientsResponse = {
     data: BaseIngredient[];
 };
@@ -10,9 +11,12 @@ type FulfilledPayload = {
     array: BaseIngredient[];
 };
 
-export const loadAllIngredients = createAsyncThunk(
+export const loadAllIngredients = createAsyncThunk<FulfilledPayload, void, {
+    state: RootState,
+    rejectValue: string
+}>(
     "burgerIngredients/loadAllIngredients",
-    async (_, thunkAPI) => {
+    async (_, {rejectWithValue}) => {
         try {
             const res = await request<IngredientsResponse>('/ingredients'); // GET is used by default
             if (res.data && res.data.length > 0) {
@@ -30,10 +34,10 @@ export const loadAllIngredients = createAsyncThunk(
                 };
             } else {
                 // Handle empty or invalid data
-                return thunkAPI.rejectWithValue('No ingredients found or invalid data format');
+                return rejectWithValue('No ingredients found or invalid data format');
             }
         } catch (err) {
-            return thunkAPI.rejectWithValue('Failed to fetch ingredients');
+            return rejectWithValue('Failed to fetch ingredients');
         }
     }
 );
@@ -43,7 +47,7 @@ export type BurgerIngredientsState = {
     ingredientsMap: IngredientsMap,
     currentTab: IngredientsTypes,
     status: AsyncThunkStatuses,
-    error: string | unknown,
+    error: string | null,
 }
 
 const initialState: BurgerIngredientsState = {
@@ -74,7 +78,7 @@ export const burgerIngredientsSlice = createSlice({
                 state.ingredients = action.payload.array;
                 state.ingredientsMap = action.payload.map;
             })
-            .addCase(loadAllIngredients.rejected, (state, action: PayloadAction<string | unknown>) => {
+            .addCase(loadAllIngredients.rejected, (state, action: PayloadAction<string | undefined>) => {
                 state.status = AsyncThunkStatuses.failed;
                 state.error = action.payload ?? 'Unknown error';
             })

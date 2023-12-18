@@ -2,50 +2,50 @@ import {useState, useCallback, ChangeEvent} from 'react';
 
 type TUseForm<T> = {
     values: T;
-    validities: { [K in keyof T]?: boolean };
+    validators: { [K in keyof T]?: boolean };
     handleChange: (evt: ChangeEvent<HTMLInputElement>) => void;
     setValues: (state: T) => void;
     isFormValid: () => boolean;
     resetForm: () => void;
 }
 
-type TFormValidators = {
+type FormValidators = {
     [key: string]: (value: string) => boolean;
 };
 
-export const useForm = <T>(initialValues: T, validators: TFormValidators): TUseForm<T> => {
+export const useForm = <T>(initialValues: T, formValidators: FormValidators): TUseForm<T> => {
     const [values, setValues] = useState<T>(initialValues);
-    const [validities, setValidities] = useState({});
+    const [validators, setValidators] = useState({});
 
-    // Update values and validities
+    // Update values and validators
     const handleChange = useCallback(
         (evt: ChangeEvent<HTMLInputElement>) => {
             const {name, value} = evt.target;
             // If a validator function exists for this name,
             // it's called with the value of the input field to check if the value is valid.
-            const isValid = validators[name] ? validators[name](value) : true;
+            const isValid = formValidators[name] ? formValidators[name](value) : true;
             setValues((prevValues) => ({...prevValues, [name]: value}));
-            setValidities((prevValidities) => ({...prevValidities, [name]: isValid}));
+            setValidators((prevValidators) => ({...prevValidators, [name]: isValid}));
         },
-        [validators]
+        [formValidators]
     );
 
     // Check the entire form validity
     const isFormValid = useCallback(
-        () => Object.values(validities).every(Boolean),
-        [validities]
+        () => Object.values(validators).every(Boolean),
+        [validators]
     );
 
-    // Reset the form to initial values and validities
+    // Reset the form to initial values and validators
     const resetForm = useCallback(() => {
         setValues(initialValues);
-        setValidities({});
+        setValidators({});
     }, [initialValues]);
 
     return {
         values,
         setValues,
-        validities,
+        validators,
         handleChange,
         isFormValid,
         resetForm,

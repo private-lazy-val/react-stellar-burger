@@ -8,17 +8,13 @@ import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
 import {useForm} from "../../hooks/use-form";
 import React, {useState} from "react";
 import ProfileSideMenu from "../../components/profile-side-menu/profile-side-menu";
+import {User} from "../../utils/types";
 
-type ProfileValues = {
-    name: string;
-    email: string;
-    password: string;
-}
 const Profile = (): React.JSX.Element => {
     const dispatch = useDispatch();
     const errMsg = useSelector(selectErrMsg);
 
-    const user = useSelector(selectUser) || { name: '', email: '' };
+    const user = useSelector(selectUser) || { name: '', email: '', password: '******' };
 
     const [name, setName] = useState(user?.name ?? '');
     const [email, setEmail] = useState(user?.email ?? '');
@@ -30,8 +26,8 @@ const Profile = (): React.JSX.Element => {
         password: (value: string) => PWD_REGEX.test(value),
     };
 
-    const {values, validities, handleChange, isFormValid, resetForm} =
-        useForm<ProfileValues>(
+    const {values, validators, handleChange, isFormValid, resetForm} =
+        useForm<User>(
             {name: user.name || '', email: user.email || '', password: '******'}, formValidators);
 
     const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -61,11 +57,11 @@ const Profile = (): React.JSX.Element => {
                     id="name"
                     name='name'
                     placeholder="Имя"
-                    value={values.name}
+                    value={values.name!}
                     onChange={handleChange}
                     icon="EditIcon"
                     extraClass={styles.input}
-                    aria-invalid={!validities.name}
+                    aria-invalid={!validators.name}
                 />
                 <EmailInput
                     id="email"
@@ -74,20 +70,20 @@ const Profile = (): React.JSX.Element => {
                     value={values.email}
                     onChange={handleChange}
                     isIcon={true}
-                    aria-invalid={!validities.email}
+                    aria-invalid={!validators.email}
                 />
                 <PasswordInput
                     id="password"
                     name='password'
                     placeholder="Пароль"
-                    value={values.password}
+                    value={values.password!}
                     onChange={handleChange}
                     icon="EditIcon"
-                    aria-invalid={!validities.password}
+                    aria-invalid={!validators.password}
                 />
-                {(values.name !== user.name && validities.name)
-                || (values.email !== user.email && validities.email)
-                || (values.password !== '00000' && validities.password) ? (
+                {(values.name !== user.name && validators.name)
+                || (values.email !== user.email && validators.email)
+                || (values.password !== '00000' && validators.password) ? (
                     <div>
                         <Button
                             htmlType="submit"

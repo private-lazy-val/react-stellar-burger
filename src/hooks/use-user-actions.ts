@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '../services/store';
 import { logout } from '../services/user/action';
 import {resetOrders} from "../services/profile-orders/actions";
 import {SetActiveSection} from "../utils/types";

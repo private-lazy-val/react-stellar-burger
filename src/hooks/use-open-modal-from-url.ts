@@ -2,7 +2,7 @@ import {useEffect} from 'react';
 import {useLocation} from 'react-router-dom';
 import useModal from './use-modal';
 
-const useOpenModalFromUrl = () => {
+const useOpenModalFromUrl = (): void => {
     const location = useLocation();
     const {openIngredientModal, openOrderModal} = useModal();
 

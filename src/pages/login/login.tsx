@@ -8,11 +8,8 @@ import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/user-slice';
 import {EMAIL_REGEX, PWD_REGEX} from "../../utils/input-regex";
 import {useForm} from "../../hooks/use-form";
+import {User} from "../../utils/types";
 
-type LoginFormValues = {
-    email: string;
-    password: string;
-}
 const Login = (): React.JSX.Element => {
     const dispatch = useDispatch();
     const errMsg = useSelector(selectErrMsg);
@@ -29,8 +26,8 @@ const Login = (): React.JSX.Element => {
         password: (value: string) => PWD_REGEX.test(value)
     };
 
-    const {values, validities, handleChange, isFormValid, resetForm} =
-        useForm<LoginFormValues>({email: '', password: ''}, formValidators);
+    const {values, validators, handleChange, isFormValid, resetForm} =
+        useForm<Pick<User, 'email' | 'password'>>({email: '', password: ''}, formValidators);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -55,23 +52,22 @@ const Login = (): React.JSX.Element => {
                     placeholder="E-mail"
                     value={values.email}
                     onChange={handleChange}
-                    aria-invalid={!validities.email}
+                    aria-invalid={!validators.email}
                 />
                 <PasswordInput
                     id="password"
                     name='password'
                     placeholder="Пароль"
-                    value={values.password}
+                    value={values.password!}
                     onChange={handleChange}
-                    aria-invalid={!validities.password}
+                    aria-invalid={!validators.password}
                 />
-
                 <Button
                     htmlType="submit"
                     type="primary"
                     size="medium"
                     extraClass={commonStyles[`submit-btn`]}
-                    disabled={!validities.email || !validities.password}
+                    disabled={!validators.email || !validators.password}
                 >
                     Войти
                 </Button>

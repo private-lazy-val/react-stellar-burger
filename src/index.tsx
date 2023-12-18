@@ -8,7 +8,7 @@ import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLLIElement);
 root.render(
-    <React.StrictMode>
+    // <React.StrictMode>
         <Provider store={store}>
             <Router>
                 <Routes>
@@ -16,5 +16,5 @@ root.render(
                 </Routes>
             </Router>
         </Provider>
-    </React.StrictMode>
+    // </React.StrictMode>
 );

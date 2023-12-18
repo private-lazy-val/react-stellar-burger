@@ -15,7 +15,6 @@ type DraggableIngredientProps = {
 }
 const DraggableIngredient = React.memo(({ingredient, id, index, moveIngredient}: DraggableIngredientProps): React.JSX.Element => {
     const dispatch = useDispatch();
-
     const ref = useRef<HTMLLIElement>(null);
 
     // The hook returns an array with two items. The first item is an object that contains collected properties.

@@ -18,4 +18,5 @@ export type TProfileOrdersActions =
     | ReturnType<typeof wsClose>
     | ReturnType<typeof wsMessage>
     | ReturnType<typeof wsError>
-    | ReturnType<typeof wsTokenRefresh>;
+    | ReturnType<typeof wsTokenRefresh>
+    | ReturnType<typeof resetOrders>;

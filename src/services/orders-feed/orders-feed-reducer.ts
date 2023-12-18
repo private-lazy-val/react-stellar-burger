@@ -1,5 +1,4 @@
 import {createReducer} from '@reduxjs/toolkit';
-import {websocketStatus} from "../../utils/ws-status";
 import {
     wsClose,
     wsConnecting,
@@ -7,10 +6,10 @@ import {
     wsMessage,
     wsOpen
 } from "./actions";
-import {Order, OrdersMap} from "../../utils/types";
+import {Order, OrdersMap, websocketStatuses} from "../../utils/types";
 
 export type ordersFeedTypes = {
-    status: websocketStatus;
+    status: websocketStatuses;
     orders: Order[];
     ordersMap: OrdersMap | null;
     total: number;
@@ -20,7 +19,7 @@ export type ordersFeedTypes = {
 }
 
 const initialState: ordersFeedTypes = {
-    status: websocketStatus.OFFLINE,
+    status: websocketStatuses.OFFLINE,
     orders: [],
     ordersMap: null,
     total: 0,
@@ -32,14 +31,14 @@ const initialState: ordersFeedTypes = {
 const ordersFeedReducer = createReducer(initialState, (builder) => {
     builder
         .addCase(wsConnecting, state => {
-            state.status = websocketStatus.CONNECTING;
+            state.status = websocketStatuses.CONNECTING;
         })
         .addCase(wsOpen, state => {
-            state.status = websocketStatus.ONLINE;
+            state.status = websocketStatuses.ONLINE;
             state.connectingError = '';
         })
         .addCase(wsClose, state => {
-            state.status = websocketStatus.OFFLINE;
+            state.status = websocketStatuses.OFFLINE;
         })
         .addCase(wsError, (state, action) => {
             state.connectingError = action.payload ?? "An unknown connection error occurred";

@@ -8,11 +8,11 @@ export const selectIngredients = (state: RootState): Ingredient[] => state.burge
 // Reselect provides a function called createSelector to generate memoized selectors.
 // createSelector accepts one or more "input selector" functions, plus an "output selector" function, and returns
 // a new selector function.
-export const makeSelectIngredientCount = () => createSelector(
+export const getIngredientCount = () => createSelector(
     [selectIngredients, selectBun, (_, ingredientId: string) => ingredientId],
     (ingredients, bun, ingredientId) => {
         if (!Array.isArray(ingredients)) {
-            return 0; // or handle it accordingly
+            return 0;
         }
         let count = ingredients.filter((ing) => ing._id === ingredientId).length;
         if (bun?._id === ingredientId) {

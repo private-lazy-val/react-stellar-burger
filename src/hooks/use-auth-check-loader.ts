@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from '../services/store';
 import { checkUserAuth } from '../services/user/action';
 import {selectAuthCheckLoading, selectAuthStatus} from "../services/user/selector";
 
-export const useAuthCheckLoader = () => {
+export const useAuthCheckLoader = (): boolean => {
     // isAuthChecked это флаг, показывающий что проверка токена произведена
     // при этом результат этой проверки не имеет значения, важно только,
     // что сам факт проверки имел место.

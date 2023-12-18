@@ -11,12 +11,12 @@ import {validateOrdersPayload} from "../../utils/validate-orders-payload";
 import {getSortedOrders} from "../../utils/get-sorted-orders";
 import {
     selectOrdersFeedConnectingError,
-    selectOrdersFeedisInitialDataLoaded,
+    selectOrdersFeedIsInitialDataLoaded,
     selectOrdersFeedOrders, selectOrdersFeedStatus,
     selectOrdersFeedTotal,
     selectOrdersFeedTotalToday
 } from "../../services/orders-feed/selector";
-import {websocketStatus} from "../../utils/ws-status";
+import {websocketStatuses} from "../../utils/types";
 import LoadingComponent from "../../utils/loading-component";
 
 const OrdersFeed = (): React.JSX.Element => {
@@ -35,7 +35,7 @@ const OrdersFeed = (): React.JSX.Element => {
         total: selectOrdersFeedTotal(state),
         totalToday: selectOrdersFeedTotalToday(state),
         status: selectOrdersFeedStatus(state),
-        isInitialDataLoaded: selectOrdersFeedisInitialDataLoaded(state),
+        isInitialDataLoaded: selectOrdersFeedIsInitialDataLoaded(state),
         connectingError: selectOrdersFeedConnectingError(state)
     }));
 
@@ -54,13 +54,13 @@ const OrdersFeed = (): React.JSX.Element => {
 
     return (
         <main className={styles.main}>
-            {(status === websocketStatus.CONNECTING || (status === websocketStatus.ONLINE && !isInitialDataLoaded))
+            {(status === websocketStatuses.CONNECTING || (status === websocketStatuses.ONLINE && !isInitialDataLoaded))
                 && <div className='page-backdrop'><LoadingComponent/></div>}
-            {(connectingError && status === websocketStatus.OFFLINE)
+            {(connectingError && status === websocketStatuses.OFFLINE)
                 && <h1 className='page-backdrop text_type_digits-medium'>Connection lost. Please try again later.</h1>}
-            {(status === websocketStatus.ONLINE && validOrders.length === 0 && isInitialDataLoaded)
+            {(status === websocketStatuses.ONLINE && validOrders.length === 0 && isInitialDataLoaded)
                 && <h1 className='page-backdrop text_type_digits-medium'>Orders feed is empty</h1>}
-            {(status === websocketStatus.ONLINE && validOrders.length > 0)
+            {(status === websocketStatuses.ONLINE && validOrders.length > 0)
                 &&
                 <>
                     <h1 className="text text_type_main-large">Лента заказов</h1>

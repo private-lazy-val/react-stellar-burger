@@ -54,6 +54,21 @@ export enum AsyncThunkStatuses {
     'failed'
 }
 
+export type User = {
+    email: string;
+    name?: string;
+    password?: string;
+};
+
+export type ResetPassword = {
+    password: string;
+    token: string;
+}
+
+export type SetActiveSection = {
+    isActive: boolean;
+};
+
 export type WsMessagePayload = {
     orders: Order[];
 }
@@ -63,17 +78,8 @@ export type ExtendedWsMessagePayload = WsMessagePayload & {
     total: number;
 };
 
-export type User = {
-    email: string;
-    name?: string;
-    password?: string;
-};
-
-export type TResetPassword = {
-    password: string;
-    token: string;
+export enum websocketStatuses {
+    CONNECTING = 'CONNECTING...',
+    ONLINE = 'ONLINE',
+    OFFLINE = 'OFFLINE'
 }
-
-export type SetActiveSection = {
-    isActive: boolean;
-};

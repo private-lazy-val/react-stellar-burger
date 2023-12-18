@@ -29,7 +29,7 @@ const ResetPassword = (): React.JSX.Element => {
         token: (value: string) => TOKEN_REGEX.test(value)
     };
 
-    const {values, validities, handleChange, isFormValid, resetForm} =
+    const {values, validators, handleChange, isFormValid, resetForm} =
         useForm<ResetPasswordValues>({password: '', token: ''}, formValidators);
 
 
@@ -58,7 +58,7 @@ const ResetPassword = (): React.JSX.Element => {
                     placeholder="Введите новый пароль"
                     value={values.password}
                     onChange={handleChange}
-                    aria-invalid={!validities.password}
+                    aria-invalid={!validators.password}
                 />
                 <Input
                     type="text"
@@ -69,14 +69,14 @@ const ResetPassword = (): React.JSX.Element => {
                     onChange={handleChange}
                     required
                     autoComplete="off"
-                    aria-invalid={!validities.token}
+                    aria-invalid={!validators.token}
                 />
                 <Button
                     htmlType="submit"
                     type="primary"
                     size="medium"
                     extraClass={commonStyles[`submit-btn`]}
-                    disabled={!validities.password || !validities.token}
+                    disabled={!validators.password || !validators.token}
                 >
                     Сохранить
                 </Button>

@@ -3,7 +3,7 @@ import {getCookie, setCookie} from "./cookies";
 import {getDefaultHeaders} from "./headers";
 import {setAccessToken} from "../services/user/user-slice";
 import {Dispatch} from "redux";
-import {TResetPassword, User} from "./types";
+import {ResetPassword, User} from "./types";
 
 export type ServerBasicResponse<T = {}> = T & {
     message?: string,
@@ -84,7 +84,6 @@ export const updateStateWithRefreshToken = async (dispatch: Dispatch): Promise<T
             console.error("Failed to refresh token");
         }
     } catch (error) {
-        console.log(error);
     }
 };
 
@@ -134,13 +133,13 @@ const forgotPassword = async ({email}: Pick<User, "email">): Promise<ServerBasic
     const res = await fetch(`${BASE_URL}/password-reset`, {
         method: "POST",
         headers: getDefaultHeaders(false),
-        body: JSON.stringify(email)
+        body: JSON.stringify({email})
     });
     return await checkResponse(res);
 }
 
 //provide password and token from an email
-const resetPassword = async (userData: TResetPassword): Promise<ServerBasicResponse> => {
+const resetPassword = async (userData: ResetPassword): Promise<ServerBasicResponse> => {
     const res = await fetch(`${BASE_URL}/password-reset/reset`, {
         method: "POST",
         headers: getDefaultHeaders(false),
