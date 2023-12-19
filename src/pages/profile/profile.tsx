@@ -8,8 +8,6 @@ import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
 import {useForm} from "../../hooks/use-form";
 import React, {useState} from "react";
 import ProfileSideMenu from "../../components/profile-side-menu/profile-side-menu";
-import {User} from "../../utils/types";
-
 const Profile = (): React.JSX.Element => {
     const dispatch = useDispatch();
     const errMsg = useSelector(selectErrMsg);

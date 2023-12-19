@@ -5,7 +5,6 @@ import {useDrag} from "react-dnd";
 import {getIngredientCount} from "../../services/burger-constructor/selector";
 import useModal from "../../hooks/use-modal";
 import {Link, useLocation} from "react-router-dom";
-import {BaseIngredient} from "../../utils/types";
 import {useSelector} from "../../services/store";
 
 type BurgerIngredientProps = {

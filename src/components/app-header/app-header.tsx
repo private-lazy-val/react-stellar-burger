@@ -4,7 +4,6 @@ import {NavLink, useLocation} from "react-router-dom";
 import {selectUser, selectUserIsLoading} from "../../services/user/selector";
 import {useSelector} from "../../services/store";
 import React from "react";
-import {SetActiveSection} from "../../utils/types";
 
 const AppHeader = (): React.JSX.Element => {
     const location = useLocation();

@@ -8,7 +8,6 @@ import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/user-slice';
 import {EMAIL_REGEX, NAME_REGEX, PWD_REGEX} from "../../utils/input-regex";
 import {useForm} from "../../hooks/use-form";
-import {User} from "../../utils/types";
 
 const Register = (): React.JSX.Element => {
     const dispatch = useDispatch();

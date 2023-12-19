@@ -7,8 +7,8 @@ import {
     selectIngredientsStatus
 } from "../../../services/burger-ingredients/selector";
 import LoadingComponent from "../../../utils/loading-component";
-import {AsyncThunkStatuses, BaseIngredient} from "../../../utils/types";
 import {useSelector} from '../../../services/store';
+import {AsyncThunkStatuses} from "../../../enums";
 
 type IngredientProps = {
     title: string;

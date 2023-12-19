@@ -16,9 +16,9 @@ import useModal from "../../hooks/use-modal";
 import {selectIngredientsStatus} from "../../services/burger-ingredients/selector";
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "../../services/store";
-import {AsyncThunkStatuses, BaseIngredient} from "../../utils/types";
 import {selectAccessToken} from "../../services/user/selector";
 import {useRefreshToken} from "../../hooks/use-refresh-token";
+import {AsyncThunkStatuses} from "../../enums";
 
 type DropCollectedProps = {
     opacity: number;

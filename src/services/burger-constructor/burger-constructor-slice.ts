@@ -1,5 +1,4 @@
 import {createSlice, nanoid, PayloadAction} from '@reduxjs/toolkit';
-import {BaseIngredient} from "../../utils/types";
 
 export type Bun = BaseIngredient;
 export type Ingredient = BaseIngredient;

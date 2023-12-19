@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import request from "../../api/api";
-import {AsyncThunkStatuses, Order} from "../../utils/types";
+import {AsyncThunkStatuses} from "../../enums";
 
 type OrderResponse = {
     orders: Order[];

@@ -1,5 +1,3 @@
-import {IngredientsMap, Order} from "./types";
-
 export const validateOrdersPayload = (orders: Order[]): boolean => {
     return !(!orders || !Array.isArray(orders) || orders.length === 0);
 }

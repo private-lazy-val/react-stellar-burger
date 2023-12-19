@@ -3,7 +3,6 @@ import {getCookie, setCookie} from "./cookies";
 import {getDefaultHeaders} from "./headers";
 import {setAccessToken} from "../services/user/user-slice";
 import {Dispatch} from "redux";
-import {ResetPassword, User} from "./types";
 
 export type ServerBasicResponse<T = {}> = T & {
     message?: string,

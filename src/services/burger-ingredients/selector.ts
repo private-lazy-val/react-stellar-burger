@@ -1,7 +1,7 @@
 import {createSelector} from "@reduxjs/toolkit";
 import {RootState} from "../store";
 import {Ingredient} from "../burger-constructor/burger-constructor-slice";
-import {AsyncThunkStatuses, IngredientsMap, IngredientsTypes} from "../../utils/types";
+import {AsyncThunkStatuses, IngredientsTypes} from "../../enums";
 
 export const selectAllIngredients = (state: RootState): Ingredient[] => state.burgerIngredients.ingredients;
 export const selectCurrentTab = (state: RootState): IngredientsTypes => state.burgerIngredients.currentTab;

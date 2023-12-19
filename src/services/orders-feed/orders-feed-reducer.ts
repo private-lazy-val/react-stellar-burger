@@ -6,10 +6,10 @@ import {
     wsMessage,
     wsOpen
 } from "./actions";
-import {ExtendedWsMessagePayload, Order, OrdersMap, websocketStatuses} from "../../utils/types";
+import {WebsocketStatuses} from "../../enums";
 
 export type ordersFeedTypes = {
-    status: websocketStatuses;
+    status: WebsocketStatuses;
     orders: Order[];
     ordersMap: OrdersMap | null;
     total: number;
@@ -19,7 +19,7 @@ export type ordersFeedTypes = {
 }
 
 const initialState: ordersFeedTypes = {
-    status: websocketStatuses.OFFLINE,
+    status: WebsocketStatuses.OFFLINE,
     orders: [],
     ordersMap: null,
     total: 0,
@@ -31,14 +31,14 @@ const initialState: ordersFeedTypes = {
 const ordersFeedReducer = createReducer(initialState, (builder) => {
     builder
         .addCase(wsConnecting, state => {
-            state.status = websocketStatuses.CONNECTING;
+            state.status = WebsocketStatuses.CONNECTING;
         })
         .addCase(wsOpen, state => {
-            state.status = websocketStatuses.ONLINE;
+            state.status = WebsocketStatuses.ONLINE;
             state.connectingError = '';
         })
         .addCase(wsClose, state => {
-            state.status = websocketStatuses.OFFLINE;
+            state.status = WebsocketStatuses.OFFLINE;
         })
         .addCase(wsError, (state, action: PayloadAction<string> ) => {
             state.connectingError = action.payload ?? "An unknown connection error occurred";

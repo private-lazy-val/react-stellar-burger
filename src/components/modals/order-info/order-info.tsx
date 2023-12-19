@@ -10,7 +10,7 @@ import React, {useEffect, useMemo} from "react";
 import LoadingComponent from "../../../utils/loading-component";
 import {getOrder, selectOrderError, selectOrderStatus} from "../../../services/order-info/selector";
 import {useSelector, useDispatch} from "../../../services/store";
-import {AsyncThunkStatuses} from "../../../utils/types";
+import {AsyncThunkStatuses} from "../../../enums";
 
 const OrderInfo = (): React.JSX.Element => {
     const dispatch = useDispatch();

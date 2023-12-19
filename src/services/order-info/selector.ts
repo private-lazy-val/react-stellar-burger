@@ -1,6 +1,6 @@
 import {createSelector} from "@reduxjs/toolkit";
 import {RootState} from "../store";
-import {AsyncThunkStatuses, Order, OrdersMap} from "../../utils/types";
+import {AsyncThunkStatuses} from "../../enums";
 
 export const selectOrder = (state: RootState): Order | null => state.orderInfo.order;
 export const selectOrderStatus = (state: RootState): AsyncThunkStatuses => state.orderInfo.status;

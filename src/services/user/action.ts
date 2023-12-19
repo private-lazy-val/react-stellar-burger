@@ -4,7 +4,6 @@ import {ServerBasicResponse, updateStateWithRefreshToken, userApi} from "../../u
 import {deleteCookie, getCookie, setCookie} from "../../utils/cookies";
 import {selectAccessToken} from "./selector";
 import {RootState} from "../store";
-import {ResetPassword, User} from "../../utils/types";
 
 export const getUser = createAsyncThunk<void, string, {
     state: RootState,

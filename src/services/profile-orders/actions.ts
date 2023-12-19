@@ -1,5 +1,4 @@
 import { createAction } from '@reduxjs/toolkit';
-import {WsMessagePayload} from "../../utils/types";
 export const connect = createAction<string>('PROFILE_ORDERS_WS_CONNECT')
 export const disconnect = createAction('PROFILE_ORDERS_WS_DISCONNECT');
 export const wsConnecting = createAction('PROFILE_ORDERS_WS_CONNECTING');

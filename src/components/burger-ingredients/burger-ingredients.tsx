@@ -10,7 +10,7 @@ import LoadingComponent from "../../utils/loading-component";
 import ItemNotFound from "../../utils/item-not-found";
 import {useDelayedLoader} from '../../hooks/use-delayed-loader';
 import {useDispatch, useSelector} from "../../services/store";
-import {AsyncThunkStatuses, BaseIngredient, IngredientsTypes} from "../../utils/types";
+import {AsyncThunkStatuses, IngredientsTypes} from "../../enums";
 
 type TRefs = Record<IngredientsTypes, React.RefObject<HTMLLIElement>>;
 type TCategorizedItems = Record<IngredientsTypes, BaseIngredient[]>;

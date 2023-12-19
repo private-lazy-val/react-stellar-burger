@@ -8,7 +8,6 @@ import {useBasePath} from "../../hooks/use-base-path";
 import {validateOrder, validateOrderIngredients} from "../../utils/validate-orders-payload";
 import React, {useMemo} from "react";
 import {useSelector} from "../../services/store";
-import {BaseIngredient, Order} from "../../utils/types";
 
 type OrdersProps = {
     orders: Order[]

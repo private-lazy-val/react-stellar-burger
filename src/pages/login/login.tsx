@@ -8,7 +8,6 @@ import {selectErrMsg} from "../../services/user/selector";
 import {resetError} from '../../services/user/user-slice';
 import {EMAIL_REGEX, PWD_REGEX} from "../../utils/input-regex";
 import {useForm} from "../../hooks/use-form";
-import {User} from "../../utils/types";
 
 const Login = (): React.JSX.Element => {
     const dispatch = useDispatch();

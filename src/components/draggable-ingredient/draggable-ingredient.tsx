@@ -5,7 +5,6 @@ import styles from "./draggable-ingredient.module.css";
 import {useCallback} from "react";
 import {removeIngredient} from "../../services/burger-constructor/burger-constructor-slice";
 import {useDispatch} from "../../services/store";
-import {BaseIngredient} from "../../utils/types";
 
 type DraggableIngredientProps = {
     ingredient: BaseIngredient;

@@ -1,5 +1,5 @@
 import {RootState} from "../store";
-import {AsyncThunkStatuses} from "../../utils/types";
+import {AsyncThunkStatuses} from "../../enums";
 
 export const selectOrderNumber = (state: RootState): number | null => state.submitOrder.number;
 export const selectOrderNumberStatus = (state: RootState): AsyncThunkStatuses => state.submitOrder.status;

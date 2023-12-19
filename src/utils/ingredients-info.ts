@@ -1,5 +1,3 @@
-import {IngredientsMap, Order} from "./types";
-
 type IngredientCount = {
     [ingredientId: string]: number;
 };

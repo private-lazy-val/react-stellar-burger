@@ -1,6 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {login, register, logout, forgotPassword, resetPassword, updateUser, checkUserAuth} from "./action";
-import {User} from "../../utils/types";
 
 export type UserState = {
     user: User | null;

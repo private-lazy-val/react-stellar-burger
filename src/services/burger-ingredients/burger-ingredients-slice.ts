@@ -1,7 +1,8 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import request from "../../api/api";
-import {AsyncThunkStatuses, BaseIngredient, IngredientsMap, IngredientsTypes} from "../../utils/types";
 import {RootState} from "../store";
+import {AsyncThunkStatuses, IngredientsTypes} from "../../enums";
+
 type IngredientsResponse = {
     data: BaseIngredient[];
 };

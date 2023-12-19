@@ -16,8 +16,8 @@ import {
     selectOrdersFeedTotal,
     selectOrdersFeedTotalToday
 } from "../../services/orders-feed/selector";
-import {websocketStatuses} from "../../utils/types";
 import LoadingComponent from "../../utils/loading-component";
+import {WebsocketStatuses} from "../../enums";
 
 const OrdersFeed = (): React.JSX.Element => {
     const dispatch = useDispatch();
@@ -54,13 +54,13 @@ const OrdersFeed = (): React.JSX.Element => {
 
     return (
         <main className={styles.main}>
-            {(status === websocketStatuses.CONNECTING || (status === websocketStatuses.ONLINE && !isInitialDataLoaded))
+            {(status === WebsocketStatuses.CONNECTING || (status === WebsocketStatuses.ONLINE && !isInitialDataLoaded))
                 && <div className='page-backdrop'><LoadingComponent/></div>}
-            {(connectingError && status === websocketStatuses.OFFLINE)
+            {(connectingError && status === WebsocketStatuses.OFFLINE)
                 && <h1 className='page-backdrop text_type_digits-medium'>Connection lost. Please try again later.</h1>}
-            {(status === websocketStatuses.ONLINE && validOrders.length === 0 && isInitialDataLoaded)
+            {(status === WebsocketStatuses.ONLINE && validOrders.length === 0 && isInitialDataLoaded)
                 && <h1 className='page-backdrop text_type_digits-medium'>Orders feed is empty</h1>}
-            {(status === websocketStatuses.ONLINE && validOrders.length > 0)
+            {(status === WebsocketStatuses.ONLINE && validOrders.length > 0)
                 &&
                 <>
                     <h1 className="text text_type_main-large">Лента заказов</h1>

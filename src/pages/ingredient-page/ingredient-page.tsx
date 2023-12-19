@@ -11,7 +11,7 @@ import LoadingComponent from "../../utils/loading-component";
 import ItemNotFound from "../../utils/item-not-found";
 import {useDelayedLoader} from "../../hooks/use-delayed-loader";
 import IngredientInfo from "../../components/modals/ingredient-info/ingredient-info";
-import {AsyncThunkStatuses} from "../../utils/types";
+import {AsyncThunkStatuses} from "../../enums";
 
 const IngredientPage = (): React.JSX.Element => {
     const { ingredientId } = useParams<{ ingredientId: string }>();

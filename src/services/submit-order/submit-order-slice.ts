@@ -3,8 +3,8 @@ import {fetchWithRefresh} from "../../utils/user-api";
 import {getDefaultHeaders} from "../../utils/headers";
 import {BASE_URL} from "../../api/api";
 import {selectAccessToken} from "../user/selector";
-import {AsyncThunkStatuses, Order} from "../../utils/types";
 import {RootState} from "../store";
+import {AsyncThunkStatuses} from "../../enums";
 
 export type OrderData = {
     name: string;

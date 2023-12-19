@@ -8,7 +8,7 @@ import {
     selectOrderNumberError
 } from "../../../services/submit-order/selector";
 import LoadingComponent from "../../../utils/loading-component";
-import {AsyncThunkStatuses} from "../../../utils/types";
+import {AsyncThunkStatuses} from "../../../enums";
 
 const SubmitOrder = (): React.JSX.Element => {
     const {orderId, orderIdFetchStatus, orderIdFetchError} = useSelector(state => ({

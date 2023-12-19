@@ -8,7 +8,7 @@ import styles from './order-page.module.css';
 import ItemNotFound from "../../utils/item-not-found";
 import {useDelayedLoader} from "../../hooks/use-delayed-loader";
 import OrderInfo from "../../components/modals/order-info/order-info";
-import {AsyncThunkStatuses} from "../../utils/types";
+import {AsyncThunkStatuses} from "../../enums";
 
 const OrderPage = (): React.JSX.Element => {
     const dispatch = useDispatch();
