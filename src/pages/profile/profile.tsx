@@ -14,7 +14,7 @@ const Profile = (): React.JSX.Element => {
     const dispatch = useDispatch();
     const errMsg = useSelector(selectErrMsg);
 
-    const user = useSelector(selectUser) || { name: '', email: '', password: '******' };
+    const user = useSelector(selectUser) || {name: '', email: '', password: '******'};
 
     const [name, setName] = useState(user?.name ?? '');
     const [email, setEmail] = useState(user?.email ?? '');
@@ -29,6 +29,11 @@ const Profile = (): React.JSX.Element => {
     const {values, validators, handleChange, isFormValid, resetForm} =
         useForm<User>(
             {name: user.name || '', email: user.email || '', password: '******'}, formValidators);
+
+    // decides when to show Save button after editing an input field
+    const canSaveEditedInput = (values.name !== user.name && validators.name)
+        || (values.email !== user.email && validators.email)
+        || (values.password !== '00000' && validators.password);
 
     const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -81,9 +86,7 @@ const Profile = (): React.JSX.Element => {
                     icon="EditIcon"
                     aria-invalid={!validators.password}
                 />
-                {(values.name !== user.name && validators.name)
-                || (values.email !== user.email && validators.email)
-                || (values.password !== '00000' && validators.password) ? (
+                {canSaveEditedInput ? (
                     <div>
                         <Button
                             htmlType="submit"

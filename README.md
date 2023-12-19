@@ -6,6 +6,7 @@
 - [Figma](#figma)
 - [Hosting](#hosting)
 - [Technologies](#technologies)
+- [Branches](#branches)
 
 ## About the Project
 
@@ -32,7 +33,13 @@ The following technologies were used to develop this project:
 - Websocket middleware
 - Custom hooks
 - Drag and Drop
-- HTML5 / CSS / JS
+- HTML5 / CSS / JS / TS
 - Webpack
 
-For package dependencies and project scripts, refer to the `package.json` file in the project's root directory. 
+## Branches
+
+This repository contains two primary branches, each catering to a different version of the project:
+
+- **Main**: This branch hosts the `TypeScript` version of the project. 
+
+- **Javascript-version**: For those preferring `JavaScript`, this branch contains the JavaScript version of the project. I try my best to keep it in sync with the main branch functionalities.
