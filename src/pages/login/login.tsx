@@ -1,6 +1,6 @@
 import commonStyles from "../auth.module.css";
 import {Button, EmailInput, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
-import {Link} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "../../services/store";
 import {login} from '../../services/user/action';
@@ -13,6 +13,13 @@ import {User} from "../../utils/types";
 const Login = (): React.JSX.Element => {
     const dispatch = useDispatch();
     const errMsg = useSelector(selectErrMsg);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const from = location.state?.from || '/';
+    const redirectToRegister = (): void => {
+        // Redirect users back to the page they wanted to visit before the registration
+        navigate('/register', { state: { from } });
+    };
 
     useEffect(() => {
         // This function will be called when the component is unmounted
@@ -75,9 +82,9 @@ const Login = (): React.JSX.Element => {
 
             <p className={`${commonStyles.question} text text_type_main-default text_color_inactive`}>
                 Вы – новый пользователь?
-                <Link to="/register" className={commonStyles.link}>
+                <button onClick={redirectToRegister} className={`${commonStyles.link} text_type_main-default`}>
                     Зарегистрироваться
-                </Link>
+                </button>
             </p>
 
             <p className="text text_type_main-default text_color_inactive">

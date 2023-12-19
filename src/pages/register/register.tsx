@@ -14,7 +14,7 @@ const Register = (): React.JSX.Element => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || '/profile';
+    const from = location.state?.from || '/profile';
 
     const errMsg = useSelector(selectErrMsg);
 
