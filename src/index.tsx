@@ -10,7 +10,7 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLLIElemen
 root.render(
     // <React.StrictMode>
         <Provider store={store}>
-            <Router>
+            <Router basename="/">
                 <Routes>
                     <Route path='/*' element={<App/>}/>
                 </Routes>
