@@ -5,10 +5,10 @@ export enum IngredientsTypes {
 }
 
 export enum AsyncThunkStatuses {
-    'idle',
-    'loading',
-    'succeeded',
-    'failed'
+    idle ='idle',
+    loading = 'loading',
+    succeeded = 'succeeded',
+    failed = 'failed'
 }
 
 export enum WebsocketStatuses {

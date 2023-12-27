@@ -15,7 +15,7 @@ import {Dispatch} from "redux";
 
 export type TWsActionTypes = {
     wsConnect: ActionCreatorWithPayload<string>;
-    // wsSendMessage: ActionCreatorWithPayload<any>;
+    // wsSendMessage?: ActionCreatorWithPayload<any>;
     onOpen: ActionCreatorWithoutPayload;
     onClose: ActionCreatorWithoutPayload;
     onError: ActionCreatorWithPayload<string>;
@@ -27,34 +27,36 @@ export type TWsActionTypes = {
 export const wsMiddleware = (wsActions: TWsActionTypes): Middleware<{}, RootState> => {
     return (store: MiddlewareAPI<Dispatch, RootState>) => { // this function is the actual middleware that will be applied to the Redux store
         let socket: WebSocket | null = null; // the reference to the WebSocket connection
-        let isDisconnect = false; // the socket is closed intentionally
+        let isConnected = false; // the socket is closed intentionally
         let reconnectDelay = 1000;
-        let initialWsUrl = '';
+        const maxReconnectAttempts = 5;
+        let reconnectAttempts = 0;
+        let url = '';
 
         return (next) => async (action) => { // 'next' is a Redux middleware API function used to pass the action to the next middleware in line
             const {dispatch} = store;
             const {
-                // wsConnect,
+                wsConnect,
                 // wsSendMessage,
                 onOpen,
                 onClose,
                 onError,
                 onMessage,
                 wsConnecting,
-                // wsDisconnect,
+                wsDisconnect,
                 wsTokenRefresh
             } = wsActions;
 // If the dispatched action type matches the wsConnect action, a new WebSocket connection
 // is established with the URL provided in the action payload.
             // if (type === wsConnect.type)
-            if (wsActions.wsConnect.match(action)) {
-                const {payload} = action;
-                initialWsUrl = payload;
+            if (wsConnect.match(action)) {
+                url = action.payload;
                 // Close the existing socket if it exists before creating a new one
                 if (socket) {
                     socket.close();
                 }
-                socket = new WebSocket(payload);
+                socket = new WebSocket(url);
+                isConnected = true;
                 dispatch(wsConnecting());
             }
 // Defines a handler for the open event on the WebSocket, which dispatches the onOpen action
@@ -77,7 +79,7 @@ export const wsMiddleware = (wsActions: TWsActionTypes): Middleware<{}, RootStat
                     }
                 };
                 //  if (wsTokenRefresh && type === wsTokenRefresh.type) {
-                if (wsActions.wsTokenRefresh && wsActions.wsTokenRefresh.match(action)) {
+                if (wsTokenRefresh && wsTokenRefresh.match(action)) {
                     console.log('refreshing token...')
                     try {
                         const refreshData = await refreshToken();
@@ -100,33 +102,39 @@ export const wsMiddleware = (wsActions: TWsActionTypes): Middleware<{}, RootStat
                 }
 
                 socket.onclose = () => {
+                    dispatch(onClose());
                     // if the socket is not closed intentionally
-                    if (!isDisconnect) {
-                        // attempt to reconnect with an exponential fixed timeout delay
-                        setTimeout(() => {
-                            console.log('Attempting to reconnect to WebSocket...');
-                            socket = new WebSocket(initialWsUrl);
+                    if (isConnected) {
+                        if(reconnectAttempts < maxReconnectAttempts) {
                             dispatch(wsConnecting());
-
-                            // Increase the delay for the next reconnect attempt
-                            reconnectDelay = Math.min(reconnectDelay * 2, 30000);
-                        }, reconnectDelay);
-                    } else {
-                        dispatch(onClose());
-                        reconnectDelay = 1000; // Reset the delay if the disconnection was intentional
+                            // attempt to reconnect with an exponential fixed timeout delay
+                            setTimeout(() => {
+                                console.log('Attempting to reconnect to WebSocket...');
+                                dispatch(wsConnect(url));
+                                // Increase the delay for the next reconnect attempt
+                                reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+                                reconnectAttempts++;
+                            }, reconnectDelay);
+                        } else {
+                            dispatch(wsDisconnect());
+                        }
                     }
                 };
 
                 // if (wsSendMessage && type === wsSendMessage.type) {
                 // if (wsActions.wsSendMessage && wsActions.wsSendMessage.match(action)) {
+                //     console.log('send')
                 //     socket.send(JSON.stringify(action.payload));
                 // }
 
                 //   if (wsDisconnect.type === type) {
-                if (wsActions.wsDisconnect.match(action)) {
+                if (wsDisconnect.match(action)) {
                     socket.close(); // This calls the close method on the WebSocket object, which initiates the closing handshake to terminate the connection.
                     socket = null;
-                    isDisconnect = true;
+                    isConnected = false;
+                    reconnectAttempts = 0;
+                    clearTimeout(reconnectDelay);
+                    reconnectDelay = 1000;
                 }
             }
             // the middleware passes the action to the next middleware in line,
